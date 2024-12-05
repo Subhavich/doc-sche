@@ -33,64 +33,51 @@ const months = [
 ];
 
 export function EditingPage() {
-  const [config, setConfig] = useState();
-
-  const getDaysInMonth = (month, year) => {
-    const monthIndex = months.indexOf(month); // Get the month index (0-11)
-    return new Date(year, monthIndex + 1, 0).getDate(); // Calculate days in the month
-  };
-
   const currentYear = new Date().getFullYear();
+  const [config, setConfig] = useState({
+    scheduleStart: { year: currentYear, month: months[0] },
+    doctors: [],
+  });
 
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [selectedMonth, setSelectedMonth] = useState(months[0]);
-  const [days, setDays] = useState(getDaysInMonth(months[0], currentYear));
-
-  const handleYearChange = (event) => {
-    const year = parseInt(event.target.value, 10) || currentYear;
-    setSelectedYear(year);
-    setDays(getDaysInMonth(selectedMonth, year));
+  const handleMonthChange = (e) => {
+    setConfig((pv) => {
+      const newMonthValue = e.target.value;
+      return {
+        ...pv,
+        scheduleStart: { ...pv.scheduleStart, month: newMonthValue },
+      };
+    });
   };
 
-  const handleMonthChange = (event) => {
-    const month = event.target.value;
-    setSelectedMonth(month);
-    setDays(getDaysInMonth(month, selectedYear));
+  const handleYearChange = (e) => {
+    setConfig((pv) => {
+      const newYearValue = e.target.value;
+      return {
+        ...pv,
+        scheduleStart: { ...pv.scheduleStart, year: newYearValue },
+      };
+    });
   };
-
   return (
     <>
+      <p>logger</p>
+      <p>{config.scheduleStart.month}</p> <p>{config.scheduleStart.year}</p>
+      <hr />
       <p>editing page</p>
-
+      <p>Select Starting Month</p>
       {/* Year Input */}
       <input
         type="number"
-        value={selectedYear}
-        onChange={handleYearChange}
         min="1900"
         max="2100"
-        placeholder="Year"
-        className="p-2 border rounded"
+        value={config.scheduleStart.year}
+        onChange={handleYearChange}
       />
-
       {/* Month Dropdown */}
-      <select
-        onChange={handleMonthChange}
-        value={selectedMonth}
-        className="p-2 border rounded ml-2"
-      >
+      <select value={config.scheduleStart.month} onChange={handleMonthChange}>
         {months.map((month, index) => (
           <option key={index} value={month}>
             {month}
-          </option>
-        ))}
-      </select>
-
-      {/* Day Dropdown */}
-      <select className="p-2 border rounded ml-2">
-        {Array.from({ length: days }, (_, index) => (
-          <option key={index} value={index + 1}>
-            {index + 1}
           </option>
         ))}
       </select>
