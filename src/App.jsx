@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { Circle, Github, Compact } from "@uiw/react-color";
 import "./App.css";
 
 function App() {
@@ -54,9 +55,9 @@ export function EditingPage() {
     });
   };
 
-  const handleAddDoctor = (load) => {
+  const handleAddDoctor = (load, color) => {
     setConfig((prev) => {
-      const newDoctor = { name: load, color: "slategray" };
+      const newDoctor = { name: load, color: color };
       return { ...prev, doctors: [...prev.doctors, newDoctor] };
     });
   };
@@ -67,12 +68,18 @@ export function EditingPage() {
       <p>logger</p>
       <p>{config.scheduleStart.month}</p> <p>{config.scheduleStart.year}</p>
       {config.doctors.map((doctor, ind) => (
-        <b key={ind}>{doctor.name} </b>
+        <b key={ind}>
+          {doctor.name} - {doctor.color}{" "}
+        </b>
       ))}
       {/* Just for Logging */}
       <hr />
       <p>Select Starting Month</p>
-      <DateInput handleStartChange={handleStartChange} config={config} />
+      <DateInput
+        setConfig={setConfig}
+        handleStartChange={handleStartChange}
+        config={config}
+      />
       <p>Add or Delete doctors</p>
       <DoctorSection config={config} setConfig={setConfig} />
       <DoctorInput config={config} handleAddDoctor={handleAddDoctor} />
@@ -105,8 +112,13 @@ export function DateInput({ config, handleStartChange }) {
   );
 }
 
-export function DoctorInput({ config, handleAddDoctor }) {
+export function DoctorInput({ config, handleAddDoctor, setConfig }) {
+  const [hex, setHex] = useState("#eee");
+  const [isPickerVisible, setIsPicker] = useState(false);
+
   const inputRef = useRef();
+  const pickerRef = useRef();
+
   return (
     <>
       <p>doctors</p>
@@ -119,9 +131,38 @@ export function DoctorInput({ config, handleAddDoctor }) {
           }
         }}
       />
+      <div
+        onClick={() => setIsPicker((prev) => !prev)}
+        style={{ width: "32px", height: "32px", backgroundColor: hex }}
+      ></div>
+      {isPickerVisible ? (
+        <>
+          <Compact
+            ref={pickerRef}
+            style={{ backgroundColor: "#fff" }}
+            color={hex}
+            onChange={(color) => {
+              setHex(color.hex);
+              setConfig((prev) => {
+                const targetedDoctorIndex = prev.doctors.findIndex((doctor) => {
+                  return doctor.name === name;
+                });
+                const newDoctors = [...prev.doctors];
+                newDoctors[targetedDoctorIndex] = {
+                  name: name,
+                  color: color.hex,
+                };
+                return { ...prev, doctors: newDoctors };
+              });
+            }}
+          />
+
+          <button onClick={() => setIsPicker((prev) => !prev)}>Back</button>
+        </>
+      ) : null}
       <button
         onClick={() => {
-          handleAddDoctor(inputRef.current.value);
+          handleAddDoctor(inputRef.current.value, hex);
           inputRef.current.value = "";
         }}
       >
@@ -148,8 +189,12 @@ export function DoctorSection({ config, setConfig }) {
 
 export function DoctorData({ name, color, setConfig }) {
   const [isRenaming, setIsRenaming] = useState(false);
+  const [hex, setHex] = useState(color);
+  const [isPickerVisible, setIsPicker] = useState(false);
+
   const nameRef = useRef();
   const componentRef = useRef();
+  const pickerRef = useRef();
 
   const handleUpdateDoctorName = (e) => {
     const newDoctorName = nameRef.current.value;
@@ -172,14 +217,25 @@ export function DoctorData({ name, color, setConfig }) {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (e) => {
+      // Close renaming input
       if (
         isRenaming &&
         componentRef.current &&
         !componentRef.current.contains(event.target)
       ) {
         setIsRenaming(false);
-        handleUpdateDoctorName(); // Update doctor name when clicking outside
+        handleUpdateDoctorName();
+      }
+
+      // Close color picker
+      if (
+        isPickerVisible &&
+        pickerRef.current &&
+        !pickerRef.current.contains(e.target) &&
+        !componentRef.current.contains(e.target)
+      ) {
+        setIsPicker(false);
       }
     };
 
@@ -187,12 +243,16 @@ export function DoctorData({ name, color, setConfig }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isRenaming]);
+  }, [isRenaming, isPickerVisible]);
 
   return (
     <div
       ref={componentRef}
-      style={{ border: "2px solid black", padding: "16px" }}
+      style={{
+        border: "2px solid black",
+        padding: "16px",
+        marginBottom: "16px",
+      }}
     >
       {isRenaming ? (
         <input onKeyDown={handleKeyDown} defaultValue={name} ref={nameRef} />
@@ -201,8 +261,35 @@ export function DoctorData({ name, color, setConfig }) {
       )}
 
       <div
-        style={{ width: "32px", height: "32px", backgroundColor: color }}
+        onClick={() => setIsPicker((prev) => !prev)}
+        style={{ width: "32px", height: "32px", backgroundColor: hex }}
       ></div>
+      {isPickerVisible ? (
+        <>
+          <Compact
+            ref={pickerRef}
+            style={{ backgroundColor: "#fff" }}
+            color={hex}
+            onChange={(color) => {
+              setHex(color.hex);
+              setConfig((prev) => {
+                const targetedDoctorIndex = prev.doctors.findIndex((doctor) => {
+                  return doctor.name === name;
+                });
+                const newDoctors = [...prev.doctors];
+                newDoctors[targetedDoctorIndex] = {
+                  name: name,
+                  color: color.hex,
+                };
+                return { ...prev, doctors: newDoctors };
+              });
+            }}
+          />
+
+          <button onClick={() => setIsPicker((prev) => !prev)}>Back</button>
+        </>
+      ) : null}
+
       <button
         onClick={() => {
           if (isRenaming) {
