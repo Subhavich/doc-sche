@@ -2,8 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
 
 // Editing Page
-
-const months = [
+const MONTHS = [
   "January",
   "February",
   "March",
@@ -18,18 +17,7 @@ const months = [
   "December",
 ];
 
-export default function EditingPage() {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = months[new Date().getMonth()];
-
-  const [config, setConfig] = useState({
-    scheduleStart: { year: currentYear, month: currentMonth },
-    doctors: [
-      // { name: "Davis", color: "red" },
-      // { name: "Anthony", color: "slategray" },
-    ],
-  });
-
+export default function EditingPage({ config, setConfig }) {
   const handleStartChange = (load, e) => {
     setConfig((pv) => {
       const newValue = e.target.value;
@@ -88,7 +76,7 @@ export function DateInput({ config, handleStartChange }) {
         value={config.scheduleStart.month}
         onChange={(e) => handleStartChange("month", e)}
       >
-        {months.map((month, index) => (
+        {MONTHS.map((month, index) => (
           <option key={index} value={month}>
             {month}
           </option>
