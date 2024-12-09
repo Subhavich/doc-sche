@@ -39,7 +39,9 @@ export default function EditingPage({ config, setConfig }) {
   return (
     <>
       {/* Just for Logging */}
-      <p>logger</p>
+      <p>
+        <b>Logger</b>
+      </p>
       <p>{config.scheduleStart.month}</p> <p>{config.scheduleStart.year}</p>
       {config.doctors.map((doctor, ind) => (
         <b key={ind}>
@@ -77,7 +79,7 @@ export function DateInput({ config, handleStartChange }) {
         onChange={(e) => handleStartChange("month", e)}
       >
         {MONTHS.map((month, index) => (
-          <option key={index} value={month}>
+          <option key={index} value={index}>
             {month}
           </option>
         ))}

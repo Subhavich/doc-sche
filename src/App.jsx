@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import EditingPage from "./EditPage";
 import TablePage from "./TablePage";
 
@@ -20,10 +20,10 @@ const MONTHS = [
 ];
 
 function App() {
-  const [display, setDisplay] = useState(true);
+  const [display, setDisplay] = useState(false);
 
   const currentYear = new Date().getFullYear();
-  const currentMonth = MONTHS[new Date().getMonth()];
+  const currentMonth = new Date().getMonth();
 
   const [config, setConfig] = useState({
     scheduleStart: { year: currentYear, month: currentMonth },
@@ -38,7 +38,7 @@ function App() {
       {display ? (
         <EditingPage config={config} setConfig={setConfig} />
       ) : (
-        <TablePage />
+        <TablePage config={config} />
       )}
     </>
   );
