@@ -173,7 +173,13 @@ const generateMonthSlots = (year, monthIndex) => {
   return monthArray;
 };
 
-export default function TablePage({ config }) {
+//
+//
+//
+
+export default function TablePage({ config, setConfig }) {
+  const doctors = [...config.doctors];
+
   const monthArray = generateMonthSlots(
     config.scheduleStart.year,
     config.scheduleStart.month
@@ -184,14 +190,14 @@ export default function TablePage({ config }) {
   // Write an operation to map doctors to slot and slots to doctors
 
   const firstDateSlots = monthArray[0].slots;
-  showDayDetail(firstDateSlots);
+  // showDayDetail(firstDateSlots);
 
-  flatMappedSlots[0].doctor = "Byleth";
-  flatMappedSlots[1].doctor = "Marianne";
+  // flatMappedSlots[0].doctor = "Byleth";
+  // flatMappedSlots[1].doctor = "Marianne";
 
-  console.log(isOverlapping(flatMappedSlots[0], flatMappedSlots[1]));
-  console.log(isERConsecutive(flatMappedSlots[0], flatMappedSlots[6]));
-  console.log(monthArray);
+  // console.log(isOverlapping(flatMappedSlots[0], flatMappedSlots[1]));
+  // console.log(isERConsecutive(flatMappedSlots[0], flatMappedSlots[6]));
+  // console.log(monthArray);
 
   return (
     <>
@@ -202,6 +208,12 @@ export default function TablePage({ config }) {
       <div>
         <p>{config.scheduleStart.year}</p>
         <p>{config.scheduleStart.month}</p>
+
+        <div>
+          {config.doctors.map((doctor) => (
+            <b>{doctor.name}</b>
+          ))}
+        </div>
       </div>
       <div>
         <p>

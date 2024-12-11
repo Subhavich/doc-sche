@@ -4,11 +4,13 @@ import TablePage from "./TablePage";
 
 import "./App.css";
 
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+
 function App() {
   const [display, setDisplay] = useState(false);
-
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth();
+  const [workHistory, setWorkHistory] = useState([]);
+  const [appActive, setAppActive] = useState(false);
 
   const [config, setConfig] = useState({
     scheduleStart: { year: currentYear, month: currentMonth },
@@ -23,7 +25,12 @@ function App() {
       {display ? (
         <EditingPage config={config} setConfig={setConfig} />
       ) : (
-        <TablePage config={config} />
+        <TablePage
+          config={config}
+          setConfig={setConfig}
+          workHistory={workHistory}
+          setWorkHistory={setWorkHistory}
+        />
       )}
     </>
   );

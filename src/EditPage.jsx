@@ -32,7 +32,7 @@ export default function EditingPage({ config, setConfig }) {
     setConfig((prev) => {
       const newDoctor = { name: load, color: color };
       console.log({ ...prev, doctors: [...prev.doctors, newDoctor] });
-      return { ...prev, doctors: [...prev.doctors, newDoctor] };
+      return { ...prev, doctors: [...prev.doctors, newDoctor], slots: [] };
     });
   };
 
@@ -88,7 +88,7 @@ export function DateInput({ config, handleStartChange }) {
   );
 }
 
-export function DoctorInput({ config, handleAddDoctor, setConfig }) {
+export function DoctorInput({ handleAddDoctor, setConfig }) {
   const [hex, setHex] = useState("#eee");
   const [isPickerVisible, setIsPicker] = useState(false);
 
@@ -119,17 +119,6 @@ export function DoctorInput({ config, handleAddDoctor, setConfig }) {
             color={hex}
             onChange={(color) => {
               setHex(color.hex);
-              setConfig((prev) => {
-                const targetedDoctorIndex = prev.doctors.findIndex((doctor) => {
-                  return doctor.name === name;
-                });
-                const newDoctors = [...prev.doctors];
-                newDoctors[targetedDoctorIndex] = {
-                  name: name,
-                  color: color.hex,
-                };
-                return { ...prev, doctors: newDoctors };
-              });
             }}
           />
 
@@ -220,6 +209,7 @@ export function DoctorData({ name, color, setConfig }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isRenaming, isPickerVisible]);
+  // console.log(setConfig);
 
   return (
     <div
