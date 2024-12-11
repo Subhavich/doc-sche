@@ -61,15 +61,21 @@ const generateMonthSlots = (year, monthIndex) => {
   return monthArray;
 };
 
-export default function TablePage({ config, setConfig }) {
-  const doctors = config.doctors.map((doctor) => {
-    return { ...doctor };
-  });
-  if (doctors.length >= 1) {
-    doctors[0].name = "Byleth";
-    console.log(doctors[0]);
-  }
-  // config.doctors.map();
+const sortDoctors = (doctors) => {
+  doctors.sort((a, b) => a.slots.length - b.slots.length);
+};
+
+const scheduleSlots = (doctors, slots) => {
+  console.log("Before sorting:", [...doctors]);
+  sortDoctors(doctors);
+  console.log("After sorting:", [...doctors]);
+};
+export default function TablePage({ config, setConfig, doctors }) {
+  // if (doctors.length >= 1) {
+  //   doctors[0].name = "Byleth";
+  //   console.log(doctors);
+  // }
+  scheduleSlots(doctors);
 
   const monthArray = generateMonthSlots(
     config.scheduleStart.year,
@@ -93,8 +99,8 @@ export default function TablePage({ config, setConfig }) {
         <p>{config.scheduleStart.month}</p>
 
         <div>
-          {config.doctors.map((doctor) => (
-            <b> + {doctor.name} + </b>
+          {config.doctors.map((doctor, ind) => (
+            <b key={ind}> + {doctor.name} + </b>
           ))}
         </div>
       </div>

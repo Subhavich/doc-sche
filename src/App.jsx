@@ -14,7 +14,17 @@ function App() {
 
   const [config, setConfig] = useState({
     scheduleStart: { year: currentYear, month: currentMonth },
-    doctors: [],
+    doctors: [
+      { name: "henn", color: "#ddd", slots: ["a", "b", "c", "d"] },
+      { name: "salisu", color: "blue", slots: ["a", "b", "d"] },
+      { name: "jacks", color: "slategray", slots: ["a", "b", "c", "d", "e"] },
+      { name: "will", color: "red", slots: ["a", "b"] },
+    ],
+  });
+
+  const doctors = config.doctors.map((doctor) => {
+    // return { ...doctor, slots: [] };
+    return { ...doctor };
   });
 
   return (
@@ -30,6 +40,7 @@ function App() {
           setConfig={setConfig}
           workHistory={workHistory}
           setWorkHistory={setWorkHistory}
+          doctors={doctors}
         />
       )}
     </>
