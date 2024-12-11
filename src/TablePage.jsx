@@ -62,7 +62,14 @@ const generateMonthSlots = (year, monthIndex) => {
 };
 
 export default function TablePage({ config, setConfig }) {
-  const doctors = [...config.doctors];
+  const doctors = config.doctors.map((doctor) => {
+    return { ...doctor };
+  });
+  if (doctors.length >= 1) {
+    doctors[0].name = "Byleth";
+    console.log(doctors[0]);
+  }
+  // config.doctors.map();
 
   const monthArray = generateMonthSlots(
     config.scheduleStart.year,

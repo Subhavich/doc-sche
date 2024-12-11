@@ -30,7 +30,7 @@ export default function EditingPage({ config, setConfig }) {
 
   const handleAddDoctor = (load, color) => {
     setConfig((prev) => {
-      const newDoctor = { name: load, color: color };
+      const newDoctor = { name: load, color: color, id: load };
       console.log({ ...prev, doctors: [...prev.doctors, newDoctor] });
       return { ...prev, doctors: [...prev.doctors, newDoctor], accumulated: 0 };
     });
