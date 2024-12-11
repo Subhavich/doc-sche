@@ -1,5 +1,20 @@
 import { ThaiHolidayCalendar } from "./utils/holiday";
 
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const generateMonthArray = (year, monthIndex) => {
   console.log(year, monthIndex);
   const startDateOfMonth = new Date(year, monthIndex);
@@ -58,6 +73,7 @@ const createSlot = (date, startTime, duration, type, order) => {
     type,
     order,
     id: date.getDate() + type + order,
+    doctor: undefined,
   };
 };
 
@@ -80,39 +96,47 @@ const createDay = (date) => {
     slots.push(createSlot(date, 8, 24, "Med", 1));
     slots.push(createSlot(date, 8, 24, "NonMed", 1));
   }
-  return { date, slots };
+  return slots;
 };
 
-const monthSlots = (year, monthIndex) => {
+const generateMonthSlots = (year, monthIndex) => {
   const startDateOfMonth = new Date(year, monthIndex, 1);
   const startDayOfMonth = startDateOfMonth.getDay();
 
   const endDateOfMonth = new Date(year, monthIndex + 1, 0).getDate();
 
+  const monthArray = [];
   let currentDate = 1;
-  let isWeekDay;
-  const allSlots = [];
-
   while (currentDate <= endDateOfMonth) {
     const today = new Date(year, monthIndex, currentDate);
     const dayIndex = today.getDay() === 0 ? 7 : today.getDay();
-    console.log(currentDate, DAYS[dayIndex - 1]);
-    console.log(createDay(today));
-
+    monthArray.push({
+      date: currentDate,
+      month: MONTHS[monthIndex],
+      slots: createDay(today),
+    });
+    // console.log(currentDate, DAYS[dayIndex - 1]);
+    // console.log(createDay(today));
     currentDate++;
   }
-
-  return;
+  return monthArray;
 };
 
-// generateMonthArray --> add Slots into
 const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 export default function TablePage({ config }) {
-  // console.log(
-  //   generateMonthArray(config.scheduleStart.year, config.scheduleStart.month)
-  // );
-  monthSlots(config.scheduleStart.year, config.scheduleStart.month);
+  const monthArray = generateMonthSlots(
+    config.scheduleStart.year,
+    config.scheduleStart.month
+  );
+
+  const flatMappedSlots = monthArray.flatMap((ele) => ele.slots);
+
+  flatMappedSlots[0].doctor = "Byleth";
+  const firstSlotFirstDate = monthArray[0].slots[0];
+  console.log(firstSlotFirstDate);
+  // Write an operation to map doctors to slot and slots to doctors
+
   return (
     <>
       <h3>Table Page</h3>

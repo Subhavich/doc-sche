@@ -4,21 +4,6 @@ import TablePage from "./TablePage";
 
 import "./App.css";
 
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 function App() {
   const [display, setDisplay] = useState(false);
 
