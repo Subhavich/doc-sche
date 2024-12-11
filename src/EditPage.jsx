@@ -32,7 +32,7 @@ export default function EditingPage({ config, setConfig }) {
     setConfig((prev) => {
       const newDoctor = { name: load, color: color };
       console.log({ ...prev, doctors: [...prev.doctors, newDoctor] });
-      return { ...prev, doctors: [...prev.doctors, newDoctor], slots: [] };
+      return { ...prev, doctors: [...prev.doctors, newDoctor], accumulated: 0 };
     });
   };
 
