@@ -13,6 +13,9 @@ export const isERConsecutive = (baseSlot, compareSlot) => {
   const compareEnd = compareSlot.t + compareSlot.duration;
   const ERSpacing = 24;
 
+  // if (!baseSlot || !compareSlot) {
+  //   return;
+  // }
   if (baseSlot.type.includes("ER") && compareSlot.type.includes("ER")) {
     return (
       Math.abs(baseStart - compareEnd) <= ERSpacing ||
