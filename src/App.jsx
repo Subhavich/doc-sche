@@ -31,49 +31,86 @@ function App() {
     doctors: [
       {
         name: "henn",
-        color: "#ddd",
-        slots: [
-          createSlot(new Date(2024, 11, 12), 8, 2, "type1", 1),
-          createSlot(new Date(2024, 11, 12), 10, 2, "type1", 2),
-          createSlot(new Date(2024, 11, 12), 12, 2, "typeER", 3),
-          createSlot(new Date(2024, 11, 12), 14, 2, "typeER", 4),
-        ],
+        color: "violet",
+        slots: [],
       },
       {
         name: "salisu",
         color: "blue",
-        slots: [
-          createSlot(new Date(2024, 11, 13), 8, 2, "type2", 1),
-          createSlot(new Date(2024, 11, 13), 10, 2, "typeER", 2),
-          createSlot(new Date(2024, 11, 13), 14, 2, "typeER", 3),
-        ],
+        slots: [],
       },
       {
         name: "jacks",
         color: "slategray",
-        slots: [
-          createSlot(new Date(2024, 11, 14), 8, 2, "type3", 1),
-          createSlot(new Date(2024, 11, 14), 10, 2, "type3", 2),
-          createSlot(new Date(2024, 11, 14), 12, 2, "typeER", 3),
-          createSlot(new Date(2024, 11, 14), 14, 2, "type3", 4),
-          createSlot(new Date(2024, 11, 14), 16, 2, "typeER", 5),
-        ],
+        slots: [],
       },
       {
         name: "will",
         color: "red",
-        slots: [
-          createSlot(new Date(2024, 11, 15), 8, 2, "typeER", 1),
-          createSlot(new Date(2024, 11, 15), 10, 2, "type4", 2),
-        ],
+        slots: [],
+      },
+      {
+        name: "henns",
+        color: "violet",
+        slots: [],
+      },
+      {
+        name: "salisus",
+        color: "blue",
+        slots: [],
+      },
+      {
+        name: "jackss",
+        color: "slategray",
+        slots: [],
+      },
+      {
+        name: "wills",
+        color: "red",
+        slots: [],
+      },
+      {
+        name: "jax",
+        color: "slategray",
+        slots: [],
+      },
+      {
+        name: "rreed",
+        color: "red",
+        slots: [],
+      },
+      {
+        name: "numb",
+        color: "red",
+        slots: [],
+      },
+      {
+        name: "canfeel",
+        color: "red",
+        slots: [],
+      },
+      {
+        name: "kite",
+        color: "red",
+        slots: [],
+      },
+      {
+        name: "muvluv",
+        color: "red",
+        slots: [],
       },
     ],
   });
 
-  const doctors = config.doctors.map((doctor) => {
-    // return { ...doctor, slots: [] };
-    return { ...doctor };
-  });
+  // const doctors = config.doctors.map((doctor) => {
+  //   // return { ...doctor, slots: [] };
+  //   return { ...doctor };
+  // });
+
+  const doctors = config.doctors.map((doctor) => ({
+    ...doctor,
+    slots: doctor.slots.map((slot) => ({ ...slot })),
+  }));
 
   return (
     <>

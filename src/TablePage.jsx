@@ -67,16 +67,15 @@ const sortDoctors = (doctors) => {
 
 const addSlot = (doctor, slot, force = false) => {
   let insertIndex = 0;
-  console.log(doctor);
+
   //determine insertion position according to t
+
   while (
     insertIndex < doctor.slots.length &&
     doctor.slots[insertIndex].t < slot.t
   ) {
     insertIndex++;
   }
-
-  console.log(doctor.slots);
 
   const leftSlotIndex = insertIndex - 1;
   const rightSlotIndex = insertIndex;
@@ -118,10 +117,6 @@ const addSlot = (doctor, slot, force = false) => {
 };
 
 const scheduleSlots = (doctors, slots) => {
-  // console.log("Before sorting:", [...doctors]);
-  // sortDoctors(doctors);
-  // console.log("After sorting:", [...doctors]);
-
   for (const slot of slots) {
     sortDoctors(doctors);
 
@@ -129,38 +124,46 @@ const scheduleSlots = (doctors, slots) => {
     for (const doctor of doctors) {
       try {
         addSlot(doctor, slot);
+        takeSlot = true;
+        break;
       } catch (e) {
         console.log("Error", e);
       }
     }
+    if (!takeSlot) {
+      console.log("Cannot Assign Slot", slot);
+    }
   }
 };
 
-//
-//
-//
-//
-//
-//
-
-export default function TablePage({ config, setConfig, doctors }) {
+export default function TablePage({ config, doctors }) {
   const monthArray = generateMonthSlots(
     config.scheduleStart.year,
     config.scheduleStart.month
   );
 
-  const flatMappedSlots = monthArray.flatMap((ele) => ele.slots);
+  // const flatMappedSlots = monthArray.flatMap((ele) => ele.slots);
+
+  const allSlots = monthArray.flatMap((ele) =>
+    ele.slots.map((slot) => ({ ...slot, doctor: undefined }))
+  );
+
   // Schedule flatmappedslots here
   // Write an operation to map doctors to slot and slots to doctors
-
-  scheduleSlots(doctors, flatMappedSlots);
-  const firstDateSlots = monthArray[0].slots;
 
   return (
     <>
       <h3>Table Page</h3>
       <p>
         <b>Logger</b>
+        <button
+          onClick={() => {
+            scheduleSlots(doctors, allSlots);
+          }}
+        >
+          Generate Schedule
+        </button>
+        <button>Update State</button>
       </p>
       <div>
         <p>{config.scheduleStart.year}</p>
@@ -168,7 +171,12 @@ export default function TablePage({ config, setConfig, doctors }) {
 
         <div>
           {config.doctors.map((doctor, ind) => (
-            <b key={ind}> + {doctor.name} + </b>
+            <div key={ind}>
+              <b>{doctor.name}</b>
+              {doctor.slots.map((slot) => (
+                <p>{slot.id}</p>
+              ))}
+            </div>
           ))}
         </div>
       </div>

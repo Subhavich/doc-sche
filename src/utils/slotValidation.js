@@ -1,4 +1,7 @@
 export const isOverlapping = (baseSlot, compareSlot) => {
+  if (!baseSlot || !compareSlot) {
+    return false;
+  }
   const baseStart = baseSlot.t;
   const baseEnd = baseSlot.t + baseSlot.duration;
   const compareStart = compareSlot.t;
@@ -7,6 +10,9 @@ export const isOverlapping = (baseSlot, compareSlot) => {
 };
 
 export const isERConsecutive = (baseSlot, compareSlot) => {
+  if (!baseSlot || !compareSlot) {
+    return false;
+  }
   const baseStart = baseSlot.t;
   const baseEnd = baseSlot.t + baseSlot.duration;
   const compareStart = compareSlot.t;
@@ -26,6 +32,9 @@ export const isERConsecutive = (baseSlot, compareSlot) => {
 };
 
 export const isAdequateSpacing = (baseSlot, compareSlot) => {
+  if (!baseSlot || !compareSlot) {
+    return false;
+  }
   const baseStart = baseSlot.t;
   const baseEnd = baseSlot.t + baseSlot.duration;
   const compareStart = compareSlot.t;
