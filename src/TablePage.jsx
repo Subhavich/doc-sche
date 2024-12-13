@@ -6,7 +6,7 @@ import {
 } from "./utils/slotValidation";
 import { MONTHS } from "./utils/static";
 import { useState, useEffect } from "react";
-import { generateMonthArray } from "./utils/rendering";
+import { deriveWeeksFromSlots } from "./utils/rendering";
 
 const createDay = (date) => {
   const isHoliday = ThaiHolidayCalendar.isHoliday(date);
@@ -60,6 +60,7 @@ const generateMonthSlots = (year, monthIndex) => {
 
     currentDate++;
   }
+  console.log(monthArray);
   return monthArray;
 };
 
@@ -70,8 +71,7 @@ const sortDoctors = (doctors) => {
 const addSlot = (doctor, slot, force = false) => {
   let insertIndex = 0;
 
-  //determine insertion position according to t
-
+  // Determine insertion position according to t
   while (
     insertIndex < doctor.slots.length &&
     doctor.slots[insertIndex].t < slot.t
@@ -82,20 +82,20 @@ const addSlot = (doctor, slot, force = false) => {
   const leftSlotIndex = insertIndex - 1;
   const rightSlotIndex = insertIndex;
 
+  // Validation checks for overlapping slots
   if (leftSlotIndex >= 0 && isOverlapping(doctor.slots[leftSlotIndex], slot)) {
     throw new Error("Overlapping Slot");
   }
 
   if (
-    rightSlotIndex >= 0 &&
+    rightSlotIndex < doctor.slots.length &&
     isOverlapping(doctor.slots[rightSlotIndex], slot)
   ) {
     throw new Error("Overlapping Slot");
   }
 
+  // Additional validations
   if (!force) {
-    // console.log(leftSlotIndex);
-    // console.log(doctor.slots[leftSlotIndex], slot);
     if (
       (leftSlotIndex >= 0 &&
         isERConsecutive(doctor.slots[leftSlotIndex], slot)) ||
@@ -104,6 +104,7 @@ const addSlot = (doctor, slot, force = false) => {
     ) {
       throw new Error("Consecutive ER slots are not allowed");
     }
+
     if (
       (leftSlotIndex >= 0 &&
         isAdequateSpacing(doctor.slots[leftSlotIndex], slot)) ||
@@ -113,26 +114,42 @@ const addSlot = (doctor, slot, force = false) => {
       throw new Error("Inadequate slot spacing");
     }
   }
-  slot.doctor = doctor.name;
-  doctor.slots.splice(insertIndex, 0, slot);
+
+  // Assign slot to doctor
+  const newSlot = { ...slot, doctor: doctor.name }; // Deep copy of slot with doctor assigned
+  console.log(`Adding slot ${newSlot.id} to doctor ${doctor.name}`);
+  doctor.slots.splice(insertIndex, 0, newSlot);
 };
 
 const scheduleSlots = (doctors, slots) => {
+  doctors.forEach((doctor) => {
+    doctor.slots = [];
+  });
+
   for (const slot of slots) {
     sortDoctors(doctors);
 
-    let takeSlot = false;
+    let assigned = false;
+
     for (const doctor of doctors) {
       try {
         addSlot(doctor, slot);
-        takeSlot = true;
+
+        // Update the reference in `slots` as well
+        const updatedSlotIndex = slots.findIndex((s) => s.id === slot.id);
+        if (updatedSlotIndex !== -1) {
+          slots[updatedSlotIndex].doctor = doctor.name;
+        }
+
+        assigned = true;
         break;
       } catch (e) {
-        // console.log("Error", e);
+        // Slot cannot be assigned to this doctor, continue
       }
     }
-    if (!takeSlot) {
-      // console.log("Cannot Assign Slot", slot);
+
+    if (!assigned) {
+      slot.doctor = undefined;
     }
   }
 };
@@ -143,81 +160,77 @@ export default function TablePage({ config, doctors }) {
     config.scheduleStart.month
   );
 
-  // const flatMappedSlots = monthArray.flatMap((ele) => ele.slots);
   const allSlots = monthArray.flatMap((ele) =>
     ele.slots.map((slot) => ({ ...slot, doctor: undefined }))
   );
 
   const [initialSchedule, setInitialSchedule] = useState(null);
+  const [weekSlots, setWeekSlots] = useState([]);
 
   useEffect(() => {
     scheduleSlots(doctors, allSlots);
+    console.log("All Slots After Scheduling:", allSlots);
 
     const schedule = {
-      slots: allSlots.map((slot) => ({ ...slot })),
+      slots: allSlots.map((slot) => ({ ...slot })), // Correctly updated slots
       doctors: doctors.map((doctor) => ({
         ...doctor,
         slots: doctor.slots.map((slot) => ({ ...slot })),
       })),
     };
 
+    console.log(schedule);
     setInitialSchedule(schedule);
   }, []);
-  // Generate the schedule synchronously
+
+  useEffect(() => {
+    if (initialSchedule) {
+      console.log("InitialSchedule Slots:", initialSchedule.slots);
+      const weeks = deriveWeeksFromSlots(
+        config.scheduleStart.year,
+        config.scheduleStart.month,
+        initialSchedule.slots
+      );
+      console.log("Derived Weeks:", weeks);
+
+      setWeekSlots(weeks);
+    }
+  }, [initialSchedule]);
 
   if (!initialSchedule) {
     return <p>Loading...</p>;
   }
 
-  console.log(initialSchedule);
-
-  // Schedule flatmappedslots here
-  // Write an operation to map doctors to slot and slots to doctors
-
   return (
     <>
       <h3>Table Page</h3>
-      <p>
-        <b>Logger</b>
-        <button>Generate Schedule</button>
-        <button>Update State</button>
-      </p>
       <div>
-        <p>{config.scheduleStart.year}</p>
-        <p>{config.scheduleStart.month}</p>
-
-        <div>
-          {initialSchedule.slots.map((slot) => {
-            console.log(slot);
-            return (
-              <div>
-                <span>{slot.id}</span>
-                <b>{slot.doctor}</b>
-                <p>{slot.duration}</p>
+        {initialSchedule.doctors.map((doctor, ind) => (
+          <div key={ind}>
+            <b>{doctor.name}</b>
+            {doctor.slots.map((slot) => (
+              <p key={slot.id}>
+                {slot.id} - {slot.doctor}
+              </p>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div>
+        <h3>Weekly Slots</h3>
+        {weekSlots.map((week, weekIndex) => (
+          <div key={weekIndex}>
+            <h4>Week {weekIndex + 1}</h4>
+            {week.map((slot) => (
+              <div key={slot.id}>
+                <span>Slot ID: {slot.id}</span>
+                <span>Type: {slot.type}</span>
+                <span>Doctor: {slot.doctor || "UNASSIGNED"}</span>
               </div>
-            );
-          })}
-        </div>
-        <div>
-          {config.doctors.map((doctor, ind) => (
-            <div key={ind}>
-              <b>{doctor.name}</b>
-              {doctor.slots.map((slot) => (
-                <p>
-                  {slot.id}-{slot.doctor}
-                </p>
-              ))}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ))}
       </div>
-      <div>
-        <p>
-          <b>Month Object</b>
-        </p>
-        <div></div>
-      </div>
-      <hr />
     </>
   );
 }

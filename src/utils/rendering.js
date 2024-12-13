@@ -57,3 +57,36 @@ const showDayDetail = (slots) => {
     );
   }
 };
+
+export const deriveWeeksFromSlots = (year, monthIndex, slots) => {
+  const startDateOfMonth = new Date(year, monthIndex, 1);
+  const endDateOfMonth = new Date(year, monthIndex + 1, 0);
+  const totalDaysInMonth = endDateOfMonth.getDate();
+
+  // Adjust Sunday to 7 for easier week calculations
+  const startDayOfWeek =
+    startDateOfMonth.getDay() === 0 ? 7 : startDateOfMonth.getDay();
+
+  const weeks = [];
+  let currentWeek = [];
+  let dayOfWeek = startDayOfWeek;
+
+  for (let date = 1; date <= totalDaysInMonth; date++) {
+    // Find slots for the current date
+    const daySlots = slots.filter((slot) => slot.date.getDate() === date);
+
+    // Add day slots to the current week
+    currentWeek.push(...daySlots);
+
+    // If the current day is Sunday or the last day of the month, push the week
+    if (dayOfWeek === 7 || date === totalDaysInMonth) {
+      weeks.push([...currentWeek]);
+      currentWeek = [];
+    }
+
+    // Move to the next day of the week (reset to 1 for Monday after Sunday)
+    dayOfWeek = dayOfWeek === 7 ? 1 : dayOfWeek + 1;
+  }
+
+  return weeks;
+};
