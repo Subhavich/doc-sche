@@ -1,5 +1,4 @@
-const generateMonthArray = (year, monthIndex) => {
-  console.log(year, monthIndex);
+export const generateMonthArray = (year, monthIndex) => {
   const startDateOfMonth = new Date(year, monthIndex);
 
   const endDateOfMonth = new Date(year, monthIndex + 1, 0).getDate();

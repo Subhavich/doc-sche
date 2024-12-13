@@ -40,11 +40,6 @@ function App() {
         slots: [],
       },
       {
-        name: "jacks",
-        color: "slategray",
-        slots: [],
-      },
-      {
         name: "will",
         color: "red",
         slots: [],

@@ -4,7 +4,9 @@ import {
   isAdequateSpacing,
   isOverlapping,
 } from "./utils/slotValidation";
-import { MONTHS, DAYS } from "./utils/static";
+import { MONTHS } from "./utils/static";
+import { useState, useEffect } from "react";
+import { generateMonthArray } from "./utils/rendering";
 
 const createDay = (date) => {
   const isHoliday = ThaiHolidayCalendar.isHoliday(date);
@@ -92,8 +94,8 @@ const addSlot = (doctor, slot, force = false) => {
   }
 
   if (!force) {
-    console.log(leftSlotIndex);
-    console.log(doctor.slots[leftSlotIndex], slot);
+    // console.log(leftSlotIndex);
+    // console.log(doctor.slots[leftSlotIndex], slot);
     if (
       (leftSlotIndex >= 0 &&
         isERConsecutive(doctor.slots[leftSlotIndex], slot)) ||
@@ -111,9 +113,8 @@ const addSlot = (doctor, slot, force = false) => {
       throw new Error("Inadequate slot spacing");
     }
   }
-
-  doctor.slots.splice(insertIndex, 0, slot);
   slot.doctor = doctor.name;
+  doctor.slots.splice(insertIndex, 0, slot);
 };
 
 const scheduleSlots = (doctors, slots) => {
@@ -127,11 +128,11 @@ const scheduleSlots = (doctors, slots) => {
         takeSlot = true;
         break;
       } catch (e) {
-        console.log("Error", e);
+        // console.log("Error", e);
       }
     }
     if (!takeSlot) {
-      console.log("Cannot Assign Slot", slot);
+      // console.log("Cannot Assign Slot", slot);
     }
   }
 };
@@ -143,10 +144,32 @@ export default function TablePage({ config, doctors }) {
   );
 
   // const flatMappedSlots = monthArray.flatMap((ele) => ele.slots);
-
   const allSlots = monthArray.flatMap((ele) =>
     ele.slots.map((slot) => ({ ...slot, doctor: undefined }))
   );
+
+  const [initialSchedule, setInitialSchedule] = useState(null);
+
+  useEffect(() => {
+    scheduleSlots(doctors, allSlots);
+
+    const schedule = {
+      slots: allSlots.map((slot) => ({ ...slot })),
+      doctors: doctors.map((doctor) => ({
+        ...doctor,
+        slots: doctor.slots.map((slot) => ({ ...slot })),
+      })),
+    };
+
+    setInitialSchedule(schedule);
+  }, []);
+  // Generate the schedule synchronously
+
+  if (!initialSchedule) {
+    return <p>Loading...</p>;
+  }
+
+  console.log(initialSchedule);
 
   // Schedule flatmappedslots here
   // Write an operation to map doctors to slot and slots to doctors
@@ -156,13 +179,7 @@ export default function TablePage({ config, doctors }) {
       <h3>Table Page</h3>
       <p>
         <b>Logger</b>
-        <button
-          onClick={() => {
-            scheduleSlots(doctors, allSlots);
-          }}
-        >
-          Generate Schedule
-        </button>
+        <button>Generate Schedule</button>
         <button>Update State</button>
       </p>
       <div>
@@ -170,11 +187,25 @@ export default function TablePage({ config, doctors }) {
         <p>{config.scheduleStart.month}</p>
 
         <div>
+          {initialSchedule.slots.map((slot) => {
+            console.log(slot);
+            return (
+              <div>
+                <span>{slot.id}</span>
+                <b>{slot.doctor}</b>
+                <p>{slot.duration}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div>
           {config.doctors.map((doctor, ind) => (
             <div key={ind}>
               <b>{doctor.name}</b>
               {doctor.slots.map((slot) => (
-                <p>{slot.id}</p>
+                <p>
+                  {slot.id}-{slot.doctor}
+                </p>
               ))}
             </div>
           ))}
