@@ -1,111 +1,84 @@
-import { useState } from "react";
 import EditingPage from "./EditPage";
 
 import TablePage from "./TablePage";
-
+import { useState } from "react";
 import "./App.css";
+import { generateMonthSlots, scheduleSlots } from "./utils/slotCreation";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
 
-const createSlot = (date, startTime, duration, type, order) => {
-  return {
-    date,
-    startTime,
-    duration,
-    t: (date.getDate() - 1) * 24 + startTime,
-    type,
-    order,
-    id: date.getDate() + type + order,
-    doctor: undefined,
-  };
-};
-
 function App() {
   const [display, setDisplay] = useState(false);
-  const [workHistory, setWorkHistory] = useState([]);
-  const [appActive, setAppActive] = useState(false);
 
   const [config, setConfig] = useState({
     scheduleStart: { year: currentYear, month: currentMonth },
     doctors: [
       {
-        name: "henn",
+        name: "Doctor 1",
         color: "violet",
         slots: [],
       },
       {
-        name: "salisu",
-        color: "blue",
+        name: "Doctor 2",
+        color: "magenta",
         slots: [],
       },
       {
-        name: "will",
+        name: "Doctor 3",
         color: "red",
         slots: [],
       },
       {
-        name: "henns",
-        color: "violet",
+        name: "Doctor 4",
+        color: "orange",
         slots: [],
       },
       {
-        name: "salisus",
-        color: "blue",
+        name: "Doctor 5",
+        color: "purple",
         slots: [],
       },
       {
-        name: "jackss",
+        name: "Doctor 6",
         color: "slategray",
         slots: [],
       },
       {
-        name: "wills",
-        color: "red",
+        name: "Doctor 7",
+        color: "yellow",
         slots: [],
       },
       {
-        name: "jax",
-        color: "slategray",
-        slots: [],
-      },
-      {
-        name: "rreed",
-        color: "red",
-        slots: [],
-      },
-      {
-        name: "numb",
-        color: "red",
-        slots: [],
-      },
-      {
-        name: "canfeel",
-        color: "red",
-        slots: [],
-      },
-      {
-        name: "kite",
-        color: "red",
-        slots: [],
-      },
-      {
-        name: "muvluv",
-        color: "red",
+        name: "Doctor 8",
+        color: "slateblue",
         slots: [],
       },
     ],
   });
 
-  // const doctors = config.doctors.map((doctor) => {
-  //   // return { ...doctor, slots: [] };
-  //   return { ...doctor };
-  // });
-
+  //this
   const doctors = config.doctors.map((doctor) => ({
     ...doctor,
     slots: doctor.slots.map((slot) => ({ ...slot })),
   }));
+  //this
+  const initialSlots = generateMonthSlots(
+    config.scheduleStart.year,
+    config.scheduleStart.month
+  );
+
+  scheduleSlots(doctors, initialSlots);
+
+  const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+  const immutableInitialSlots = deepCopy(initialSlots);
+  const immutableDoctors = deepCopy(doctors);
+
+  console.log(
+    "Initial Data (After Scheduling):",
+    immutableInitialSlots,
+    immutableDoctors
+  );
 
   return (
     <>
@@ -116,11 +89,8 @@ function App() {
         <EditingPage config={config} setConfig={setConfig} />
       ) : (
         <TablePage
-          config={config}
-          setConfig={setConfig}
-          workHistory={workHistory}
-          setWorkHistory={setWorkHistory}
-          doctors={doctors}
+          initialSlots={immutableInitialSlots}
+          doctors={immutableDoctors}
         />
       )}
     </>

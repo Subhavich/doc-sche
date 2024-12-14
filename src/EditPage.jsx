@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
-
 // Editing Page
 const MONTHS = [
   "January",

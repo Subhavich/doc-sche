@@ -45,3 +45,32 @@ export const isAdequateSpacing = (baseSlot, compareSlot) => {
     Math.abs(baseEnd - compareStart) <= adequateSpacing
   );
 };
+
+export const canAddSlot = (doctor, slot) => {
+  let insertIndex = 0;
+
+  // Determine insertion position according to t
+  while (
+    insertIndex < doctor.slots.length &&
+    doctor.slots[insertIndex].t < slot.t
+  ) {
+    insertIndex++;
+  }
+
+  const leftSlotIndex = insertIndex - 1;
+  const rightSlotIndex = insertIndex;
+
+  // Validation checks for overlapping slots
+  if (leftSlotIndex >= 0 && isOverlapping(doctor.slots[leftSlotIndex], slot)) {
+    return false;
+  }
+
+  if (
+    rightSlotIndex < doctor.slots.length &&
+    isOverlapping(doctor.slots[rightSlotIndex], slot)
+  ) {
+    return false;
+  }
+
+  return true;
+};
