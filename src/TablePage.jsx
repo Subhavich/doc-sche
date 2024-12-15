@@ -1,7 +1,5 @@
 import { TBody, THead } from "./TableComponents";
 export default function TablePage({ initialSlots, doctors }) {
-  console.log("received ", initialSlots);
-  console.log("received ", doctors);
   return (
     <>
       <Table slots={initialSlots} />

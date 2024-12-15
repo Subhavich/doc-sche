@@ -78,7 +78,7 @@ export const deriveWeeks = (slots) => {
 
     if (weekIndex === 0) {
       for (let dayOfWeek = 1; dayOfWeek < currentWeekDay; dayOfWeek++) {
-        weekArray.push({ date: null });
+        weekArray.push({ date: null, slots: [] });
       }
     }
 
@@ -91,7 +91,7 @@ export const deriveWeeks = (slots) => {
         weekArray.push({ date: currentDate, slots: filteredSlots });
         currentDate++;
       } else {
-        weekArray.push({ date: null });
+        weekArray.push({ date: null, slots: [] });
       }
     }
     monthArray.push(weekArray);

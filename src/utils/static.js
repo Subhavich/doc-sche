@@ -14,3 +14,11 @@ export const MONTHS = [
 ];
 
 export const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+export const WORKTYPES = [
+  "ERNight",
+  "ERMorning",
+  "ERAfternoon",
+  "Med",
+  "NonMed",
+];
