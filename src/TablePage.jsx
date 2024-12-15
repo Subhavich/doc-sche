@@ -6,9 +6,11 @@ export default function TablePage({ initialSlots, doctors }) {
   const handleRemoveDoctor = (slotId) => {
     setTableSlots((prev) => {
       console.log("In handle remove doctor", prev);
-      const filteredSlots = [...prev.filter((slot) => slot.id !== slotId)];
-      console.log(filteredSlots);
-      return filteredSlots;
+      const targetedSlot = [...prev].find((slot) => slot.id === slotId);
+      const newSlot = { ...targetedSlot, doctor: undefined };
+      const filteredSlots = [...prev].filter((slot) => slot.id !== slotId);
+      const newSlots = [...filteredSlots, newSlot];
+      return newSlots;
     });
   };
 
