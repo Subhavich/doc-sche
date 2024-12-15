@@ -42,7 +42,7 @@ export const generateMonthArray = (year, monthIndex) => {
   return monthArray;
 };
 
-const showDayDetail = (slots) => {
+export const showDayDetail = (slots) => {
   for (let slot of slots) {
     console.log(
       "Day : ",
@@ -58,35 +58,42 @@ const showDayDetail = (slots) => {
   }
 };
 
-export const deriveWeeksFromSlots = (year, monthIndex, slots) => {
-  const startDateOfMonth = new Date(year, monthIndex, 1);
-  const endDateOfMonth = new Date(year, monthIndex + 1, 0);
-  const totalDaysInMonth = endDateOfMonth.getDate();
+export const deriveWeeks = (slots) => {
+  const startDate = new Date(slots[0].date);
 
-  // Adjust Sunday to 7 for easier week calculations
-  const startDayOfWeek =
-    startDateOfMonth.getDay() === 0 ? 7 : startDateOfMonth.getDay();
+  const endDate = new Date(
+    startDate.getFullYear(),
+    startDate.getMonth() + 1,
+    0
+  ).getDate(); // Corrected: Extract the day of the month as a number
 
-  const weeks = [];
-  let currentWeek = [];
-  let dayOfWeek = startDayOfWeek;
+  const startDayOfWeek = startDate.getDay();
+  const monthArray = [];
+  let currentDate = 1;
+  let weekIndex = 0;
+  let currentWeekDay = startDayOfWeek === 0 ? 7 : startDayOfWeek;
 
-  for (let date = 1; date <= totalDaysInMonth; date++) {
-    // Find slots for the current date
-    const daySlots = slots.filter((slot) => slot.date.getDate() === date);
+  while (currentDate <= endDate) {
+    const weekArray = [];
 
-    // Add day slots to the current week
-    currentWeek.push(...daySlots);
-
-    // If the current day is Sunday or the last day of the month, push the week
-    if (dayOfWeek === 7 || date === totalDaysInMonth) {
-      weeks.push([...currentWeek]);
-      currentWeek = [];
+    if (weekIndex === 0) {
+      for (let dayOfWeek = 1; dayOfWeek < currentWeekDay; dayOfWeek++) {
+        weekArray.push({ date: null });
+      }
     }
 
-    // Move to the next day of the week (reset to 1 for Monday after Sunday)
-    dayOfWeek = dayOfWeek === 7 ? 1 : dayOfWeek + 1;
+    for (let dayOfWeek = currentWeekDay; dayOfWeek <= 7; dayOfWeek++) {
+      if (currentDate <= endDate) {
+        weekArray.push({ date: currentDate });
+        currentDate++;
+      } else {
+        weekArray.push({ date: null });
+      }
+    }
+    monthArray.push(weekArray);
+    weekIndex++;
+    currentWeekDay = 1;
   }
-
-  return weeks;
+  console.log(monthArray);
+  return monthArray;
 };
