@@ -84,7 +84,11 @@ export const deriveWeeks = (slots) => {
 
     for (let dayOfWeek = currentWeekDay; dayOfWeek <= 7; dayOfWeek++) {
       if (currentDate <= endDate) {
-        weekArray.push({ date: currentDate });
+        const filteredSlots = slots.filter(
+          (slot) => new Date(slot.date).getDate() === currentDate
+        );
+        console.log(filteredSlots);
+        weekArray.push({ date: currentDate, slots: filteredSlots });
         currentDate++;
       } else {
         weekArray.push({ date: null });

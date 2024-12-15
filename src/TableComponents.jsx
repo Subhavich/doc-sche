@@ -17,5 +17,9 @@ export const TBody = ({ slots }) => {
 
   deriveWeeks(slots);
 
-  return <tbody></tbody>;
+  return (
+    <tbody>
+      <tr></tr>
+    </tbody>
+  );
 };
