@@ -14,9 +14,15 @@ export default function TablePage({ initialSlots, doctors }) {
     });
   };
 
+  const handleAddDoctor = (slotId) => {};
+
   return (
     <>
-      <Table slots={tableSlots} handleRemoveDoctor={handleRemoveDoctor} />
+      <Table
+        doctors={doctors}
+        slots={tableSlots}
+        handleRemoveDoctor={handleRemoveDoctor}
+      />
       <h3>Table Page</h3>
       <div>
         <h3>Assigned Slots</h3>
@@ -32,11 +38,15 @@ export default function TablePage({ initialSlots, doctors }) {
   );
 }
 
-export const Table = ({ slots, handleRemoveDoctor }) => {
+export const Table = ({ slots, handleRemoveDoctor, doctors }) => {
   return (
     <table>
       <THead />
-      <TBody slots={slots} handleRemoveDoctor={handleRemoveDoctor} />
+      <TBody
+        slots={slots}
+        doctors={doctors}
+        handleRemoveDoctor={handleRemoveDoctor}
+      />
     </table>
   );
 };
