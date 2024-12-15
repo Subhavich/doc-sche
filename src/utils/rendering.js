@@ -87,7 +87,7 @@ export const deriveWeeks = (slots) => {
         const filteredSlots = slots.filter(
           (slot) => new Date(slot.date).getDate() === currentDate
         );
-        console.log(filteredSlots);
+        // console.log(filteredSlots);
         weekArray.push({ date: currentDate, slots: filteredSlots });
         currentDate++;
       } else {
@@ -98,6 +98,6 @@ export const deriveWeeks = (slots) => {
     weekIndex++;
     currentWeekDay = 1;
   }
-  console.log(monthArray);
+  // console.log(monthArray);
   return monthArray;
 };

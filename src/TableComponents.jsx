@@ -13,8 +13,8 @@ export const THead = () => {
   );
 };
 
-export const TBody = ({ slots }) => {
-  const page = 0;
+export const TBody = ({ slots, handleRemoveDoctor }) => {
+  const page = 1;
   const mockWeek = deriveWeeks(slots)[page];
 
   return (
@@ -30,7 +30,13 @@ export const TBody = ({ slots }) => {
             return (
               <td>
                 {targetedSlot.map((slot) => (
-                  <p>{slot.doctor ? slot.doctor : "UNASSIGNED"}</p>
+                  <>
+                    <DoctorButton
+                      doctorName={slot.doctor ? slot.doctor : "Unassigned"}
+                      id={slot.id}
+                      handleRemoveDoctor={handleRemoveDoctor}
+                    />
+                  </>
                 ))}
               </td>
             );
@@ -39,4 +45,8 @@ export const TBody = ({ slots }) => {
       ))}
     </tbody>
   );
+};
+
+export const DoctorButton = ({ doctorName, id, handleRemoveDoctor }) => {
+  return <button onClick={() => handleRemoveDoctor(id)}>{doctorName}</button>;
 };
