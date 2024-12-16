@@ -9,59 +9,81 @@ import {
   clearLocalStorage,
 } from "./utils/localStorage";
 import { MOCKDOCS } from "./utils/static";
+
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
 
 function App() {
-  const [display, setDisplay] = useState(false);
+  // Check if the schedule has been generated before
+  const [display, setDisplay] = useState(() => {
+    const isGenerated = loadFromLocalStorage("isGenerated");
+    return isGenerated ? false : true; // If true, show TablePage; else EditingPage
+  });
+
+  const [initialSlots, setInitialSlots] = useState(null); // Hold slots until button press
+  const [doctors, setDoctors] = useState(null); // Hold doctors until button press
 
   const [config, setConfig] = useState({
     scheduleStart: { year: currentYear, month: currentMonth },
     doctors: MOCKDOCS,
   });
 
-  // Call clearLocalStorage whenever config changes
+  const handleGenerateSchedule = () => {
+    // Generate slots and doctors when button is pressed
+    const processedDoctors = config.doctors.map((doctor) => ({
+      ...doctor,
+      slots: doctor.slots.map((slot) => ({ ...slot })),
+    }));
+
+    const generatedSlots = generateMonthSlots(
+      config.scheduleStart.year,
+      config.scheduleStart.month
+    );
+
+    scheduleSlots(processedDoctors, generatedSlots);
+
+    const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+    setInitialSlots(deepCopy(generatedSlots));
+    setDoctors(deepCopy(processedDoctors));
+
+    // Save "isGenerated" to localStorage and change display to TablePage
+    saveToLocalStorage("isGenerated", true);
+    setDisplay(false);
+  };
+
   useEffect(() => {
-    console.log("Config changed, clearing localStorage...");
-    clearLocalStorage(["tableSlots", "tableDoctors"]);
-  }, [config]); // Dependency array ensures this runs only when `config` changes
-
-  const doctors = config.doctors.map((doctor) => ({
-    ...doctor,
-    slots: doctor.slots.map((slot) => ({ ...slot })),
-  }));
-
-  const initialSlots = generateMonthSlots(
-    config.scheduleStart.year,
-    config.scheduleStart.month
-  );
-
-  scheduleSlots(doctors, initialSlots);
-
-  const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
-  const immutableInitialSlots = deepCopy(initialSlots);
-  const immutableDoctors = deepCopy(doctors);
-
-  console.log(
-    "Initial Data (After Scheduling):",
-    immutableInitialSlots,
-    immutableDoctors
-  );
+    console.log(
+      "App initialized. Current state of 'isGenerated':",
+      loadFromLocalStorage("isGenerated")
+    );
+  }, []);
 
   return (
-    <>
+    <div>
       <button onClick={() => setDisplay((prev) => (prev ? null : true))}>
         Switch display
+      </button>
+      <button
+        onClick={() => {
+          clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
+          console.log("Local storage cleared.");
+        }}
+      >
+        Clear Local
       </button>
       {display ? (
         <EditingPage config={config} setConfig={setConfig} />
       ) : (
-        <TablePage
-          initialSlots={immutableInitialSlots}
-          doctors={immutableDoctors}
-        />
+        initialSlots &&
+        doctors && <TablePage initialSlots={initialSlots} doctors={doctors} />
       )}
-    </>
+      {/* Button to generate schedule and switch display */}
+      {display && (
+        <button onClick={handleGenerateSchedule}>
+          Generate Schedule and View Table
+        </button>
+      )}
+    </div>
   );
 }
 
