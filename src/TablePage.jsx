@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { TBody, THead } from "./TableComponents";
+import { saveToLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
 export default function TablePage({ initialSlots, doctors }) {
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
@@ -94,22 +95,4 @@ export const Table = ({
       />
     </table>
   );
-};
-
-const saveToLocalStorage = (key, data) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (error) {
-    console.error("Error saving to localStorage", error);
-  }
-};
-
-const loadFromLocalStorage = (key) => {
-  try {
-    const savedData = localStorage.getItem(key);
-    return savedData ? JSON.parse(savedData) : null;
-  } catch (error) {
-    console.error("Error loading from localStorage", error);
-    return null;
-  }
 };

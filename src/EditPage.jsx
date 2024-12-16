@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
+import { createNewDoctor } from "./utils/doctorCreation";
 // Editing Page
 const MONTHS = [
   "January",
@@ -29,8 +30,8 @@ export default function EditingPage({ config, setConfig }) {
 
   const handleAddDoctor = (load, color) => {
     setConfig((prev) => {
-      const newDoctor = { name: load, color: color, id: load };
-      console.log({ ...prev, doctors: [...prev.doctors, newDoctor] });
+      const newDoctor = createNewDoctor(load, color);
+      // console.log({ ...prev, doctors: [...prev.doctors, newDoctor] });
       return { ...prev, doctors: [...prev.doctors, newDoctor], accumulated: 0 };
     });
   };
@@ -145,6 +146,7 @@ export function DoctorSection({ config, setConfig }) {
           setConfig={setConfig}
           name={doctor.name}
           color={doctor.color}
+          i
         />
       ))}
     </>
@@ -160,14 +162,16 @@ export function DoctorData({ name, color, setConfig }) {
   const componentRef = useRef();
   const pickerRef = useRef();
 
-  const handleUpdateDoctorName = (e) => {
+  const handleUpdateDoctorName = () => {
     const newDoctorName = nameRef.current.value;
     setConfig((prev) => {
-      const index = prev.doctors.findIndex((doctor) => {
-        return name === doctor.name;
-      });
+      const index = prev.doctors.findIndex((doctor) => doctor.name === name);
       const newDoctors = [...prev.doctors];
-      newDoctors[index].name = newDoctorName;
+      newDoctors[index] = createNewDoctor(
+        newDoctorName,
+        newDoctors[index].color,
+        newDoctors[index].slots
+      );
       return { ...prev, doctors: newDoctors };
     });
   };
@@ -186,7 +190,7 @@ export function DoctorData({ name, color, setConfig }) {
       if (
         isRenaming &&
         componentRef.current &&
-        !componentRef.current.contains(event.target)
+        !componentRef.current.contains(e.target)
       ) {
         setIsRenaming(false);
         handleUpdateDoctorName();
@@ -242,10 +246,11 @@ export function DoctorData({ name, color, setConfig }) {
                   return doctor.name === name;
                 });
                 const newDoctors = [...prev.doctors];
-                newDoctors[targetedDoctorIndex] = {
-                  name: name,
-                  color: color.hex,
-                };
+                newDoctors[targetedDoctorIndex] = createNewDoctor(
+                  name,
+                  color.hex
+                );
+
                 return { ...prev, doctors: newDoctors };
               });
             }}

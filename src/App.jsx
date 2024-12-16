@@ -1,10 +1,14 @@
 import EditingPage from "./EditPage";
-
 import TablePage from "./TablePage";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { generateMonthSlots, scheduleSlots } from "./utils/slotCreation";
-
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+  clearLocalStorage,
+} from "./utils/localStorage";
+import { MOCKDOCS } from "./utils/static";
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
 
@@ -13,56 +17,20 @@ function App() {
 
   const [config, setConfig] = useState({
     scheduleStart: { year: currentYear, month: currentMonth },
-    doctors: [
-      {
-        name: "Doctor 1",
-        color: "violet",
-        slots: [],
-      },
-      {
-        name: "Doctor 2",
-        color: "magenta",
-        slots: [],
-      },
-      {
-        name: "Doctor 3",
-        color: "red",
-        slots: [],
-      },
-      {
-        name: "Doctor 4",
-        color: "orange",
-        slots: [],
-      },
-      {
-        name: "Doctor 5",
-        color: "purple",
-        slots: [],
-      },
-      {
-        name: "Doctor 6",
-        color: "slategray",
-        slots: [],
-      },
-      {
-        name: "Doctor 7",
-        color: "yellow",
-        slots: [],
-      },
-      {
-        name: "Doctor 8",
-        color: "slateblue",
-        slots: [],
-      },
-    ],
+    doctors: MOCKDOCS,
   });
 
-  //this
+  // Call clearLocalStorage whenever config changes
+  useEffect(() => {
+    console.log("Config changed, clearing localStorage...");
+    clearLocalStorage(["tableSlots", "tableDoctors"]);
+  }, [config]); // Dependency array ensures this runs only when `config` changes
+
   const doctors = config.doctors.map((doctor) => ({
     ...doctor,
     slots: doctor.slots.map((slot) => ({ ...slot })),
   }));
-  //this
+
   const initialSlots = generateMonthSlots(
     config.scheduleStart.year,
     config.scheduleStart.month
