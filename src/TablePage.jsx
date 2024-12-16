@@ -1,8 +1,24 @@
 import { useState, useEffect } from "react";
 import { TBody, THead } from "./TableComponents";
 export default function TablePage({ initialSlots, doctors }) {
-  const [tableSlots, setTableSlots] = useState(initialSlots);
-  const [tableDoctors, setTableDoctors] = useState(doctors);
+  const [tableSlots, setTableSlots] = useState(() => {
+    const savedSlots = loadFromLocalStorage("tableSlots");
+    return savedSlots || initialSlots; // Use saved data or initial data
+  });
+
+  const [tableDoctors, setTableDoctors] = useState(() => {
+    const savedDoctors = loadFromLocalStorage("tableDoctors");
+    return savedDoctors || doctors; // Use saved data or initial data
+  });
+
+  // Save to localStorage whenever tableSlots or tableDoctors changes
+  useEffect(() => {
+    saveToLocalStorage("tableSlots", tableSlots);
+  }, [tableSlots]);
+
+  useEffect(() => {
+    saveToLocalStorage("tableDoctors", tableDoctors);
+  }, [tableDoctors]);
 
   const handleRemoveDoctor = (slotId) => {
     setTableSlots((prev) => {
@@ -23,8 +39,6 @@ export default function TablePage({ initialSlots, doctors }) {
   };
 
   const handleAddDoctor = (slotId, doctorName) => {
-    console.log("TRYNA ADD ", slotId, "To ", doctorName);
-
     let updatedSlot;
 
     setTableSlots((prev) => {
@@ -91,4 +105,22 @@ export const Table = ({
       />
     </table>
   );
+};
+
+const saveToLocalStorage = (key, data) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error("Error saving to localStorage", error);
+  }
+};
+
+const loadFromLocalStorage = (key) => {
+  try {
+    const savedData = localStorage.getItem(key);
+    return savedData ? JSON.parse(savedData) : null;
+  } catch (error) {
+    console.error("Error loading from localStorage", error);
+    return null;
+  }
 };
