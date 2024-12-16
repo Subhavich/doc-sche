@@ -73,17 +73,6 @@ export default function TablePage({ initialSlots, doctors }) {
         handleRemoveDoctor={handleRemoveDoctor}
         handleAddDoctor={handleAddDoctor}
       />
-      <h3>Table Page</h3>
-      <div>
-        <h3>Assigned Slots</h3>
-      </div>
-      <div>
-        {initialSlots.map((slot) => (
-          <p>
-            {slot.id} {slot.doctor}
-          </p>
-        ))}
-      </div>
     </>
   );
 }

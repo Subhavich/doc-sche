@@ -2,58 +2,58 @@ import { DAYS, WORKTYPES } from "./utils/static";
 import { deriveWeeks } from "./utils/rendering";
 import { canAddSlot } from "./utils/slotValidation";
 import { useMemo, useState } from "react";
-export const THead = () => {
+
+export const Pagination = ({ pages, setPage }) => {
   return (
-    <thead>
-      <tr>
-        <th>"PLACEHOLDERS"</th>
-        {DAYS.map((day) => (
-          <th>{day.toUpperCase()}</th>
-        ))}
-      </tr>
-    </thead>
+    <ul>
+      {Array.from({ length: pages }).map((item, ind) => (
+        <button onClick={() => setPage(ind)}>{ind}</button>
+      ))}
+    </ul>
   );
 };
-
 export const TBody = ({
   slots,
   doctors,
   handleRemoveDoctor,
   handleAddDoctor,
 }) => {
-  const page = 1;
+  const [page, setPage] = useState(0);
   const mockWeek = deriveWeeks(slots)[page];
 
   return (
-    <tbody>
-      {WORKTYPES.map((worktype) => (
-        <tr>
-          <th>{worktype}</th>
-          {DAYS.map((day, ind) => {
-            console.log(worktype);
-            const targetedSlot = mockWeek[ind].slots.filter((slot) => {
-              return slot.type === worktype;
-            });
-            return (
-              <td>
-                {targetedSlot.map((slot) => (
-                  <>
-                    <DoctorButton
-                      doctorName={slot.doctor ? slot.doctor : "Unassigned"}
-                      id={slot.id}
-                      handleRemoveDoctor={handleRemoveDoctor}
-                      handleAddDoctor={handleAddDoctor}
-                      slots={slots}
-                      doctors={doctors}
-                    />
-                  </>
-                ))}
-              </td>
-            );
-          })}
-        </tr>
-      ))}
-    </tbody>
+    <>
+      <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
+      <tbody>
+        {WORKTYPES.map((worktype) => (
+          <tr>
+            <th>{worktype}</th>
+            {DAYS.map((day, ind) => {
+              console.log(worktype);
+              const targetedSlot = mockWeek[ind].slots.filter((slot) => {
+                return slot.type === worktype;
+              });
+              return (
+                <td>
+                  {targetedSlot.map((slot) => (
+                    <>
+                      <DoctorButton
+                        doctorName={slot.doctor ? slot.doctor : "Unassigned"}
+                        id={slot.id}
+                        handleRemoveDoctor={handleRemoveDoctor}
+                        handleAddDoctor={handleAddDoctor}
+                        slots={slots}
+                        doctors={doctors}
+                      />
+                    </>
+                  ))}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </>
   );
 };
 
@@ -104,11 +104,6 @@ export const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
     });
   }, [doctors, thisSlot]);
 
-  console.log(
-    "Filtered Doctors:",
-    filteredDoctors.sort((a, b) => a.name.localeCompare(b.name))
-  );
-
   return (
     <ul>
       {filteredDoctors
@@ -123,5 +118,18 @@ export const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
           </button>
         ))}
     </ul>
+  );
+};
+
+export const THead = () => {
+  return (
+    <thead>
+      <tr>
+        <th>"PLACEHOLDERS"</th>
+        {DAYS.map((day) => (
+          <th>{day.toUpperCase()}</th>
+        ))}
+      </tr>
+    </thead>
   );
 };
