@@ -2,24 +2,30 @@ import { useState } from "react";
 import { TBody, THead } from "./TableComponents";
 export default function TablePage({ initialSlots, doctors }) {
   const [tableSlots, setTableSlots] = useState(initialSlots);
+  const [tableDoctors, setTableDoctors] = useState(doctors);
 
   const handleRemoveDoctor = (slotId) => {
     setTableSlots((prev) => {
-      console.log("In handle remove doctor", prev);
       const targetedSlot = [...prev].find((slot) => slot.id === slotId);
+      console.log(targetedSlot);
       const newSlot = { ...targetedSlot, doctor: undefined };
       const filteredSlots = [...prev].filter((slot) => slot.id !== slotId);
       const newSlots = [...filteredSlots, newSlot];
       return newSlots;
     });
-  };
 
-  const handleAddDoctor = (slotId) => {};
+    setTableDoctors((prevDoctors) =>
+      prevDoctors.map((doctor) => ({
+        ...doctor,
+        slots: doctor.slots.filter((slot) => slot.id !== slotId),
+      }))
+    );
+  };
 
   return (
     <>
       <Table
-        doctors={doctors}
+        doctors={tableDoctors}
         slots={tableSlots}
         handleRemoveDoctor={handleRemoveDoctor}
       />

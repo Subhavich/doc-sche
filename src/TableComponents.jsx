@@ -1,6 +1,7 @@
 import { DAYS, WORKTYPES } from "./utils/static";
 import { deriveWeeks } from "./utils/rendering";
 import { canAddSlot } from "./utils/slotValidation";
+import { useMemo } from "react";
 export const THead = () => {
   return (
     <thead>
@@ -72,14 +73,23 @@ export const DoctorButton = ({
 };
 
 export const DoctorList = ({ slots, doctors, id }) => {
-  const thisSlot = slots.find((slot) => slot.id === id);
-  console.log("ID being checked:", id);
-  console.log("Slot corresponding to ID:", thisSlot);
+  const thisSlot = useMemo(
+    () => slots.find((slot) => slot.id === id),
+    [slots, id]
+  );
 
-  const filteredDoctors = doctors.filter((doctor) => {
-    const result = canAddSlot(doctor, thisSlot);
-    return result;
-  });
+  console.log(slots);
+  //   const thisSlot = slots.find((slot) => slot.id === id);
+
+  //   const filteredDoctors = doctors.filter((doctor) => {
+  //     const result = canAddSlot(doctor, thisSlot);
+  //     return result;
+  //   });
+
+  const filteredDoctors = useMemo(() => {
+    if (!thisSlot) return [];
+    return doctors.filter((doctor) => canAddSlot(doctor, thisSlot));
+  }, [doctors, thisSlot, slots]);
 
   return (
     <ul>
