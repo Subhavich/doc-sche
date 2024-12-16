@@ -1,7 +1,7 @@
 import { DAYS, WORKTYPES } from "./utils/static";
 import { deriveWeeks } from "./utils/rendering";
 import { canAddSlot } from "./utils/slotValidation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 export const THead = () => {
   return (
     <thead>
@@ -15,7 +15,12 @@ export const THead = () => {
   );
 };
 
-export const TBody = ({ slots, doctors, handleRemoveDoctor }) => {
+export const TBody = ({
+  slots,
+  doctors,
+  handleRemoveDoctor,
+  handleAddDoctor,
+}) => {
   const page = 1;
   const mockWeek = deriveWeeks(slots)[page];
 
@@ -37,6 +42,7 @@ export const TBody = ({ slots, doctors, handleRemoveDoctor }) => {
                       doctorName={slot.doctor ? slot.doctor : "Unassigned"}
                       id={slot.id}
                       handleRemoveDoctor={handleRemoveDoctor}
+                      handleAddDoctor={handleAddDoctor}
                       slots={slots}
                       doctors={doctors}
                     />
@@ -57,7 +63,9 @@ export const DoctorButton = ({
   doctorName,
   id,
   handleRemoveDoctor,
+  handleAddDoctor,
 }) => {
+  const [showList, setShowList] = useState(false);
   return (
     <>
       <button
@@ -67,34 +75,47 @@ export const DoctorButton = ({
       >
         {doctorName}
       </button>
-      <DoctorList slots={slots} doctors={doctors} id={id} />
+      <button onClick={() => setShowList(!showList)}>Show Doctor's List</button>
+      {showList && (
+        <DoctorList
+          slots={slots}
+          doctors={doctors}
+          id={id}
+          handleAddDoctor={handleAddDoctor}
+        />
+      )}
     </>
   );
 };
 
-export const DoctorList = ({ slots, doctors, id }) => {
+export const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
   const thisSlot = useMemo(
     () => slots.find((slot) => slot.id === id),
     [slots, id]
   );
 
-  console.log(slots);
-  //   const thisSlot = slots.find((slot) => slot.id === id);
-
-  //   const filteredDoctors = doctors.filter((doctor) => {
-  //     const result = canAddSlot(doctor, thisSlot);
-  //     return result;
-  //   });
-
   const filteredDoctors = useMemo(() => {
     if (!thisSlot) return [];
-    return doctors.filter((doctor) => canAddSlot(doctor, thisSlot));
-  }, [doctors, thisSlot, slots]);
+    return doctors.filter((doctor) => {
+      // Exclude doctors already assigned to this slot
+      if (thisSlot.doctor === doctor.name) return false;
+
+      // Use `canAddSlot` to validate if the doctor can take the slot
+      return canAddSlot(doctor, thisSlot);
+    });
+  }, [doctors, thisSlot]);
+
+  console.log("Filtered Doctors:", filteredDoctors);
 
   return (
     <ul>
       {filteredDoctors.map((doctor) => (
-        <button key={doctor.name}>{doctor.name}</button>
+        <button
+          key={doctor.name}
+          onClick={() => handleAddDoctor(id, doctor.name)}
+        >
+          {doctor.name}
+        </button>
       ))}
     </ul>
   );
