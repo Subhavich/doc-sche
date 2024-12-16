@@ -1,0 +1,10 @@
+table,
+th,
+td {
+  border: 1px solid;
+}
+
+.list-btn {
+  background-color: slategray;
+  color: antiquewhite;
+}

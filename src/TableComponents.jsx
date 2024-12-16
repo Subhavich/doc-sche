@@ -75,8 +75,7 @@ export const DoctorButton = ({
       >
         {doctorName}
       </button>
-      <button onClick={() => setShowList(!showList)}>Show Doctor's List</button>
-      {showList && (
+      {doctorName === "Unassigned" && (
         <DoctorList
           slots={slots}
           doctors={doctors}
@@ -105,18 +104,24 @@ export const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
     });
   }, [doctors, thisSlot]);
 
-  console.log("Filtered Doctors:", filteredDoctors);
+  console.log(
+    "Filtered Doctors:",
+    filteredDoctors.sort((a, b) => a.name.localeCompare(b.name))
+  );
 
   return (
     <ul>
-      {filteredDoctors.map((doctor) => (
-        <button
-          key={doctor.name}
-          onClick={() => handleAddDoctor(id, doctor.name)}
-        >
-          {doctor.name}
-        </button>
-      ))}
+      {filteredDoctors
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((doctor) => (
+          <button
+            key={doctor.name}
+            onClick={() => handleAddDoctor(id, doctor.name)}
+            className="list-btn"
+          >
+            {doctor.name}
+          </button>
+        ))}
     </ul>
   );
 };
