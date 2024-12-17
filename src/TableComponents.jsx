@@ -66,11 +66,15 @@ export const DoctorButton = ({
   handleAddDoctor,
 }) => {
   const [showList, setShowList] = useState(false);
+  const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
   return (
     <>
       <button
         onClick={() => {
           handleRemoveDoctor(id);
+        }}
+        style={{
+          backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}
       >
         {doctorName}
