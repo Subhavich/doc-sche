@@ -23,10 +23,25 @@ function App() {
   const [initialSlots, setInitialSlots] = useState(null); // Hold slots until button press
   const [doctors, setDoctors] = useState(null); // Hold doctors until button press
 
-  const [config, setConfig] = useState({
-    scheduleStart: { year: currentYear, month: currentMonth },
-    doctors: MOCKDOCS,
+  // const [config, setConfig] = useState({
+  //   scheduleStart: { year: currentYear, month: currentMonth },
+  //   doctors: MOCKDOCS,
+  // });
+
+  const [config, setConfig] = useState(() => {
+    const savedConfig = loadFromLocalStorage("config");
+    return (
+      savedConfig || {
+        scheduleStart: { year: currentYear, month: currentMonth },
+        doctors: MOCKDOCS,
+      }
+    );
   });
+
+  useEffect(() => {
+    console.log("Change Detected");
+    saveToLocalStorage("config", config);
+  }, [config]);
 
   const handleGenerateSchedule = () => {
     // Generate slots and doctors when button is pressed
@@ -60,10 +75,21 @@ function App() {
 
   return (
     <div>
-      <button>Switch display</button>
       <button
         onClick={() => {
-          clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
+          setDisplay((prev) => !prev);
+        }}
+      >
+        Switch display
+      </button>
+      <button
+        onClick={() => {
+          clearLocalStorage([
+            "tableSlots",
+            "tableDoctors",
+            "isGenerated",
+            "config",
+          ]);
           console.log("Local storage cleared.");
         }}
       >

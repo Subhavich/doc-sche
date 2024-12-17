@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
 import { createNewDoctor } from "./utils/doctorCreation";
 import { MONTHS } from "./utils/static";
+import { clearLocalStorage } from "./utils/localStorage";
 // Editing Page
 
 export default function EditingPage({ config, setConfig, isGenerated }) {
@@ -50,11 +51,17 @@ export default function EditingPage({ config, setConfig, isGenerated }) {
         <DoctorInput config={config} handleAddDoctor={handleAddDoctor} />
       )}
       {generated && (
-        <button onClick={() => setGenerated((prev) => !prev)}>
+        <button
+          onClick={() => {
+            clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
+            console.log("Local storage cleared.");
+            setGenerated((prev) => !prev);
+          }}
+        >
           Add Doctors (Table Will Be Recreated)
         </button>
       )}
-      {!generated && (
+      {!generated && isGenerated && (
         <button onClick={() => setGenerated((prev) => !prev)}>
           Regenerate Table
         </button>
