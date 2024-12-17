@@ -244,12 +244,16 @@ export function DoctorData({
       return { ...prev, doctors: updatedDoctors };
     });
 
-    // Step 2: Update tableDoctors
-    setTableDoctors((prevDoctors) =>
-      prevDoctors.map((doctor) =>
-        doctor.name === name ? { ...doctor, color: newColor } : doctor
-      )
-    );
+    // Step 2: Update tableDoctors only if they exist
+    if (tableDoctors) {
+      setTableDoctors((prevDoctors) =>
+        prevDoctors.map((doctor) =>
+          doctor.name === name ? { ...doctor, color: newColor } : doctor
+        )
+      );
+    } else {
+      console.log("Table has not been generated yet. Only config updated.");
+    }
   };
 
   const handleDeleteDoctor = () => {

@@ -23,15 +23,16 @@ export const WORKTYPES = [
   "Med",
   "NonMed",
 ];
-
 export const MOCKDOCS = [
-  createNewDoctor("Byleth", "lightblue"),
-  createNewDoctor("El", "salmon"),
-  createNewDoctor("Hilda", "lightpink"),
-  createNewDoctor("Claude", "lightyellow"),
-  createNewDoctor("Lysithea", "plum"),
-  createNewDoctor("Dimitri", "skyblue"),
-  createNewDoctor("Edelgard", "gainsboro"),
-  createNewDoctor("Petra", "lightgreen"),
-  createNewDoctor("Felix", "peachpuff"),
+  createNewDoctor("Byleth", "#ADD8E6"), // Light Blue
+  createNewDoctor("Hilda", "#FFB6C1"), // Light Pink
+  createNewDoctor("Claude", "#FAFAD2"), // Light Yellow
+  createNewDoctor("Lysithea", "#DDA0DD"), // Plum
+  createNewDoctor("Dimitri", "#87CEEB"), // Sky Blue
+  createNewDoctor("Edelgard", "#DCDCDC"), // Gainsboro
+  createNewDoctor("Petra", "#90EE90"), // Light Green
+  createNewDoctor("Felix", "#FFDAB9"), // Peach Puff
+  createNewDoctor("Marianne", "#B0C4DE"), // Light Steel Blue
+  createNewDoctor("Caspar", "#E9967A"), // Light Coral
+  createNewDoctor("Ingrid", "#B0E0E6"), // Powder Blue
 ];
