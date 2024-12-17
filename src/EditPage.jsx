@@ -201,9 +201,13 @@ export function DoctorData({
   const nameRef = useRef();
   const componentRef = useRef();
   const pickerRef = useRef();
-
+  useEffect(() => {
+    setHex(color);
+  }, [color]);
   const handleUpdateDoctorName = () => {
     const newDoctorName = nameRef.current.value;
+
+    // Step 1: Update the doctor name in the config state
     setConfig((prev) => {
       const index = prev.doctors.findIndex((doctor) => doctor.name === name);
       const newDoctors = [...prev.doctors];
@@ -215,25 +219,24 @@ export function DoctorData({
       return { ...prev, doctors: newDoctors };
     });
 
-    // Update tableDoctors
-    setTableDoctors((prevDoctors) => {
-      const updatedTableDoctors = prevDoctors.map((doctor) =>
-        doctor.name === name
-          ? { ...doctor, name: newDoctorName } // Update the doctor's name
-          : doctor
-      );
-      return updatedTableDoctors;
-    });
+    // Step 2: Only update tableDoctors and tableSlots if table has been generated
+    if (tableDoctors && tableSlots) {
+      setTableDoctors((prevDoctors) => {
+        const updatedTableDoctors = prevDoctors.map((doctor) =>
+          doctor.name === name ? { ...doctor, name: newDoctorName } : doctor
+        );
+        return updatedTableDoctors;
+      });
 
-    // Update tableSlots (doctor names in slots)
-    setTableSlots((prevSlots) => {
-      const updatedTableSlots = prevSlots.map((slot) =>
-        slot.doctor === name
-          ? { ...slot, doctor: newDoctorName } // Update slot doctor reference
-          : slot
-      );
-      return updatedTableSlots;
-    });
+      setTableSlots((prevSlots) => {
+        const updatedTableSlots = prevSlots.map((slot) =>
+          slot.doctor === name ? { ...slot, doctor: newDoctorName } : slot
+        );
+        return updatedTableSlots;
+      });
+    } else {
+      console.log("Table not generated yet. Only config updated.");
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -330,7 +333,25 @@ export function DoctorData({
       >
         {isRenaming ? "Confirm" : "Rename Doctor"}
       </button>
-      <button>Delete</button>
+      <button
+        onClick={() => {
+          // Step 1: Update config to remove the doctor
+          setConfig((prev) => {
+            const updatedDoctors = prev.doctors.filter(
+              (doctor) => doctor.name !== name
+            );
+            return { ...prev, doctors: updatedDoctors };
+          });
+
+          // Step 2: Clear tableSlots and tableDoctors (reset mechanism)
+          clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
+          setTableSlots(null);
+          setTableDoctors(null);
+          console.log("Doctor deleted. Table will be recreated.");
+        }}
+      >
+        Delete
+      </button>
     </div>
   );
 }
