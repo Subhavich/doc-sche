@@ -201,47 +201,71 @@ export function DoctorData({
   const nameRef = useRef();
   const componentRef = useRef();
   const pickerRef = useRef();
+
   useEffect(() => {
     setHex(color);
   }, [color]);
+
   const handleUpdateDoctorName = () => {
     const newDoctorName = nameRef.current.value;
 
     // Step 1: Update the doctor name in the config state
     setConfig((prev) => {
-      const index = prev.doctors.findIndex((doctor) => doctor.name === name);
-      const newDoctors = [...prev.doctors];
-      newDoctors[index] = createNewDoctor(
-        newDoctorName,
-        newDoctors[index].color,
-        newDoctors[index].slots
+      const updatedDoctors = prev.doctors.map((doctor) =>
+        doctor.name === name ? { ...doctor, name: newDoctorName } : doctor
       );
-      return { ...prev, doctors: newDoctors };
+      return { ...prev, doctors: updatedDoctors };
     });
 
-    // Step 2: Only update tableDoctors and tableSlots if table has been generated
+    // Step 2: Update tableDoctors and tableSlots if table exists
     if (tableDoctors && tableSlots) {
-      setTableDoctors((prevDoctors) => {
-        const updatedTableDoctors = prevDoctors.map((doctor) =>
+      setTableDoctors((prevDoctors) =>
+        prevDoctors.map((doctor) =>
           doctor.name === name ? { ...doctor, name: newDoctorName } : doctor
-        );
-        return updatedTableDoctors;
-      });
+        )
+      );
 
-      setTableSlots((prevSlots) => {
-        const updatedTableSlots = prevSlots.map((slot) =>
+      setTableSlots((prevSlots) =>
+        prevSlots.map((slot) =>
           slot.doctor === name ? { ...slot, doctor: newDoctorName } : slot
-        );
-        return updatedTableSlots;
-      });
-    } else {
-      console.log("Table not generated yet. Only config updated.");
+        )
+      );
     }
+  };
+
+  const handleUpdateDoctorColor = (newColor) => {
+    setHex(newColor);
+
+    // Step 1: Update color in config state
+    setConfig((prev) => {
+      const updatedDoctors = prev.doctors.map((doctor) =>
+        doctor.name === name ? { ...doctor, color: newColor } : doctor
+      );
+      return { ...prev, doctors: updatedDoctors };
+    });
+
+    // Step 2: Update tableDoctors
+    setTableDoctors((prevDoctors) =>
+      prevDoctors.map((doctor) =>
+        doctor.name === name ? { ...doctor, color: newColor } : doctor
+      )
+    );
+  };
+
+  const handleDeleteDoctor = () => {
+    setConfig((prev) => ({
+      ...prev,
+      doctors: prev.doctors.filter((doctor) => doctor.name !== name),
+    }));
+
+    // Step 2: Clear tableSlots and tableDoctors (reset mechanism)
+    clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
+    setTableSlots(null);
+    setTableDoctors(null);
   };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      // When Enter is pressed
       setIsRenaming(false);
       handleUpdateDoctorName();
     }
@@ -249,7 +273,6 @@ export function DoctorData({
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      // Close color picker only when clicking outside the pickerRef
       if (
         isPickerVisible &&
         pickerRef.current &&
@@ -258,7 +281,6 @@ export function DoctorData({
         setIsPicker(false);
       }
 
-      // Close renaming input
       if (
         isRenaming &&
         componentRef.current &&
@@ -274,8 +296,6 @@ export function DoctorData({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isPickerVisible, isRenaming]);
-
-  // console.log(setConfig);
 
   return (
     <div
@@ -294,34 +314,20 @@ export function DoctorData({
 
       <div
         onClick={() => setIsPicker((prev) => !prev)}
-        style={{ width: "32px", height: "32px", backgroundColor: hex }}
+        style={{
+          width: "32px",
+          height: "32px",
+          backgroundColor: hex,
+        }}
       ></div>
-      {isPickerVisible ? (
-        <>
-          <Compact
-            ref={pickerRef}
-            style={{ backgroundColor: "#fff" }}
-            color={hex}
-            onChange={(color) => {
-              setHex(color.hex);
-              setConfig((prev) => {
-                const targetedDoctorIndex = prev.doctors.findIndex((doctor) => {
-                  return doctor.name === name;
-                });
-                const newDoctors = [...prev.doctors];
-                newDoctors[targetedDoctorIndex] = createNewDoctor(
-                  name,
-                  color.hex
-                );
 
-                return { ...prev, doctors: newDoctors };
-              });
-            }}
-          />
-
-          <button onClick={() => setIsPicker((prev) => !prev)}>Back</button>
-        </>
-      ) : null}
+      {isPickerVisible && (
+        <Compact
+          ref={pickerRef}
+          color={hex}
+          onChange={(color) => handleUpdateDoctorColor(color.hex)}
+        />
+      )}
 
       <button
         onClick={() => {
@@ -333,25 +339,8 @@ export function DoctorData({
       >
         {isRenaming ? "Confirm" : "Rename Doctor"}
       </button>
-      <button
-        onClick={() => {
-          // Step 1: Update config to remove the doctor
-          setConfig((prev) => {
-            const updatedDoctors = prev.doctors.filter(
-              (doctor) => doctor.name !== name
-            );
-            return { ...prev, doctors: updatedDoctors };
-          });
 
-          // Step 2: Clear tableSlots and tableDoctors (reset mechanism)
-          clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
-          setTableSlots(null);
-          setTableDoctors(null);
-          console.log("Doctor deleted. Table will be recreated.");
-        }}
-      >
-        Delete
-      </button>
+      <button onClick={handleDeleteDoctor}>Delete</button>
     </div>
   );
 }
