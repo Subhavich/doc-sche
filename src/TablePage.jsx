@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
 import { TBody, THead } from "./TableComponents";
 import { saveToLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
-export default function TablePage({ initialSlots, doctors }) {
-  const [tableSlots, setTableSlots] = useState(() => {
-    const savedSlots = loadFromLocalStorage("tableSlots");
-    return savedSlots || initialSlots; // Use saved data or initial data
-  });
-
-  const [tableDoctors, setTableDoctors] = useState(() => {
-    const savedDoctors = loadFromLocalStorage("tableDoctors");
-    return savedDoctors || doctors; // Use saved data or initial data
-  });
-
+export default function TablePage({
+  tableSlots,
+  setTableSlots,
+  tableDoctors,
+  setTableDoctors,
+}) {
   // Save to localStorage whenever tableSlots or tableDoctors changes
   useEffect(() => {
     saveToLocalStorage("tableSlots", tableSlots);

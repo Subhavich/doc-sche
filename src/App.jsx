@@ -20,8 +20,18 @@ function App() {
     return isGenerated ? false : true; // If true, show TablePage; else EditingPage
   });
 
-  const [initialSlots, setInitialSlots] = useState(null); // Hold slots until button press
-  const [doctors, setDoctors] = useState(null); // Hold doctors until button press
+  const [initialSlots, setInitialSlots] = useState(null);
+  const [doctors, setDoctors] = useState(null);
+
+  const [tableSlots, setTableSlots] = useState(() => {
+    const savedSlots = loadFromLocalStorage("tableSlots");
+    return savedSlots || initialSlots; // Use saved data or initial data
+  });
+
+  const [tableDoctors, setTableDoctors] = useState(() => {
+    const savedDoctors = loadFromLocalStorage("tableDoctors");
+    return savedDoctors || doctors; // Use saved data or initial data
+  });
 
   const [config, setConfig] = useState(() => {
     const savedConfig = loadFromLocalStorage("config");
@@ -52,9 +62,15 @@ function App() {
 
     scheduleSlots(processedDoctors, generatedSlots);
 
+    // Use the values directly to update states
     const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
-    setInitialSlots(deepCopy(generatedSlots));
-    setDoctors(deepCopy(processedDoctors));
+    const updatedSlots = deepCopy(generatedSlots);
+    const updatedDoctors = deepCopy(processedDoctors);
+
+    setInitialSlots(updatedSlots);
+    setDoctors(updatedDoctors);
+    setTableSlots(updatedSlots); // Directly use updated values
+    setTableDoctors(updatedDoctors);
 
     // Save "isGenerated" to localStorage and change display to TablePage
     saveToLocalStorage("isGenerated", true);
@@ -97,7 +113,12 @@ function App() {
           isGenerated={loadFromLocalStorage("isGenerated")}
         />
       ) : (
-        <TablePage initialSlots={initialSlots} doctors={doctors} />
+        <TablePage
+          tableDoctors={tableDoctors}
+          setTableDoctors={setTableDoctors}
+          tableSlots={tableSlots}
+          setTableSlots={setTableSlots}
+        />
       )}
       {/* Button to generate schedule and switch display */}
       {display && !loadFromLocalStorage("isGenerated") && (
