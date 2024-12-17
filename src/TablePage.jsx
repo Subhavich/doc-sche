@@ -6,7 +6,11 @@ export default function TablePage({
   setTableSlots,
   tableDoctors,
   setTableDoctors,
+  isGenerated,
 }) {
+  if (!isGenerated) {
+    return <p>Please Gen Schedule First</p>;
+  }
   // Save to localStorage whenever tableSlots or tableDoctors changes
   useEffect(() => {
     saveToLocalStorage("tableSlots", tableSlots);

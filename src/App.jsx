@@ -118,6 +118,7 @@ function App() {
           setTableDoctors={setTableDoctors}
           tableSlots={tableSlots}
           setTableSlots={setTableSlots}
+          isGenerated={loadFromLocalStorage("isGenerated")}
         />
       )}
       {/* Button to generate schedule and switch display */}
