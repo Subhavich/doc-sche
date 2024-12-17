@@ -23,11 +23,6 @@ function App() {
   const [initialSlots, setInitialSlots] = useState(null); // Hold slots until button press
   const [doctors, setDoctors] = useState(null); // Hold doctors until button press
 
-  // const [config, setConfig] = useState({
-  //   scheduleStart: { year: currentYear, month: currentMonth },
-  //   doctors: MOCKDOCS,
-  // });
-
   const [config, setConfig] = useState(() => {
     const savedConfig = loadFromLocalStorage("config");
     return (

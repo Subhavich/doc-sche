@@ -275,7 +275,7 @@ export function DoctorData({ name, color, setConfig }) {
           setIsRenaming((prev) => !prev);
         }}
       >
-        Rename Doctor
+        {isRenaming ? "Confirm" : "Rename Doctor"}
       </button>
       <button>Delete</button>
     </div>
