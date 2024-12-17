@@ -2,9 +2,6 @@ import { useState, useEffect } from "react";
 import { TBody, THead } from "./TableComponents";
 import { saveToLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
 export default function TablePage({ initialSlots, doctors }) {
-  if (!initialSlots || !doctors) {
-    return <p>No Data Yet</p>;
-  }
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
     return savedSlots || initialSlots; // Use saved data or initial data
@@ -69,6 +66,9 @@ export default function TablePage({ initialSlots, doctors }) {
     });
   };
 
+  if (!tableDoctors || !tableSlots) {
+    return <p>No Data Yet</p>;
+  }
   return (
     <>
       <Table

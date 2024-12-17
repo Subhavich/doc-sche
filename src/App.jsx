@@ -74,8 +74,7 @@ function App() {
       {display ? (
         <EditingPage config={config} setConfig={setConfig} />
       ) : (
-        initialSlots &&
-        doctors && <TablePage initialSlots={initialSlots} doctors={doctors} />
+        <TablePage initialSlots={initialSlots} doctors={doctors} />
       )}
       {/* Button to generate schedule and switch display */}
       {display && (
