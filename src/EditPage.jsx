@@ -1,23 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
 import { createNewDoctor } from "./utils/doctorCreation";
+import { MONTHS } from "./utils/static";
 // Editing Page
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
-export default function EditingPage({ config, setConfig }) {
+export default function EditingPage({ config, setConfig, isGenerated }) {
   const handleStartChange = (load, e) => {
     setConfig((pv) => {
       const newValue = e.target.value;
@@ -36,6 +23,7 @@ export default function EditingPage({ config, setConfig }) {
     });
   };
 
+  const [generated, setGenerated] = useState(isGenerated);
   return (
     <>
       {/* Just for Logging */}
@@ -58,7 +46,19 @@ export default function EditingPage({ config, setConfig }) {
       />
       <p>Add or Delete doctors</p>
       <DoctorSection config={config} setConfig={setConfig} />
-      <DoctorInput config={config} handleAddDoctor={handleAddDoctor} />
+      {!generated && (
+        <DoctorInput config={config} handleAddDoctor={handleAddDoctor} />
+      )}
+      {generated && (
+        <button onClick={() => setGenerated((prev) => !prev)}>
+          Add Doctors (Table Will Be Recreated)
+        </button>
+      )}
+      {!generated && (
+        <button onClick={() => setGenerated((prev) => !prev)}>
+          Regenerate Table
+        </button>
+      )}
     </>
   );
 }

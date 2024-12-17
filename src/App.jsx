@@ -60,9 +60,7 @@ function App() {
 
   return (
     <div>
-      <button onClick={() => setDisplay((prev) => (prev ? null : true))}>
-        Switch display
-      </button>
+      <button>Switch display</button>
       <button
         onClick={() => {
           clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
@@ -72,14 +70,23 @@ function App() {
         Clear Local
       </button>
       {display ? (
-        <EditingPage config={config} setConfig={setConfig} />
+        <EditingPage
+          config={config}
+          setConfig={setConfig}
+          isGenerated={loadFromLocalStorage("isGenerated")}
+        />
       ) : (
         <TablePage initialSlots={initialSlots} doctors={doctors} />
       )}
       {/* Button to generate schedule and switch display */}
-      {display && (
+      {display && !loadFromLocalStorage("isGenerated") && (
         <button onClick={handleGenerateSchedule}>
           Generate Schedule and View Table
+        </button>
+      )}
+      {loadFromLocalStorage("isGenerated") && (
+        <button onClick={() => setDisplay((prev) => (prev ? null : true))}>
+          Switch Page
         </button>
       )}
     </div>
