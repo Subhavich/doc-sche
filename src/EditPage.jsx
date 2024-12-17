@@ -249,6 +249,15 @@ export function DoctorData({
 
   useEffect(() => {
     const handleClickOutside = (e) => {
+      // Close color picker only when clicking outside the pickerRef
+      if (
+        isPickerVisible &&
+        pickerRef.current &&
+        !pickerRef.current.contains(e.target)
+      ) {
+        setIsPicker(false);
+      }
+
       // Close renaming input
       if (
         isRenaming &&
@@ -258,23 +267,14 @@ export function DoctorData({
         setIsRenaming(false);
         handleUpdateDoctorName();
       }
-
-      // Close color picker
-      if (
-        isPickerVisible &&
-        pickerRef.current &&
-        !pickerRef.current.contains(e.target) &&
-        !componentRef.current.contains(e.target)
-      ) {
-        setIsPicker(false);
-      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isRenaming, isPickerVisible]);
+  }, [isPickerVisible, isRenaming]);
+
   // console.log(setConfig);
 
   return (
