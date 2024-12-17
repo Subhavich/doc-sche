@@ -5,7 +5,15 @@ import { MONTHS } from "./utils/static";
 import { clearLocalStorage } from "./utils/localStorage";
 // Editing Page
 
-export default function EditingPage({ config, setConfig, isGenerated }) {
+export default function EditingPage({
+  tableDoctors,
+  setTableDoctors,
+  tableSlots,
+  setTableSlots,
+  config,
+  setConfig,
+  isGenerated,
+}) {
   const handleStartChange = (load, e) => {
     setConfig((pv) => {
       const newValue = e.target.value;
@@ -46,7 +54,14 @@ export default function EditingPage({ config, setConfig, isGenerated }) {
         config={config}
       />
       <p>Add or Delete doctors</p>
-      <DoctorSection config={config} setConfig={setConfig} />
+      <DoctorSection
+        config={config}
+        setConfig={setConfig}
+        setTableDoctors={setTableDoctors}
+        setTableSlots={setTableSlots}
+        tableDoctors={tableDoctors}
+        tableSlots={tableSlots}
+      />
       {!generated && (
         <DoctorInput config={config} handleAddDoctor={handleAddDoctor} />
       )}
@@ -144,7 +159,14 @@ export function DoctorInput({ handleAddDoctor, setConfig }) {
   );
 }
 
-export function DoctorSection({ config, setConfig }) {
+export function DoctorSection({
+  config,
+  setConfig,
+  tableDoctors,
+  tableSlots,
+  setTableDoctors,
+  setTableSlots,
+}) {
   return (
     <>
       {config.doctors.map((doctor, ind) => (
@@ -153,14 +175,25 @@ export function DoctorSection({ config, setConfig }) {
           setConfig={setConfig}
           name={doctor.name}
           color={doctor.color}
-          i
+          setTableDoctors={setTableDoctors}
+          setTableSlots={setTableSlots}
+          tableDoctors={tableDoctors}
+          tableSlots={tableSlots}
         />
       ))}
     </>
   );
 }
 
-export function DoctorData({ name, color, setConfig }) {
+export function DoctorData({
+  name,
+  color,
+  setConfig,
+  tableDoctors,
+  tableSlots,
+  setTableDoctors,
+  setTableSlots,
+}) {
   const [isRenaming, setIsRenaming] = useState(false);
   const [hex, setHex] = useState(color);
   const [isPickerVisible, setIsPicker] = useState(false);
@@ -180,6 +213,26 @@ export function DoctorData({ name, color, setConfig }) {
         newDoctors[index].slots
       );
       return { ...prev, doctors: newDoctors };
+    });
+
+    // Update tableDoctors
+    setTableDoctors((prevDoctors) => {
+      const updatedTableDoctors = prevDoctors.map((doctor) =>
+        doctor.name === name
+          ? { ...doctor, name: newDoctorName } // Update the doctor's name
+          : doctor
+      );
+      return updatedTableDoctors;
+    });
+
+    // Update tableSlots (doctor names in slots)
+    setTableSlots((prevSlots) => {
+      const updatedTableSlots = prevSlots.map((slot) =>
+        slot.doctor === name
+          ? { ...slot, doctor: newDoctorName } // Update slot doctor reference
+          : slot
+      );
+      return updatedTableSlots;
     });
   };
 

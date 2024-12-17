@@ -111,6 +111,10 @@ function App() {
           config={config}
           setConfig={setConfig}
           isGenerated={loadFromLocalStorage("isGenerated")}
+          setTableDoctors={setTableDoctors}
+          setTableSlots={setTableSlots}
+          tableDoctors={tableDoctors}
+          tableSlots={tableSlots}
         />
       ) : (
         <TablePage
