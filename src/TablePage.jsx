@@ -12,7 +12,9 @@ export default function TablePage({
   if (!isGenerated) {
     return <p>Please Gen Schedule First</p>;
   }
-  // Save to localStorage whenever tableSlots or tableDoctors changes
+
+  const [selectedDoctor, setSelectedDoctor] = useState("Byleth");
+
   useEffect(() => {
     saveToLocalStorage("tableSlots", tableSlots);
   }, [tableSlots]);
@@ -23,20 +25,17 @@ export default function TablePage({
 
   const handleRemoveDoctor = (slotId) => {
     setTableSlots((prev) => {
-      const targetedSlot = [...prev].find((slot) => slot.id === slotId);
-      console.log(targetedSlot);
-      const newSlot = { ...targetedSlot, doctor: undefined };
-      const filteredSlots = [...prev].filter((slot) => slot.id !== slotId);
-      const newSlots = [...filteredSlots, newSlot];
-      return newSlots;
+      return prev.map((slot) =>
+        slot.id === slotId ? { ...slot, doctor: null } : slot
+      );
     });
 
-    setTableDoctors((prevDoctors) => [
-      ...prevDoctors.map((doctor) => ({
+    setTableDoctors((prevDoctors) =>
+      prevDoctors.map((doctor) => ({
         ...doctor,
         slots: doctor.slots.filter((slot) => slot.id !== slotId),
-      })),
-    ]);
+      }))
+    );
   };
 
   const handleAddDoctor = (slotId, doctorName) => {
@@ -69,6 +68,7 @@ export default function TablePage({
   if (!tableDoctors || !tableSlots) {
     return <p>No Data Yet</p>;
   }
+
   return (
     <>
       <Table
@@ -77,17 +77,45 @@ export default function TablePage({
         handleRemoveDoctor={handleRemoveDoctor}
         handleAddDoctor={handleAddDoctor}
       />
+      <Summary
+        selectedDoctor={selectedDoctor}
+        slots={tableSlots}
+        doctors={tableDoctors}
+      />
     </>
   );
 }
+const Summary = ({ selectedDoctor, slots }) => {
+  const [theSlotsOfThisDoctor, setTheSlotsOfThisDoctor] = useState([]);
 
-export const Table = ({
-  slots,
-  handleRemoveDoctor,
-  handleAddDoctor,
-  doctors,
-}) => {
+  useEffect(() => {
+    // Update the slots of the selected doctor whenever `slots` changes
+    const filteredSlots = slots.filter(
+      (slot) => slot.doctor === selectedDoctor
+    );
+    setTheSlotsOfThisDoctor(filteredSlots);
+  }, [slots, selectedDoctor]);
+
+  return (
+    <div>
+      <p>SUMMARY</p>
+      <b>{selectedDoctor}</b>
+      {theSlotsOfThisDoctor.map((slot) => (
+        <div key={slot.id}>
+          <b>{slot.id}</b>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Table = ({ slots, handleRemoveDoctor, handleAddDoctor, doctors }) => {
   const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    console.log(deriveWeeks(slots));
+  }, [slots]);
+
   const currentWeek = deriveWeeks(slots)[page];
   return (
     <>
