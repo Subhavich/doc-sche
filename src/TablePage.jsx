@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { TBody, THead } from "./TableComponents";
-import { saveToLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
+import { Pagination, TBody, THead } from "./TableComponents";
+import { deriveWeeks } from "./utils/rendering";
+import { saveToLocalStorage } from "./utils/localStorage";
 export default function TablePage({
   tableSlots,
   setTableSlots,
@@ -86,15 +87,23 @@ export const Table = ({
   handleAddDoctor,
   doctors,
 }) => {
+  const [page, setPage] = useState(0);
+  const currentWeek = deriveWeeks(slots)[page];
   return (
-    <table>
-      <THead />
-      <TBody
-        slots={slots}
-        doctors={doctors}
-        handleRemoveDoctor={handleRemoveDoctor}
-        handleAddDoctor={handleAddDoctor}
-      />
-    </table>
+    <>
+      <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
+      <table>
+        <THead />
+        <TBody
+          slots={slots}
+          doctors={doctors}
+          handleRemoveDoctor={handleRemoveDoctor}
+          handleAddDoctor={handleAddDoctor}
+          page={page}
+          setPage={setPage}
+          currentWeek={currentWeek}
+        />
+      </table>
+    </>
   );
 };

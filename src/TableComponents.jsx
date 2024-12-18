@@ -1,5 +1,4 @@
 import { DAYS, WORKTYPES } from "./utils/static";
-import { deriveWeeks } from "./utils/rendering";
 import { canAddSlot } from "./utils/slotValidation";
 import { useMemo, useState } from "react";
 
@@ -7,7 +6,9 @@ export const Pagination = ({ pages, setPage }) => {
   return (
     <ul>
       {Array.from({ length: pages }).map((item, ind) => (
-        <button onClick={() => setPage(ind)}>{ind}</button>
+        <button key={ind} onClick={() => setPage(ind)}>
+          {ind}
+        </button>
       ))}
     </ul>
   );
@@ -17,26 +18,24 @@ export const TBody = ({
   doctors,
   handleRemoveDoctor,
   handleAddDoctor,
+  page,
+  setPage,
+  currentWeek,
 }) => {
-  const [page, setPage] = useState(0);
-  const mockWeek = deriveWeeks(slots)[page];
-
   return (
     <>
-      <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
       <tbody>
-        {WORKTYPES.map((worktype) => (
-          <tr>
+        {WORKTYPES.map((worktype, ind) => (
+          <tr key={ind}>
             <th>{worktype}</th>
-            {DAYS.map((day, ind) => {
-              console.log(worktype);
-              const targetedSlot = mockWeek[ind].slots.filter((slot) => {
+            {DAYS.map((day, i) => {
+              const targetedSlot = currentWeek[i].slots.filter((slot) => {
                 return slot.type === worktype;
               });
               return (
-                <td>
-                  {targetedSlot.map((slot) => (
-                    <>
+                <td key={i}>
+                  {targetedSlot.map((slot, j) => (
+                    <div key={j}>
                       <DoctorButton
                         doctorName={slot.doctor ? slot.doctor : "Unassigned"}
                         id={slot.id}
@@ -45,7 +44,7 @@ export const TBody = ({
                         slots={slots}
                         doctors={doctors}
                       />
-                    </>
+                    </div>
                   ))}
                 </td>
               );
@@ -130,8 +129,8 @@ export const THead = () => {
     <thead>
       <tr>
         <th>"PLACEHOLDERS"</th>
-        {DAYS.map((day) => (
-          <th>{day.toUpperCase()}</th>
+        {DAYS.map((day, ind) => (
+          <th key={ind}>{day.toUpperCase()}</th>
         ))}
       </tr>
     </thead>

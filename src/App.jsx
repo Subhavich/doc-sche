@@ -1,5 +1,6 @@
 import EditingPage from "./EditPage";
 import TablePage from "./TablePage";
+
 import { useState, useEffect } from "react";
 import "./App.css";
 import { generateMonthSlots, scheduleSlots } from "./utils/slotCreation";
