@@ -3,6 +3,7 @@ import { Pagination, TBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
 import { isAdequateSpacing, isERConsecutive } from "./utils/slotValidation";
+import { calculateAccumulatedCost } from "./utils/derivingValues";
 export default function TablePage({
   tableSlots,
   setTableSlots,
@@ -222,6 +223,7 @@ const SuperSummary = ({ doctors, slots }) => {
                 );
               })}
             </div>
+            <p>{calculateAccumulatedCost(doctor.name, slots)}</p>
           </div>
         );
       })}
