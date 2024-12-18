@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Pagination, TBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
+import { isAdequateSpacing, isERConsecutive } from "./utils/slotValidation";
 export default function TablePage({
   tableSlots,
   setTableSlots,
@@ -100,11 +101,61 @@ const Summary = ({ selectedDoctor, slots }) => {
     <div>
       <p>SUMMARY</p>
       <b>{selectedDoctor}</b>
-      {theSlotsOfThisDoctor.map((slot) => (
-        <div key={slot.id}>
-          <b>{slot.id}</b>
-        </div>
-      ))}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          maxWidth: "500px",
+          flexWrap: "wrap",
+        }}
+      >
+        {theSlotsOfThisDoctor.map((slot, ind) => {
+          const erProblem =
+            isERConsecutive(
+              theSlotsOfThisDoctor[ind - 1],
+              theSlotsOfThisDoctor[ind]
+            ) ||
+            isERConsecutive(
+              theSlotsOfThisDoctor[ind],
+              theSlotsOfThisDoctor[ind + 1]
+            );
+          const adequateProblem =
+            isAdequateSpacing(
+              theSlotsOfThisDoctor[ind - 1],
+              theSlotsOfThisDoctor[ind]
+            ) ||
+            isAdequateSpacing(
+              theSlotsOfThisDoctor[ind],
+              theSlotsOfThisDoctor[ind + 1]
+            );
+          const bothProblem = adequateProblem && erProblem;
+
+          const problemColor = (() => {
+            switch (true) {
+              case bothProblem:
+                return "red";
+              case erProblem:
+                return "orange";
+              case adequateProblem:
+                return "yellow";
+              default:
+                return null; // No problem
+            }
+          })();
+
+          return (
+            <b
+              style={{
+                border: "1px solid slategray",
+                backgroundColor: problemColor,
+              }}
+              key={ind}
+            >
+              {slot.id}
+            </b>
+          );
+        })}
+      </div>
     </div>
   );
 };
