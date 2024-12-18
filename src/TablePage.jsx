@@ -14,7 +14,7 @@ export default function TablePage({
     return <p>Please Gen Schedule First</p>;
   }
 
-  const [selectedDoctor, setSelectedDoctor] = useState("Byleth");
+  const [selectedDoctor, setSelectedDoctor] = useState("Ingrid");
 
   useEffect(() => {
     saveToLocalStorage("tableSlots", tableSlots);
@@ -83,6 +83,7 @@ export default function TablePage({
         slots={tableSlots}
         doctors={tableDoctors}
       />
+      <SuperSummary doctors={tableDoctors} slots={tableSlots} />
     </>
   );
 }
@@ -157,6 +158,70 @@ const Summary = ({ selectedDoctor, slots }) => {
         })}
       </div>
     </div>
+  );
+};
+
+const SuperSummary = ({ doctors, slots }) => {
+  return (
+    <>
+      <p>SUPERSUM</p>
+      {doctors.map((doctor) => {
+        const theSlotsOfThisDoctor = slots.filter(
+          (slot) => slot.doctor === doctor.name
+        );
+        return (
+          <div style={{ display: "flex" }}>
+            <b>{doctor.name}</b>
+            {theSlotsOfThisDoctor.map((slot, ind) => {
+              const erProblem =
+                isERConsecutive(
+                  theSlotsOfThisDoctor[ind - 1],
+                  theSlotsOfThisDoctor[ind]
+                ) ||
+                isERConsecutive(
+                  theSlotsOfThisDoctor[ind],
+                  theSlotsOfThisDoctor[ind + 1]
+                );
+              const adequateProblem =
+                isAdequateSpacing(
+                  theSlotsOfThisDoctor[ind - 1],
+                  theSlotsOfThisDoctor[ind]
+                ) ||
+                isAdequateSpacing(
+                  theSlotsOfThisDoctor[ind],
+                  theSlotsOfThisDoctor[ind + 1]
+                );
+              const bothProblem = adequateProblem && erProblem;
+
+              const problemColor = (() => {
+                switch (true) {
+                  case bothProblem:
+                    return "red";
+                  case erProblem:
+                    return "orange";
+                  case adequateProblem:
+                    return "yellow";
+                  default:
+                    return null; // No problem
+                }
+              })();
+
+              return (
+                <div
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    border: "1px solid black",
+                    backgroundColor: problemColor,
+                  }}
+                  key={ind}
+                ></div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </>
   );
 };
 
