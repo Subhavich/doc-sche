@@ -91,17 +91,24 @@ function App() {
     <div>
       <SwitchDispButton setDisplay={setDisplay} />
       <ClearStorageButton />
-      {display === "edit" ? (
-        <EditingPage
-          config={config}
-          setConfig={setConfig}
-          isGenerated={loadFromLocalStorage("isGenerated")}
-          setTableDoctors={setTableDoctors}
-          setTableSlots={setTableSlots}
-          tableDoctors={tableDoctors}
-          tableSlots={tableSlots}
-        />
-      ) : (
+      {display === "edit" && (
+        <>
+          <EditingPage
+            config={config}
+            setConfig={setConfig}
+            isGenerated={loadFromLocalStorage("isGenerated")}
+            setTableDoctors={setTableDoctors}
+            setTableSlots={setTableSlots}
+            tableDoctors={tableDoctors}
+            tableSlots={tableSlots}
+          />
+          <GenerateTableButton
+            handleGenerateSchedule={handleGenerateSchedule}
+          />
+        </>
+      )}
+
+      {display === "table" && (
         <TablePage
           tableDoctors={tableDoctors}
           setTableDoctors={setTableDoctors}
@@ -110,12 +117,6 @@ function App() {
           isGenerated={loadFromLocalStorage("isGenerated")}
         />
       )}
-      {/* Button to generate schedule and switch display */}
-      {display === "edit" && (
-        <GenerateTableButton handleGenerateSchedule={handleGenerateSchedule} />
-      )}
-
-      <SwitchDispButton />
     </div>
   );
 }
