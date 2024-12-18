@@ -18,7 +18,7 @@ function App() {
   // Check if the schedule has been generated before
   const [display, setDisplay] = useState(() => {
     const isGenerated = loadFromLocalStorage("isGenerated");
-    return isGenerated ? false : true; // If true, show TablePage; else EditingPage
+    return isGenerated ? "table" : "edit"; // If true, show TablePage; else EditingPage
   });
 
   const [initialSlots, setInitialSlots] = useState(null);
@@ -44,6 +44,7 @@ function App() {
     );
   });
 
+  //SAVE CONFIG TO LOCALSTORAGE ON CONFIG CHANGES
   useEffect(() => {
     console.log("Change Detected");
     saveToLocalStorage("config", config);
@@ -75,9 +76,10 @@ function App() {
 
     // Save "isGenerated" to localStorage and change display to TablePage
     saveToLocalStorage("isGenerated", true);
-    setDisplay(false);
+    setDisplay("table");
   };
 
+  //CHECK IF GENERATED STATUS FROM LOCALSTORAGE
   useEffect(() => {
     console.log(
       "App initialized. Current state of 'isGenerated':",
@@ -87,27 +89,9 @@ function App() {
 
   return (
     <div>
-      <button
-        onClick={() => {
-          setDisplay((prev) => !prev);
-        }}
-      >
-        Switch display
-      </button>
-      <button
-        onClick={() => {
-          clearLocalStorage([
-            "tableSlots",
-            "tableDoctors",
-            "isGenerated",
-            "config",
-          ]);
-          console.log("Local storage cleared.");
-        }}
-      >
-        Clear Local
-      </button>
-      {display ? (
+      <SwitchDispButton setDisplay={setDisplay} />
+      <ClearStorageButton />
+      {display === "edit" ? (
         <EditingPage
           config={config}
           setConfig={setConfig}
@@ -127,18 +111,54 @@ function App() {
         />
       )}
       {/* Button to generate schedule and switch display */}
-      {display && !loadFromLocalStorage("isGenerated") && (
-        <button onClick={handleGenerateSchedule}>
-          Generate Schedule and View Table
-        </button>
+      {display === "edit" && (
+        <GenerateTableButton handleGenerateSchedule={handleGenerateSchedule} />
       )}
-      {loadFromLocalStorage("isGenerated") && (
-        <button onClick={() => setDisplay((prev) => (prev ? null : true))}>
-          Switch Page
-        </button>
-      )}
+
+      <SwitchDispButton />
     </div>
   );
 }
 
 export default App;
+
+const ClearStorageButton = () => {
+  return (
+    <button
+      onClick={() => {
+        clearLocalStorage([
+          "tableSlots",
+          "tableDoctors",
+          "isGenerated",
+          "config",
+        ]);
+        console.log("Local storage cleared.");
+        window.location.reload();
+      }}
+    >
+      Clear Local
+    </button>
+  );
+};
+const SwitchDispButton = ({ setDisplay }) => {
+  return (
+    <button
+      onClick={() => {
+        setDisplay((prev) => (prev === "table" ? "edit" : "table"));
+      }}
+    >
+      Switch display
+    </button>
+  );
+};
+const GenerateTableButton = ({ handleGenerateSchedule }) => {
+  return (
+    <>
+      {!loadFromLocalStorage("isGenerated") && (
+        <button onClick={handleGenerateSchedule}>
+          Generate Schedule and View Table
+        </button>
+      )}
+    </>
+  );
+};
