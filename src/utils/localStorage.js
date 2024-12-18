@@ -24,3 +24,12 @@ export const clearLocalStorage = (keys) => {
     console.error("Error clearing localStorage", error);
   }
 };
+
+export const logAllFromLocalStorage = () => {
+  const allLocalStorageData = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    allLocalStorageData[key] = localStorage.getItem(key);
+  }
+  console.log(allLocalStorageData);
+};

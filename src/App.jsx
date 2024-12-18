@@ -8,6 +8,7 @@ import {
   loadFromLocalStorage,
   saveToLocalStorage,
   clearLocalStorage,
+  logAllFromLocalStorage,
 } from "./utils/localStorage";
 import { MOCKDOCS } from "./utils/static";
 
@@ -15,7 +16,14 @@ const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
 
 function App() {
+  logAllFromLocalStorage();
+
   // Check if the schedule has been generated before
+  const [workHistory, setWorkHistory] = useState(() => {
+    const savedWorkHistory = loadFromLocalStorage("workHistory");
+    return savedWorkHistory || [];
+  });
+
   const [display, setDisplay] = useState(() => {
     const isGenerated = loadFromLocalStorage("isGenerated");
     return isGenerated ? "table" : "edit"; // If true, show TablePage; else EditingPage
@@ -50,13 +58,17 @@ function App() {
     saveToLocalStorage("config", config);
   }, [config]);
 
+  useEffect(() => {
+    saveToLocalStorage("workHistory", workHistory);
+  }, [workHistory]);
+
   const handleGenerateSchedule = () => {
     // Generate slots and doctors when button is pressed
     const processedDoctors = config.doctors.map((doctor) => ({
       ...doctor,
       slots: doctor.slots.map((slot) => ({ ...slot })),
     }));
-
+    // NEED TO INCLUDE DR ACCUMULATED IN GENERATION PROCESS
     const generatedSlots = generateMonthSlots(
       config.scheduleStart.year,
       config.scheduleStart.month
@@ -74,8 +86,20 @@ function App() {
     setTableSlots(updatedSlots); // Directly use updated values
     setTableDoctors(updatedDoctors);
 
+    const dateObject = {
+      month: config.scheduleStart.month,
+      year: config.scheduleStart.year,
+    };
+    setWorkHistory((prev) => {
+      console.log("Save Work History", [...prev, { date: dateObject }]);
+      return [
+        ...prev,
+        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
+      ];
+    });
     // Save "isGenerated" to localStorage and change display to TablePage
     saveToLocalStorage("isGenerated", true);
+
     setDisplay("table");
   };
 
@@ -109,13 +133,15 @@ function App() {
       )}
 
       {display === "table" && (
-        <TablePage
-          tableDoctors={tableDoctors}
-          setTableDoctors={setTableDoctors}
-          tableSlots={tableSlots}
-          setTableSlots={setTableSlots}
-          isGenerated={loadFromLocalStorage("isGenerated")}
-        />
+        <>
+          <TablePage
+            tableDoctors={tableDoctors}
+            setTableDoctors={setTableDoctors}
+            tableSlots={tableSlots}
+            setTableSlots={setTableSlots}
+            isGenerated={loadFromLocalStorage("isGenerated")}
+          />
+        </>
       )}
     </div>
   );
