@@ -12,6 +12,7 @@ import {
 } from "./utils/localStorage";
 import { MOCKDOCS } from "./utils/static";
 import ReadOnlyTablePage from "./ReadOnlyTablePage";
+import { hasUnassignedSlots } from "./utils/slotValidation";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
@@ -22,6 +23,7 @@ function App() {
   // Check if the schedule has been generated before
   const [workHistory, setWorkHistory] = useState(() => {
     const savedWorkHistory = loadFromLocalStorage("workHistory");
+    console.log("SAVED WORK HIS", savedWorkHistory);
     return savedWorkHistory || [];
   });
 
@@ -91,8 +93,12 @@ function App() {
       month: config.scheduleStart.month,
       year: config.scheduleStart.year,
     };
+
     setWorkHistory((prev) => {
-      console.log("Save Work History", [...prev, { date: dateObject }]);
+      console.log("Save Work History", [
+        ...prev,
+        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
+      ]);
       return [
         ...prev,
         { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
@@ -116,6 +122,27 @@ function App() {
     <div>
       <SwitchDispButton setDisplay={setDisplay} />
       <ClearStorageButton />
+      <div>
+        {workHistory.map((month) => {
+          return (
+            <button>
+              {month.date.month} - {month.date.year}
+            </button>
+          );
+        })}
+        <button
+          onClick={() => {
+            if (hasUnassignedSlots(tableSlots)) {
+              console.log("still has unassigned slots");
+              return;
+            }
+          }}
+        >
+          {" "}
+          +{" "}
+        </button>
+      </div>
+
       {display === "edit" && (
         <>
           <EditingPage
@@ -166,6 +193,7 @@ const ClearStorageButton = () => {
           "tableDoctors",
           "isGenerated",
           "config",
+          "workHistory",
         ]);
         console.log("Local storage cleared.");
         window.location.reload();

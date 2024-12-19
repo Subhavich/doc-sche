@@ -74,3 +74,13 @@ export const canAddSlot = (doctor, slot) => {
 
   return true;
 };
+
+export const hasUnassignedSlots = (slots) => {
+  let hasUnassignedSlots = false;
+  for (let slot of slots) {
+    if (!slot.doctor) {
+      hasUnassignedSlots = true;
+    }
+  }
+  return hasUnassignedSlots;
+};
