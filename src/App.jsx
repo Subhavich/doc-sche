@@ -10,7 +10,7 @@ import {
   clearLocalStorage,
   logAllFromLocalStorage,
 } from "./utils/localStorage";
-import { MOCKDOCS } from "./utils/static";
+import { MOCKDOCS, MOCKDOCSFULL } from "./utils/static";
 import ReadOnlyTablePage from "./ReadOnlyTablePage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
 
@@ -50,7 +50,7 @@ function App() {
     return (
       savedConfig || {
         scheduleStart: { year: currentYear, month: currentMonth },
-        doctors: MOCKDOCS,
+        doctors: MOCKDOCSFULL,
       }
     );
   });
@@ -110,6 +110,55 @@ function App() {
     setDisplay("table");
   };
 
+  const handleAddNewMonth = () => {
+    const processedDoctors = config.doctors.map((doctor) => ({
+      ...doctor,
+      slots: doctor.slots.map((slot) => ({ ...slot })),
+    }));
+
+    const newMonth =
+      config.scheduleStart.month === 11 ? 0 : config.scheduleStart.month + 1;
+    const newYear =
+      config.scheduleStart.month === 11
+        ? config.scheduleStart.year + 1
+        : config.scheduleStart.year;
+
+    const generatedSlots = generateMonthSlots(newYear, newMonth);
+    scheduleSlots(processedDoctors, generatedSlots);
+    // Use the values directly to update states
+    const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+    const updatedSlots = deepCopy(generatedSlots);
+    const updatedDoctors = deepCopy(processedDoctors);
+
+    const dateObject = {
+      month: newMonth,
+      year: newYear,
+    };
+
+    setWorkHistory((prev) => {
+      const copied = [...prev];
+      if (prev.length === 3) {
+        copied.shift();
+      }
+      console.log("Save Work History", [
+        ...copied,
+        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
+      ]);
+      return [
+        ...copied,
+        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
+      ];
+    });
+    setInitialSlots(updatedSlots);
+    setDoctors(updatedDoctors);
+    setTableSlots(updatedSlots); // Directly use updated values
+    setTableDoctors(updatedDoctors);
+
+    setConfig((prev) => ({
+      ...prev,
+      scheduleStart: { year: newYear, month: newMonth },
+    }));
+  };
   //CHECK IF GENERATED STATUS FROM LOCALSTORAGE
   useEffect(() => {
     console.log(
@@ -126,7 +175,7 @@ function App() {
         {workHistory.map((month) => {
           return (
             <button>
-              {month.date.month} - {month.date.year}
+              {month.date.month + 1} - {month.date.year}
             </button>
           );
         })}
@@ -136,10 +185,10 @@ function App() {
               console.log("still has unassigned slots");
               return;
             }
+            handleAddNewMonth();
           }}
         >
-          {" "}
-          +{" "}
+          +
         </button>
       </div>
 

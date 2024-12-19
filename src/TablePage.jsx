@@ -90,12 +90,21 @@ export default function TablePage({
 
 const Table = ({ slots, handleRemoveDoctor, handleAddDoctor, doctors }) => {
   const [page, setPage] = useState(0);
+  const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
 
   useEffect(() => {
-    console.log(deriveWeeks(slots));
-  }, [slots]);
+    const weeks = deriveWeeks(slots); // Derive weeks from the latest slots
+    if (weeks[page]) {
+      setCurrentWeek(weeks[page]); // Update the current week for the current page
+    } else if (weeks.length > 0) {
+      // If the page is out of bounds (e.g., after slots change), reset to the first week
+      setPage(0);
+      setCurrentWeek(weeks[0]);
+    } else {
+      setCurrentWeek([]); // Default to an empty array if no weeks
+    }
+  }, [slots, page]);
 
-  const currentWeek = deriveWeeks(slots)[page];
   return (
     <>
       <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />

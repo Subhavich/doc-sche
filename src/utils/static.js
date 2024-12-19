@@ -36,3 +36,18 @@ export const MOCKDOCS = [
   createNewDoctor("Caspar", "#E9967A"), // Light Coral
   createNewDoctor("Ingrid", "#B0E0E6"), // Powder Blue
 ];
+
+export const MOCKDOCSFULL = [
+  createNewDoctor("Byleth", "#ADD8E6"),
+  createNewDoctor("Hilda", "#FFC0CB"),
+  createNewDoctor("Claude", "#FFFACD"),
+  createNewDoctor("Lysithea", "#DDA0DD"),
+  createNewDoctor("Dimitri", "#87CEEB"),
+  createNewDoctor("Edelgard", "#DCDCDC"),
+  createNewDoctor("Petra", "#90EE90"),
+  createNewDoctor("Felix", "#FFDAB9"),
+  createNewDoctor("Ingrid", "#E0FFFF"),
+  createNewDoctor("Bernadetta", "#E6E6FA"),
+  createNewDoctor("Dorothea", "#F5DEB3"),
+  createNewDoctor("Hubert", "#A9A9A9"),
+];
