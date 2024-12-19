@@ -14,9 +14,11 @@ import { MOCKDOCS, MOCKDOCSFULL } from "./utils/static";
 import ReadOnlyTablePage from "./ReadOnlyTablePage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
 
-const currentYear = new Date().getFullYear();
-const currentMonth = new Date().getMonth();
+// const currentYear = new Date().getFullYear();
+// const currentMonth = new Date().getMonth();
 
+const currentYear = new Date(2025, 3).getFullYear();
+const currentMonth = new Date(2025, 3).getMonth();
 function App() {
   logAllFromLocalStorage();
 
@@ -117,10 +119,12 @@ function App() {
     }));
 
     const newMonth =
-      config.scheduleStart.month === 11 ? 0 : config.scheduleStart.month + 1;
+      config.scheduleStart.month >= 11
+        ? 0
+        : Number(config.scheduleStart.month) + 1;
     const newYear =
-      config.scheduleStart.month === 11
-        ? config.scheduleStart.year + 1
+      config.scheduleStart.month >= 11
+        ? Number(config.scheduleStart.year) + 1
         : config.scheduleStart.year;
 
     const generatedSlots = generateMonthSlots(newYear, newMonth);
@@ -175,7 +179,7 @@ function App() {
         {workHistory.map((month) => {
           return (
             <button>
-              {month.date.month + 1} - {month.date.year}
+              {Number(month.date.month) + 1} - {month.date.year}
             </button>
           );
         })}

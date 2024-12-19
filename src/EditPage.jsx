@@ -16,10 +16,15 @@ export default function EditingPage({
 }) {
   const handleStartChange = (load, e) => {
     setConfig((pv) => {
+      console.log("Prev", { ...pv }.scheduleStart);
       const newValue = e.target.value;
+      console.log({
+        ...pv,
+        scheduleStart: { ...pv.scheduleStart, [load]: Number(newValue) },
+      });
       return {
         ...pv,
-        scheduleStart: { ...pv.scheduleStart, [load]: newValue },
+        scheduleStart: { ...pv.scheduleStart, [load]: Number(newValue) },
       };
     });
   };
