@@ -34,12 +34,11 @@ function App() {
     return isGenerated ? "table" : "edit"; // If true, show TablePage; else EditingPage
   });
 
-  const [initialSlots, setInitialSlots] = useState(null);
   const [doctors, setDoctors] = useState(null);
 
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
-    return savedSlots || initialSlots; // Use saved data or initial data
+    return savedSlots || [];
   });
 
   const [tableDoctors, setTableDoctors] = useState(() => {
@@ -56,6 +55,14 @@ function App() {
       }
     );
   });
+
+  //CHECK IF GENERATED STATUS
+  useEffect(() => {
+    console.log(
+      "App initialized. Current state of 'isGenerated':",
+      loadFromLocalStorage("isGenerated")
+    );
+  }, []);
 
   //SAVE CONFIG TO LOCALSTORAGE ON CONFIG CHANGES
   useEffect(() => {
@@ -86,9 +93,8 @@ function App() {
     const updatedSlots = deepCopy(generatedSlots);
     const updatedDoctors = deepCopy(processedDoctors);
 
-    setInitialSlots(updatedSlots);
     setDoctors(updatedDoctors);
-    setTableSlots(updatedSlots); // Directly use updated values
+    setTableSlots(updatedSlots);
     setTableDoctors(updatedDoctors);
 
     const dateObject = {
@@ -163,13 +169,6 @@ function App() {
       scheduleStart: { year: newYear, month: newMonth },
     }));
   };
-  //CHECK IF GENERATED STATUS FROM LOCALSTORAGE
-  useEffect(() => {
-    console.log(
-      "App initialized. Current state of 'isGenerated':",
-      loadFromLocalStorage("isGenerated")
-    );
-  }, []);
 
   return (
     <div>

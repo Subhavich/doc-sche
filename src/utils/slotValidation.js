@@ -32,6 +32,7 @@ export const isERConsecutive = (baseSlot, compareSlot) => {
 };
 
 export const isAdequateSpacing = (baseSlot, compareSlot) => {
+  //Less than or equal 16
   if (!baseSlot || !compareSlot) {
     return false;
   }

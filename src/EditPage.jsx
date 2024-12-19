@@ -3,7 +3,6 @@ import { Compact } from "@uiw/react-color";
 import { createNewDoctor } from "./utils/doctorCreation";
 import { MONTHS } from "./utils/static";
 import { clearLocalStorage } from "./utils/localStorage";
-// Editing Page
 
 export default function EditingPage({
   tableDoctors,
@@ -40,25 +39,18 @@ export default function EditingPage({
   const [generated, setGenerated] = useState(isGenerated);
   return (
     <>
-      {/* Just for Logging */}
-      <p>
-        <b>Logger</b>
-      </p>
-      <p>{config.scheduleStart.month}</p> <p>{config.scheduleStart.year}</p>
-      {config.doctors.map((doctor, ind) => (
-        <b key={ind}>
-          {doctor.name} - {doctor.color}{" "}
-        </b>
-      ))}
-      {/* Just for Logging */}
+      <EditLogger config={config} />
+
       <hr />
-      <p>Select Starting Month</p>
-      <DateInput
-        setConfig={setConfig}
-        handleStartChange={handleStartChange}
-        config={config}
-      />
-      <p>Add or Delete doctors</p>
+
+      {!isGenerated && (
+        <DateInput
+          setConfig={setConfig}
+          handleStartChange={handleStartChange}
+          config={config}
+        />
+      )}
+
       <DoctorSection
         config={config}
         setConfig={setConfig}
@@ -67,9 +59,11 @@ export default function EditingPage({
         tableDoctors={tableDoctors}
         tableSlots={tableSlots}
       />
+
       {!generated && (
         <DoctorInput config={config} handleAddDoctor={handleAddDoctor} />
       )}
+
       {generated && (
         <button
           onClick={() => {
@@ -81,6 +75,7 @@ export default function EditingPage({
           Add Doctors (Table Will Be Recreated)
         </button>
       )}
+
       {!generated && isGenerated && (
         <button onClick={() => setGenerated((prev) => !prev)}>
           Regenerate Table
@@ -90,9 +85,11 @@ export default function EditingPage({
   );
 }
 
-export function DateInput({ config, handleStartChange }) {
+function DateInput({ config, handleStartChange }) {
   return (
     <>
+      <b style={{ marginRight: "16px" }}>Select Starting Month</b>
+
       <input
         type="number"
         min="1900"
@@ -115,7 +112,7 @@ export function DateInput({ config, handleStartChange }) {
   );
 }
 
-export function DoctorInput({ handleAddDoctor, setConfig }) {
+function DoctorInput({ handleAddDoctor, setConfig }) {
   const [hex, setHex] = useState("#eee");
   const [isPickerVisible, setIsPicker] = useState(false);
 
@@ -164,7 +161,7 @@ export function DoctorInput({ handleAddDoctor, setConfig }) {
   );
 }
 
-export function DoctorSection({
+function DoctorSection({
   config,
   setConfig,
   tableDoctors,
@@ -174,6 +171,7 @@ export function DoctorSection({
 }) {
   return (
     <>
+      <h3>Add or Delete doctors</h3>
       {config.doctors.map((doctor, ind) => (
         <DoctorData
           key={ind}
@@ -190,7 +188,7 @@ export function DoctorSection({
   );
 }
 
-export function DoctorData({
+function DoctorData({
   name,
   color,
   setConfig,
@@ -351,5 +349,24 @@ export function DoctorData({
 
       <button onClick={handleDeleteDoctor}>Delete</button>
     </div>
+  );
+}
+
+function EditLogger({ config }) {
+  return (
+    <>
+      <h3>Logger</h3>
+
+      <hr />
+      <h3>Config Schedule Start</h3>
+      <p>Config Month Index : {config.scheduleStart.month}</p>
+      <p>Config Year : {config.scheduleStart.year}</p>
+      <h3>Config Doctors</h3>
+      {config.doctors.map((doctor, ind) => (
+        <b key={ind}>
+          {doctor.name} - {doctor.color}{" "}
+        </b>
+      ))}
+    </>
   );
 }
