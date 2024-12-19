@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Pagination, TBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
-
 import { Summary, SuperSummary } from "./SummaryComponents";
 export default function TablePage({
   tableSlots,

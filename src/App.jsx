@@ -11,6 +11,7 @@ import {
   logAllFromLocalStorage,
 } from "./utils/localStorage";
 import { MOCKDOCS } from "./utils/static";
+import ReadOnlyTablePage from "./ReadOnlyTablePage";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
@@ -135,6 +136,13 @@ function App() {
       {display === "table" && (
         <>
           <TablePage
+            tableDoctors={tableDoctors}
+            setTableDoctors={setTableDoctors}
+            tableSlots={tableSlots}
+            setTableSlots={setTableSlots}
+            isGenerated={loadFromLocalStorage("isGenerated")}
+          />
+          <ReadOnlyTablePage
             tableDoctors={tableDoctors}
             setTableDoctors={setTableDoctors}
             tableSlots={tableSlots}

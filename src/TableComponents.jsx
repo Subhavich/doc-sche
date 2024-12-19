@@ -56,6 +56,45 @@ export const TBody = ({
   );
 };
 
+export const ReadOnlyTBody = ({
+  slots,
+  doctors,
+  page,
+  setPage,
+  currentWeek,
+}) => {
+  return (
+    <>
+      <tbody>
+        {WORKTYPES.map((worktype, ind) => (
+          <tr key={ind}>
+            <th>{worktype}</th>
+            {DAYS.map((day, i) => {
+              const targetedSlot = currentWeek[i].slots.filter((slot) => {
+                return slot.type === worktype;
+              });
+              return (
+                <td key={i}>
+                  {targetedSlot.map((slot, j) => (
+                    <div key={j}>
+                      <ReadOnlyDoctorButton
+                        doctorName={slot.doctor ? slot.doctor : "Unassigned"}
+                        id={slot.id}
+                        slots={slots}
+                        doctors={doctors}
+                      />
+                    </div>
+                  ))}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </>
+  );
+};
+
 export const DoctorButton = ({
   slots,
   doctors,
@@ -86,6 +125,31 @@ export const DoctorButton = ({
           handleAddDoctor={handleAddDoctor}
         />
       )}
+    </>
+  );
+};
+
+export const ReadOnlyDoctorButton = ({
+  slots,
+  doctors,
+  doctorName,
+  id,
+  handleRemoveDoctor,
+  handleAddDoctor,
+}) => {
+  const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
+  return (
+    <>
+      <button
+        onClick={() => {
+          handleRemoveDoctor(id);
+        }}
+        style={{
+          backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
+        }}
+      >
+        {doctorName}
+      </button>
     </>
   );
 };
