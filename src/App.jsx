@@ -25,16 +25,19 @@ function App() {
   // Check if the schedule has been generated before
   const [workHistory, setWorkHistory] = useState(() => {
     const savedWorkHistory = loadFromLocalStorage("workHistory");
-    console.log("SAVED WORK HIS", savedWorkHistory);
+    console.log("SAVED WORK HISTORY", savedWorkHistory);
     return savedWorkHistory || [];
+  });
+
+  const [activePage, setActivePage] = useState(() => {
+    const savedCurrentPage = loadFromLocalStorage("currentPage");
+    return savedCurrentPage || 0;
   });
 
   const [display, setDisplay] = useState(() => {
     const isGenerated = loadFromLocalStorage("isGenerated");
     return isGenerated ? "table" : "edit"; // If true, show TablePage; else EditingPage
   });
-
-  const [doctors, setDoctors] = useState(null);
 
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
@@ -43,7 +46,7 @@ function App() {
 
   const [tableDoctors, setTableDoctors] = useState(() => {
     const savedDoctors = loadFromLocalStorage("tableDoctors");
-    return savedDoctors || doctors; // Use saved data or initial data
+    return savedDoctors; // Use saved data or initial data
   });
 
   const [config, setConfig] = useState(() => {
@@ -74,6 +77,13 @@ function App() {
     saveToLocalStorage("workHistory", workHistory);
   }, [workHistory]);
 
+  const handleSelectPage = (page) => {
+    console.log(workHistory[page]);
+    setActivePage(page);
+    setTableSlots(workHistory[page].slots);
+    setTableDoctors(workHistory[page].doctors);
+  };
+
   const handleGenerateSchedule = () => {
     // Generate slots and doctors when button is pressed
     const processedDoctors = config.doctors.map((doctor) => ({
@@ -93,7 +103,6 @@ function App() {
     const updatedSlots = deepCopy(generatedSlots);
     const updatedDoctors = deepCopy(processedDoctors);
 
-    setDoctors(updatedDoctors);
     setTableSlots(updatedSlots);
     setTableDoctors(updatedDoctors);
 
@@ -145,22 +154,19 @@ function App() {
       year: newYear,
     };
 
+    const pastLength = workHistory.length;
     setWorkHistory((prev) => {
       const copied = [...prev];
       if (prev.length === 3) {
         copied.shift();
       }
-      console.log("Save Work History", [
-        ...copied,
-        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
-      ]);
+
       return [
         ...copied,
-        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
+        { date: dateObject, slots: tableSlots, doctors: tableDoctors },
       ];
     });
-    setInitialSlots(updatedSlots);
-    setDoctors(updatedDoctors);
+
     setTableSlots(updatedSlots); // Directly use updated values
     setTableDoctors(updatedDoctors);
 
@@ -168,33 +174,22 @@ function App() {
       ...prev,
       scheduleStart: { year: newYear, month: newMonth },
     }));
+    setActivePage(pastLength);
+    saveToLocalStorage("currentPage", pastLength);
+    saveToLocalStorage("tableSlots", updatedSlots);
+    saveToLocalStorage("tableDoctors", updatedDoctors);
   };
 
   return (
     <div>
       <SwitchDispButton setDisplay={setDisplay} />
       <ClearStorageButton />
-      <div>
-        {workHistory.map((month) => {
-          return (
-            <button>
-              {Number(month.date.month) + 1} - {month.date.year}
-            </button>
-          );
-        })}
-        <button
-          onClick={() => {
-            if (hasUnassignedSlots(tableSlots)) {
-              console.log("still has unassigned slots");
-              return;
-            }
-            handleAddNewMonth();
-          }}
-        >
-          +
-        </button>
-      </div>
-
+      <HistoryPagination
+        handleAddNewMonth={handleAddNewMonth}
+        workHistory={workHistory}
+        tableSlots={tableSlots}
+        handleSelectPage={handleSelectPage}
+      />
       {display === "edit" && (
         <>
           <EditingPage
@@ -214,20 +209,27 @@ function App() {
 
       {display === "table" && (
         <>
-          <TablePage
-            tableDoctors={tableDoctors}
-            setTableDoctors={setTableDoctors}
-            tableSlots={tableSlots}
-            setTableSlots={setTableSlots}
-            isGenerated={loadFromLocalStorage("isGenerated")}
-          />
-          <ReadOnlyTablePage
-            tableDoctors={tableDoctors}
-            setTableDoctors={setTableDoctors}
-            tableSlots={tableSlots}
-            setTableSlots={setTableSlots}
-            isGenerated={loadFromLocalStorage("isGenerated")}
-          />
+          {activePage == workHistory.length - 1 && (
+            <TablePage
+              tableDoctors={tableDoctors}
+              setTableDoctors={setTableDoctors}
+              tableSlots={tableSlots}
+              setTableSlots={setTableSlots}
+              isGenerated={loadFromLocalStorage("isGenerated")}
+            />
+          )}
+          {activePage < workHistory.length - 1 && (
+            <>
+              <p>read only</p>
+              <ReadOnlyTablePage
+                tableDoctors={tableDoctors}
+                setTableDoctors={setTableDoctors}
+                tableSlots={tableSlots}
+                setTableSlots={setTableSlots}
+                isGenerated={loadFromLocalStorage("isGenerated")}
+              />
+            </>
+          )}
         </>
       )}
     </div>
@@ -275,5 +277,34 @@ const GenerateTableButton = ({ handleGenerateSchedule }) => {
         </button>
       )}
     </>
+  );
+};
+const HistoryPagination = ({
+  workHistory,
+  handleAddNewMonth,
+  tableSlots,
+  handleSelectPage,
+}) => {
+  return (
+    <div>
+      {workHistory.map((month, ind) => {
+        return (
+          <button key={ind} onClick={() => handleSelectPage(ind)}>
+            {Number(month.date.month) + 1} - {month.date.year}
+          </button>
+        );
+      })}
+      <button
+        onClick={() => {
+          if (hasUnassignedSlots(tableSlots)) {
+            console.log("still has unassigned slots");
+            return;
+          }
+          handleAddNewMonth();
+        }}
+      >
+        +
+      </button>
+    </div>
   );
 };
