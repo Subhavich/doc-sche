@@ -1,6 +1,7 @@
 import { DAYS, WORKTYPES } from "./utils/static";
 import { canAddSlot } from "./utils/slotValidation";
 import { useMemo, useState } from "react";
+import { FiChevronDown, FiChevronUp, FiTrash } from "react-icons/fi";
 
 export const Pagination = ({ pages, setPage }) => {
   return (
@@ -13,13 +14,12 @@ export const Pagination = ({ pages, setPage }) => {
     </ul>
   );
 };
+
 export const TBody = ({
   slots,
   doctors,
   handleRemoveDoctor,
   handleAddDoctor,
-  page,
-  setPage,
   currentWeek,
 }) => {
   return (
@@ -95,7 +95,7 @@ export const ReadOnlyTBody = ({
   );
 };
 
-export const DoctorButton = ({
+const DoctorButton = ({
   slots,
   doctors,
   doctorName,
@@ -104,13 +104,13 @@ export const DoctorButton = ({
   handleAddDoctor,
 }) => {
   const [showList, setShowList] = useState(false);
+  const handleToggleShow = () => {
+    setShowList((prev) => !prev);
+  };
   const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
   return (
     <>
       <button
-        onClick={() => {
-          handleRemoveDoctor(id);
-        }}
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}
@@ -118,18 +118,37 @@ export const DoctorButton = ({
         {doctorName}
       </button>
       {doctorName === "Unassigned" && (
-        <DoctorList
-          slots={slots}
-          doctors={doctors}
-          id={id}
-          handleAddDoctor={handleAddDoctor}
-        />
+        <>
+          <button onClick={handleToggleShow}>
+            {showList ? <FiChevronUp /> : <FiChevronDown />}
+          </button>
+
+          {showList && (
+            <DoctorList
+              slots={slots}
+              doctors={doctors}
+              id={id}
+              handleAddDoctor={handleAddDoctor}
+              handleToggleShow={handleToggleShow}
+            />
+          )}
+        </>
+      )}
+
+      {doctorName !== "Unassigned" && (
+        <button
+          onClick={() => {
+            handleRemoveDoctor(id);
+          }}
+        >
+          <FiTrash />
+        </button>
       )}
     </>
   );
 };
 
-export const ReadOnlyDoctorButton = ({ slots, doctors, doctorName, id }) => {
+const ReadOnlyDoctorButton = ({ doctors, doctorName }) => {
   const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
   return (
     <>
@@ -144,7 +163,7 @@ export const ReadOnlyDoctorButton = ({ slots, doctors, doctorName, id }) => {
   );
 };
 
-export const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
+const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
   const thisSlot = useMemo(
     () => slots.find((slot) => slot.id === id),
     [slots, id]
@@ -168,7 +187,10 @@ export const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
         .map((doctor) => (
           <button
             key={doctor.name}
-            onClick={() => handleAddDoctor(id, doctor.name)}
+            onClick={() => {
+              handleAddDoctor(id, doctor.name);
+              handleToggleShow();
+            }}
             className="list-btn"
           >
             {doctor.name}
