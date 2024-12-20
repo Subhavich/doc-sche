@@ -3,6 +3,7 @@ import { Pagination, TBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
 import { Summary, SuperSummary } from "./SummaryComponents";
+import { calculateAccumulatedCost } from "./utils/derivingValues";
 export default function TablePage({
   tableSlots,
   setTableSlots,
@@ -35,6 +36,7 @@ export default function TablePage({
       prevDoctors.map((doctor) => ({
         ...doctor,
         slots: doctor.slots.filter((slot) => slot.id !== slotId),
+        quota: calculateAccumulatedCost(doctor.name, tableSlots),
       }))
     );
   };

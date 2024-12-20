@@ -119,10 +119,6 @@ export const addSlot = (doctor, slot, force = false) => {
 };
 
 export const scheduleSlots = (doctors, slots) => {
-  // doctors.forEach((doctor) => {
-  //   doctor.slots = [];
-  // });
-
   for (const slot of slots) {
     sortDoctors(doctors);
 

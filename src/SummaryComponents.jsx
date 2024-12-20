@@ -137,10 +137,12 @@ export const SuperSummary = ({ doctors, slots }) => {
                 );
               })}
             </div>
-            <p>{calculateAccumulatedCost(doctor.name, slots)}</p>
+            <p>{doctor.quota}</p>
           </div>
         );
       })}
     </>
   );
 };
+
+//calculateAccumulatedCost(doctor.name, slots)

@@ -14,9 +14,6 @@ import { MOCKDOCS, MOCKDOCSFULL } from "./utils/static";
 import ReadOnlyTablePage from "./ReadOnlyTablePage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
 
-// const currentYear = new Date().getFullYear();
-// const currentMonth = new Date().getMonth();
-
 const currentYear = new Date(2025, 3).getFullYear();
 const currentMonth = new Date(2025, 3).getMonth();
 function App() {
@@ -121,10 +118,17 @@ function App() {
 
   const handleGenerateSchedule = () => {
     // Generate slots and doctors when button is pressed
-    const processedDoctors = config.doctors.map((doctor) => ({
-      ...doctor,
-      slots: doctor.slots.map((slot) => ({ ...slot })),
-    }));
+    const processedDoctors = config.doctors.map((doctor) => {
+      console.log("ZE", {
+        ...doctor,
+        slots: doctor.slots.map((slot) => ({ ...slot })),
+      });
+
+      return {
+        ...doctor,
+        slots: doctor.slots.map((slot) => ({ ...slot })),
+      };
+    });
     // NEED TO INCLUDE DR ACCUMULATED IN GENERATION PROCESS
     const generatedSlots = generateMonthSlots(
       config.scheduleStart.year,
