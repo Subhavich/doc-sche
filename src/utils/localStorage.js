@@ -26,10 +26,18 @@ export const clearLocalStorage = (keys) => {
 };
 
 export const logAllFromLocalStorage = () => {
-  const allLocalStorageData = {};
+  const parsedLocalStorageData = {};
+
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    allLocalStorageData[key] = localStorage.getItem(key);
+    const value = localStorage.getItem(key);
+
+    try {
+      parsedLocalStorageData[key] = JSON.parse(value);
+    } catch (e) {
+      // If parsing fails, keep the raw value
+      parsedLocalStorageData[key] = value;
+    }
   }
-  console.log(allLocalStorageData);
+  console.log("Parsed Local Storage Data:", parsedLocalStorageData);
 };

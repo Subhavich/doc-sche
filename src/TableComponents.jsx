@@ -129,21 +129,11 @@ export const DoctorButton = ({
   );
 };
 
-export const ReadOnlyDoctorButton = ({
-  slots,
-  doctors,
-  doctorName,
-  id,
-  handleRemoveDoctor,
-  handleAddDoctor,
-}) => {
+export const ReadOnlyDoctorButton = ({ slots, doctors, doctorName, id }) => {
   const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
   return (
     <>
       <button
-        onClick={() => {
-          handleRemoveDoctor(id);
-        }}
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}

@@ -25,7 +25,7 @@ function App() {
   // Check if the schedule has been generated before
   const [workHistory, setWorkHistory] = useState(() => {
     const savedWorkHistory = loadFromLocalStorage("workHistory");
-    console.log("SAVED WORK HISTORY", savedWorkHistory);
+    console.log("Loaded WorkHistory", savedWorkHistory);
     return savedWorkHistory || [];
   });
 
@@ -41,6 +41,7 @@ function App() {
 
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
+    console.log("Loaded Slots", savedSlots);
     return savedSlots;
   });
 
@@ -59,17 +60,42 @@ function App() {
     );
   });
 
-  //CHECK IF GENERATED STATUS
+  //Display Components
+  const [displayDoctors, setDisplayDoctors] = useState();
+  const [displaySlots, setDisplaySlots] = useState();
+
   useEffect(() => {
-    console.log(
-      "App initialized. Current state of 'isGenerated':",
-      loadFromLocalStorage("isGenerated")
-    );
-  }, []);
+    console.log("THIS TRIGGERS");
+    setWorkHistory((prev) => {
+      if (activePage !== workHistory.length - 1) {
+        return prev;
+      }
+
+      if (!tableSlots || !tableDoctors) {
+        return prev;
+      }
+
+      const latestMonth = prev[prev.length - 1];
+      const theMonth = {
+        ...latestMonth,
+        slots: tableSlots,
+        doctors: tableDoctors,
+      };
+
+      const newWorkHistoryArray = [...prev];
+      newWorkHistoryArray.pop();
+
+      return [...newWorkHistoryArray, theMonth];
+    });
+
+    if (activePage === workHistory.length - 1) {
+      saveToLocalStorage("tableSlots", tableSlots);
+      saveToLocalStorage("tableDoctors", tableDoctors);
+    }
+  }, [tableSlots, tableDoctors]);
 
   //SAVE CONFIG TO LOCALSTORAGE ON CONFIG CHANGES
   useEffect(() => {
-    console.log("Change Detected");
     saveToLocalStorage("config", config);
   }, [config]);
 
@@ -78,10 +104,19 @@ function App() {
   }, [workHistory]);
 
   const handleSelectPage = (page) => {
-    console.log(workHistory[page]);
+    if (page === workHistory.length - 1) {
+      console.log("In the Present");
+      setTableSlots(workHistory[page].slots);
+      setTableDoctors(workHistory[page].doctors);
+      setActivePage(page);
+      return;
+    }
     setActivePage(page);
-    setTableSlots(workHistory[page].slots);
-    setTableDoctors(workHistory[page].doctors);
+    console.log("In the Past");
+    console.log(workHistory[page]);
+
+    setDisplaySlots(workHistory[page].slots);
+    setDisplayDoctors(workHistory[page].doctors);
   };
 
   const handleGenerateSchedule = () => {
@@ -193,12 +228,15 @@ function App() {
     <div>
       <SwitchDispButton setDisplay={setDisplay} />
       <ClearStorageButton />
-      <HistoryPagination
-        handleAddNewMonth={handleAddNewMonth}
-        workHistory={workHistory}
-        tableSlots={tableSlots}
-        handleSelectPage={handleSelectPage}
-      />
+      {loadFromLocalStorage("isGenerated") && (
+        <HistoryPagination
+          handleAddNewMonth={handleAddNewMonth}
+          workHistory={workHistory}
+          tableSlots={tableSlots}
+          handleSelectPage={handleSelectPage}
+        />
+      )}
+
       {display === "edit" && (
         <>
           <EditingPage
@@ -231,10 +269,10 @@ function App() {
             <>
               <p>read only</p>
               <ReadOnlyTablePage
-                tableDoctors={tableDoctors}
-                setTableDoctors={setTableDoctors}
-                tableSlots={tableSlots}
-                setTableSlots={setTableSlots}
+                tableDoctors={displayDoctors}
+                setTableDoctors={setDisplayDoctors}
+                tableSlots={displaySlots}
+                setTableSlots={setDisplaySlots}
                 isGenerated={loadFromLocalStorage("isGenerated")}
               />
             </>
