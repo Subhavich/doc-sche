@@ -20,6 +20,7 @@ export const TBody = ({
   doctors,
   handleRemoveDoctor,
   handleAddDoctor,
+  handleSelectDoctor,
   currentWeek,
 }) => {
   return (
@@ -41,6 +42,7 @@ export const TBody = ({
                         id={slot.id}
                         handleRemoveDoctor={handleRemoveDoctor}
                         handleAddDoctor={handleAddDoctor}
+                        handleSelectDoctor={handleSelectDoctor}
                         slots={slots}
                         doctors={doctors}
                       />
@@ -102,6 +104,7 @@ const DoctorButton = ({
   id,
   handleRemoveDoctor,
   handleAddDoctor,
+  handleSelectDoctor,
 }) => {
   const [showList, setShowList] = useState(false);
   const handleToggleShow = () => {
@@ -111,6 +114,12 @@ const DoctorButton = ({
   return (
     <>
       <button
+        onClick={() => {
+          if (doctorName === "Unassigned") {
+            return;
+          }
+          handleSelectDoctor(doctorName);
+        }}
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}
@@ -163,7 +172,13 @@ const ReadOnlyDoctorButton = ({ doctors, doctorName }) => {
   );
 };
 
-const DoctorList = ({ slots, doctors, id, handleAddDoctor }) => {
+const DoctorList = ({
+  slots,
+  doctors,
+  id,
+  handleAddDoctor,
+  handleToggleShow,
+}) => {
   const thisSlot = useMemo(
     () => slots.find((slot) => slot.id === id),
     [slots, id]

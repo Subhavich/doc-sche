@@ -104,6 +104,7 @@ const Table = ({
   slots,
   handleRemoveDoctor,
   handleAddDoctor,
+  handleSelectDoctor,
   doctors,
   workHistory,
 }) => {
@@ -137,6 +138,7 @@ const Table = ({
           doctors={doctors}
           handleRemoveDoctor={handleRemoveDoctor}
           handleAddDoctor={handleAddDoctor}
+          handleSelectDoctor={handleSelectDoctor}
           page={page}
           setPage={setPage}
           currentWeek={currentWeek}
