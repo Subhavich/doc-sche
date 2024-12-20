@@ -13,7 +13,7 @@ import {
 import { MOCKDOCS, MOCKDOCSFULL } from "./utils/static";
 import ReadOnlyTablePage from "./ReadOnlyTablePage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
-
+import { calculateAccumulatedCost } from "./utils/derivingValues";
 const currentYear = new Date(2025, 3).getFullYear();
 const currentMonth = new Date(2025, 3).getMonth();
 function App() {
@@ -100,30 +100,10 @@ function App() {
     saveToLocalStorage("workHistory", workHistory);
   }, [workHistory]);
 
-  const handleSelectPage = (page) => {
-    if (page === workHistory.length - 1) {
-      console.log("In the Present");
-      setTableSlots(workHistory[page].slots);
-      setTableDoctors(workHistory[page].doctors);
-      setActivePage(page);
-      return;
-    }
-    setActivePage(page);
-    console.log("In the Past");
-    console.log(workHistory[page]);
-
-    setDisplaySlots(workHistory[page].slots);
-    setDisplayDoctors(workHistory[page].doctors);
-  };
-
+  //Generate First Time
   const handleGenerateSchedule = () => {
     // Generate slots and doctors when button is pressed
     const processedDoctors = config.doctors.map((doctor) => {
-      console.log("ZE", {
-        ...doctor,
-        slots: doctor.slots.map((slot) => ({ ...slot })),
-      });
-
       return {
         ...doctor,
         slots: doctor.slots.map((slot) => ({ ...slot })),
@@ -140,7 +120,12 @@ function App() {
     // Use the values directly to update states
     const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
     const updatedSlots = deepCopy(generatedSlots);
-    const updatedDoctors = deepCopy(processedDoctors);
+    let updatedDoctors = deepCopy(processedDoctors);
+
+    updatedDoctors = updatedDoctors.map((doctor) => ({
+      ...doctor,
+      quota: calculateAccumulatedCost(doctor.name, updatedSlots),
+    }));
 
     setTableSlots(updatedSlots);
     setTableDoctors(updatedDoctors);
@@ -170,6 +155,7 @@ function App() {
     setDisplay("table");
   };
 
+  //Generate New Month
   const handleAddNewMonth = () => {
     const processedDoctors = config.doctors.map((doctor) => ({
       ...doctor,
@@ -228,6 +214,21 @@ function App() {
     saveToLocalStorage("tableDoctors", updatedDoctors);
   };
 
+  const handleSelectPage = (page) => {
+    if (page === workHistory.length - 1) {
+      console.log("In the Present");
+      setTableSlots(workHistory[page].slots);
+      setTableDoctors(workHistory[page].doctors);
+      setActivePage(page);
+      return;
+    }
+    setActivePage(page);
+    console.log("In the Past");
+    console.log(workHistory[page]);
+
+    setDisplaySlots(workHistory[page].slots);
+    setDisplayDoctors(workHistory[page].doctors);
+  };
   return (
     <div>
       <SwitchDispButton setDisplay={setDisplay} />
