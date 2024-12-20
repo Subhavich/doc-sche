@@ -160,6 +160,7 @@ function App() {
     const processedDoctors = [
       ...tableDoctors.map((doctor) => ({
         ...doctor,
+        lastMonthAdv: doctor.quota,
         slots: [], // Deep copy slots
       })),
     ];
@@ -179,7 +180,12 @@ function App() {
     // Use deep copy to avoid mutating shared references
     const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
     const updatedSlots = deepCopy(generatedSlots);
-    const updatedDoctors = deepCopy(processedDoctors);
+    let updatedDoctors = deepCopy(processedDoctors);
+
+    updatedDoctors = updatedDoctors.map((doctor) => ({
+      ...doctor,
+      quota: calculateAccumulatedCost(doctor.name, updatedSlots),
+    }));
 
     const dateObject = {
       month: newMonth,

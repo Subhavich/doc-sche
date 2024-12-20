@@ -140,7 +140,8 @@ export const SuperSummary = ({ doctors, slots }) => {
                   );
                 })}
               </div>
-              <p>{doctor.quota}</p>
+              <p>THIS MONTH ADV: {doctor.quota}</p>
+              <p>LAST MONTH ADV: {doctor.lastMonthAdv}</p>
             </div>
           );
         })}
