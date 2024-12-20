@@ -161,7 +161,7 @@ function App() {
       ...tableDoctors.map((doctor) => ({
         ...doctor,
         lastMonthAdv: doctor.quota,
-        slots: [], // Deep copy slots
+        slots: [],
       })),
     ];
 
@@ -220,6 +220,7 @@ function App() {
     saveToLocalStorage("currentPage", newPageIndex);
     saveToLocalStorage("tableSlots", updatedSlots);
     saveToLocalStorage("tableDoctors", updatedDoctors);
+    window.location.reload();
   };
 
   const handleSelectPage = (page) => {
@@ -237,6 +238,7 @@ function App() {
     setDisplaySlots(workHistory[page].slots);
     setDisplayDoctors(workHistory[page].doctors);
   };
+
   return (
     <div>
       <SwitchDispButton setDisplay={setDisplay} />
@@ -276,6 +278,7 @@ function App() {
               tableSlots={tableSlots}
               setTableSlots={setTableSlots}
               isGenerated={loadFromLocalStorage("isGenerated")}
+              workHistory={workHistory}
             />
           )}
           {activePage < workHistory.length - 1 && (

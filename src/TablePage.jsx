@@ -4,18 +4,24 @@ import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
 import { Summary, SuperSummary } from "./SummaryComponents";
 import { calculateAccumulatedCost } from "./utils/derivingValues";
+import { use } from "react";
 export default function TablePage({
   tableSlots,
   setTableSlots,
   tableDoctors,
   setTableDoctors,
   isGenerated,
+  workHistory,
 }) {
   if (!isGenerated) {
     return <p>Please Gen Schedule First</p>;
   }
 
   const [selectedDoctor, setSelectedDoctor] = useState("Ingrid");
+
+  const handleSelectDoctor = (load) => {
+    setSelectedDoctor(load);
+  };
 
   useEffect(() => {
     saveToLocalStorage("tableSlots", tableSlots);
@@ -81,6 +87,8 @@ export default function TablePage({
         slots={tableSlots}
         handleRemoveDoctor={handleRemoveDoctor}
         handleAddDoctor={handleAddDoctor}
+        handleSelectDoctor={handleSelectDoctor}
+        workHistory={workHistory}
       />
       <Summary
         selectedDoctor={selectedDoctor}
@@ -92,9 +100,19 @@ export default function TablePage({
   );
 }
 
-const Table = ({ slots, handleRemoveDoctor, handleAddDoctor, doctors }) => {
+const Table = ({
+  slots,
+  handleRemoveDoctor,
+  handleAddDoctor,
+  doctors,
+  workHistory,
+}) => {
   const [page, setPage] = useState(0);
   const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
+
+  useEffect(() => {
+    setPage(0);
+  }, []);
 
   useEffect(() => {
     const weeks = deriveWeeks(slots); // Derive weeks from the latest slots
