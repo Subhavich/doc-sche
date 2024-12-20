@@ -157,10 +157,12 @@ function App() {
 
   //Generate New Month
   const handleAddNewMonth = () => {
-    const processedDoctors = config.doctors.map((doctor) => ({
-      ...doctor,
-      slots: doctor.slots.map((slot) => ({ ...slot })), // Deep copy slots
-    }));
+    const processedDoctors = [
+      ...tableDoctors.map((doctor) => ({
+        ...doctor,
+        slots: [], // Deep copy slots
+      })),
+    ];
 
     const newMonth =
       config.scheduleStart.month >= 11

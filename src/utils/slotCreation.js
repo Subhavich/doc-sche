@@ -62,7 +62,18 @@ export const generateMonthSlots = (year, monthIndex) => {
 };
 
 export const sortDoctors = (doctors) => {
-  doctors.sort((a, b) => a.slots.length + a.quota - (b.slots.length + b.quota));
+  // Perform the sorting with a custom logging mechanism
+  doctors.sort((a, b) => {
+    // Log the comparison step
+
+    // Perform the comparison
+    const result = a.slots.length - a.quota - (b.slots.length - b.quota);
+
+    return result;
+  });
+
+  // Return the sorted array
+  return doctors;
 };
 
 export const addSlot = (doctor, slot, force = false) => {
@@ -121,6 +132,7 @@ export const addSlot = (doctor, slot, force = false) => {
 export const scheduleSlots = (doctors, slots) => {
   for (const slot of slots) {
     sortDoctors(doctors);
+    doctors.forEach((c) => console.log(c.name, c.slots.length, c.quota));
 
     let assigned = false;
 
@@ -138,7 +150,7 @@ export const scheduleSlots = (doctors, slots) => {
         console.log("Added : ", slot.id, " to ", doctor);
         break;
       } catch (e) {
-        console.log("Cannot Add Slot : ", slot.id, " due to ", e.message);
+        // console.log("Cannot Add Slot : ", slot.id, " due to ", e.message);
         // Slot cannot be assigned to this doctor, continue
       }
     }
