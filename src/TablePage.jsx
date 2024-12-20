@@ -26,46 +26,48 @@ export default function TablePage({
   }, [tableDoctors]);
 
   const handleRemoveDoctor = (slotId) => {
+    let updatedSlots;
     setTableSlots((prev) => {
-      return prev.map((slot) =>
+      updatedSlots = prev.map((slot) =>
         slot.id === slotId ? { ...slot, doctor: null } : slot
       );
+      return updatedSlots;
     });
 
     setTableDoctors((prevDoctors) =>
       prevDoctors.map((doctor) => ({
         ...doctor,
         slots: doctor.slots.filter((slot) => slot.id !== slotId),
-        quota: calculateAccumulatedCost(doctor.name, tableSlots),
+        quota: calculateAccumulatedCost(doctor.name, updatedSlots),
       }))
     );
   };
 
   const handleAddDoctor = (slotId, doctorName) => {
     let updatedSlot;
+    let updatedSlots;
 
     setTableSlots((prev) => {
       const targetedSlot = prev.find((slot) => slot.id === slotId);
       if (!targetedSlot) return prev;
 
       updatedSlot = { ...targetedSlot, doctor: doctorName }; // Save the updated slot
-      return prev.map((slot) => (slot.id === slotId ? updatedSlot : slot));
+      updatedSlots = prev.map((slot) =>
+        slot.id === slotId ? updatedSlot : slot
+      );
+      return updatedSlots;
     });
 
-    // Use the `updatedSlot` directly
-    setTableDoctors((prevDoctors) => {
-      return prevDoctors.map((doctor) => {
-        if (doctor.name === doctorName) {
-          if (!doctor.slots.some((slot) => slot.id === slotId)) {
-            return {
-              ...doctor,
-              slots: [...doctor.slots, updatedSlot].sort((a, b) => a.t - b.t),
-            };
-          }
-        }
-        return doctor;
-      });
-    });
+    setTableDoctors((prevDoctors) =>
+      prevDoctors.map((doctor) => ({
+        ...doctor,
+        slots:
+          doctor.name === doctorName
+            ? [...doctor.slots, updatedSlot].sort((a, b) => a.t - b.t)
+            : doctor.slots,
+        quota: calculateAccumulatedCost(doctor.name, updatedSlots), // Recalculate quota for all doctors
+      }))
+    );
   };
 
   if (!tableDoctors || !tableSlots) {

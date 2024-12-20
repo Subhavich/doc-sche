@@ -62,7 +62,7 @@ export const generateMonthSlots = (year, monthIndex) => {
 };
 
 export const sortDoctors = (doctors) => {
-  doctors.sort((a, b) => a.slots.length - b.slots.length);
+  doctors.sort((a, b) => a.slots.length + a.quota - (b.slots.length + b.quota));
 };
 
 export const addSlot = (doctor, slot, force = false) => {
