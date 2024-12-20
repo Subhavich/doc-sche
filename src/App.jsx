@@ -41,7 +41,7 @@ function App() {
 
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
-    return savedSlots || [];
+    return savedSlots;
   });
 
   const [tableDoctors, setTableDoctors] = useState(() => {
@@ -123,6 +123,10 @@ function App() {
     });
     // Save "isGenerated" to localStorage and change display to TablePage
     saveToLocalStorage("isGenerated", true);
+    setActivePage(0);
+    saveToLocalStorage("currentPage", 0);
+    saveToLocalStorage("tableSlots", updatedSlots);
+    saveToLocalStorage("tableDoctors", updatedDoctors);
 
     setDisplay("table");
   };
@@ -130,7 +134,7 @@ function App() {
   const handleAddNewMonth = () => {
     const processedDoctors = config.doctors.map((doctor) => ({
       ...doctor,
-      slots: doctor.slots.map((slot) => ({ ...slot })),
+      slots: doctor.slots.map((slot) => ({ ...slot })), // Deep copy slots
     }));
 
     const newMonth =
@@ -144,7 +148,8 @@ function App() {
 
     const generatedSlots = generateMonthSlots(newYear, newMonth);
     scheduleSlots(processedDoctors, generatedSlots);
-    // Use the values directly to update states
+
+    // Use deep copy to avoid mutating shared references
     const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
     const updatedSlots = deepCopy(generatedSlots);
     const updatedDoctors = deepCopy(processedDoctors);
@@ -154,28 +159,32 @@ function App() {
       year: newYear,
     };
 
-    const pastLength = workHistory.length;
     setWorkHistory((prev) => {
-      const copied = [...prev];
-      if (prev.length === 3) {
-        copied.shift();
+      // Append the new month's data first
+      const updatedHistory = [
+        ...prev,
+        { date: dateObject, slots: updatedSlots, doctors: updatedDoctors },
+      ];
+
+      // Trim to the last 3 months, if necessary
+      if (updatedHistory.length > 3) {
+        updatedHistory.shift();
       }
 
-      return [
-        ...copied,
-        { date: dateObject, slots: tableSlots, doctors: tableDoctors },
-      ];
+      return updatedHistory;
     });
 
-    setTableSlots(updatedSlots); // Directly use updated values
+    setTableSlots(updatedSlots); // Update current state
     setTableDoctors(updatedDoctors);
 
     setConfig((prev) => ({
       ...prev,
       scheduleStart: { year: newYear, month: newMonth },
     }));
-    setActivePage(pastLength);
-    saveToLocalStorage("currentPage", pastLength);
+
+    const newPageIndex = Math.min(workHistory.length, 2); // Ensure index is valid after trimming
+    setActivePage(newPageIndex); // Set to the new month
+    saveToLocalStorage("currentPage", newPageIndex);
     saveToLocalStorage("tableSlots", updatedSlots);
     saveToLocalStorage("tableDoctors", updatedDoctors);
   };
