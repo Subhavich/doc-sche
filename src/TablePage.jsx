@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Pagination, TBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
@@ -82,6 +82,7 @@ export default function TablePage({
 
   return (
     <>
+      <DoctorSettings doctors={tableDoctors} />
       <Table
         doctors={tableDoctors}
         slots={tableSlots}
@@ -106,7 +107,6 @@ const Table = ({
   handleAddDoctor,
   handleSelectDoctor,
   doctors,
-  workHistory,
 }) => {
   const [page, setPage] = useState(0);
   const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
@@ -144,6 +144,37 @@ const Table = ({
           currentWeek={currentWeek}
         />
       </table>
+    </>
+  );
+};
+
+const DoctorSettings = ({ doctors }) => {
+  return (
+    <>
+      <div>
+        {doctors.map((doctor) => (
+          <DoctorField doctorName={doctor.name} />
+        ))}
+      </div>
+    </>
+  );
+};
+
+const DoctorField = ({ doctorName }) => {
+  const checkboxref = useRef();
+  return (
+    <>
+      <b>{doctorName}</b>
+      <label htmlFor="ERNight"></label>
+      <input
+        type="checkbox"
+        ref={checkboxref}
+        id="ERNight"
+        name="ERNight"
+        onClick={() => {
+          console.log(doctorName, checkboxref.current.checked);
+        }}
+      />
     </>
   );
 };

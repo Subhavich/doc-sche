@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
 
+const divStyle = {
+  border: "2px solid black",
+  padding: "16px",
+  marginBottom: "16px",
+};
+
 export function DoctorData({
   name,
   color,
@@ -17,6 +23,7 @@ export function DoctorData({
   const nameRef = useRef();
   const componentRef = useRef();
   const pickerRef = useRef();
+  const checkboxref = useRef();
 
   useEffect(() => {
     setHex(color);
@@ -118,19 +125,13 @@ export function DoctorData({
   }, [isPickerVisible, isRenaming]);
 
   return (
-    <div
-      ref={componentRef}
-      style={{
-        border: "2px solid black",
-        padding: "16px",
-        marginBottom: "16px",
-      }}
-    >
+    <div ref={componentRef} style={divStyle}>
       {isRenaming ? (
         <input onKeyDown={handleKeyDown} defaultValue={name} ref={nameRef} />
       ) : (
         <span>{name}</span>
       )}
+
       <button
         onClick={() => {
           if (isRenaming) {
@@ -141,6 +142,20 @@ export function DoctorData({
       >
         {isRenaming ? "Confirm" : "Rename"}
       </button>
+
+      <div>
+        <b>{name}</b>
+        <label htmlFor="ERNight"></label>
+        <input
+          type="checkbox"
+          ref={checkboxref}
+          id="ERNight"
+          name="ERNight"
+          onClick={() => {
+            console.log(name, checkboxref.current.checked);
+          }}
+        />
+      </div>
 
       <div
         onClick={() => setIsPicker((prev) => !prev)}
