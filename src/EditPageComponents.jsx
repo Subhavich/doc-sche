@@ -91,6 +91,20 @@ export function DoctorData({
     setTableDoctors(null);
   };
 
+  const handleUpdateDoctorOmit = () => {
+    setConfig((prev) => {
+      const updatedDoctors = [
+        ...prev.doctors.map((doctor) =>
+          doctor.name === name
+            ? { ...doctor, omitERNight: checkboxref.current.checked }
+            : { ...doctor }
+        ),
+      ];
+      console.log({ ...prev, doctors: updatedDoctors });
+      return { ...prev, doctors: updatedDoctors };
+    });
+  };
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       setIsRenaming(false);
@@ -153,6 +167,7 @@ export function DoctorData({
           name="ERNight"
           onClick={() => {
             console.log(name, checkboxref.current.checked);
+            handleUpdateDoctorOmit();
           }}
         />
       </div>

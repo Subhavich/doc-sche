@@ -138,6 +138,15 @@ export const scheduleSlots = (doctors, slots) => {
 
     for (const doctor of doctors) {
       try {
+        if (doctor.omitERNight && slot.type === "ERNight") {
+          console.log(
+            doctor.name,
+            " No Want ",
+            slot.id,
+            " should throw error "
+          );
+        }
+
         addSlot(doctor, slot);
 
         // Update the reference in `slots` as well
