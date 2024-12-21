@@ -82,7 +82,10 @@ export default function TablePage({
 
   return (
     <>
-      <DoctorSettings doctors={tableDoctors} />
+      <DoctorSettings
+        doctors={tableDoctors}
+        setTableDoctors={setTableDoctors}
+      />
       <Table
         doctors={tableDoctors}
         slots={tableSlots}
@@ -148,19 +151,24 @@ const Table = ({
   );
 };
 
-const DoctorSettings = ({ doctors }) => {
+const DoctorSettings = ({ doctors, setTableDoctors }) => {
   return (
     <>
       <div>
         {doctors.map((doctor) => (
-          <DoctorField doctorName={doctor.name} />
+          <DoctorField
+            doctors={doctors}
+            doctorName={doctor.name}
+            omitStatus={doctor.omitERNight}
+            setTableDoctors={setTableDoctors}
+          />
         ))}
       </div>
     </>
   );
 };
 
-const DoctorField = ({ doctorName }) => {
+const DoctorField = ({ doctorName, omitStatus, setTableDoctors }) => {
   const checkboxref = useRef();
   return (
     <>
@@ -171,8 +179,18 @@ const DoctorField = ({ doctorName }) => {
         ref={checkboxref}
         id="ERNight"
         name="ERNight"
-        onClick={() => {
-          console.log(doctorName, checkboxref.current.checked);
+        checked={omitStatus}
+        onChange={() => {
+          setTableDoctors((prev) => {
+            const newDoctors = [
+              ...prev.map((doctor) =>
+                doctor.name === doctorName
+                  ? { ...doctor, omitERNight: checkboxref.current.checked }
+                  : { ...doctor }
+              ),
+            ];
+            return newDoctors;
+          });
         }}
       />
     </>
