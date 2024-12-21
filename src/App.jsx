@@ -7,22 +7,26 @@ import { generateMonthSlots, scheduleSlots } from "./utils/slotCreation";
 import {
   loadFromLocalStorage,
   saveToLocalStorage,
-  clearLocalStorage,
   logAllFromLocalStorage,
 } from "./utils/localStorage";
 import { MOCKDOCS, MOCKDOCSFULL } from "./utils/static";
 import ReadOnlyTablePage from "./ReadOnlyTablePage";
-import { hasUnassignedSlots } from "./utils/slotValidation";
 import { calculateAccumulatedCost } from "./utils/derivingValues";
+import {
+  ClearStorageButton,
+  SwitchDispButton,
+  GenerateTableButton,
+  HistoryPagination,
+} from "./AppComponents";
+
 const currentYear = new Date(2025, 3).getFullYear();
 const currentMonth = new Date(2025, 3).getMonth();
+
 function App() {
   logAllFromLocalStorage();
 
-  // Check if the schedule has been generated before
   const [workHistory, setWorkHistory] = useState(() => {
     const savedWorkHistory = loadFromLocalStorage("workHistory");
-    console.log("Loaded WorkHistory", savedWorkHistory);
     return savedWorkHistory || [];
   });
 
@@ -33,18 +37,17 @@ function App() {
 
   const [display, setDisplay] = useState(() => {
     const isGenerated = loadFromLocalStorage("isGenerated");
-    return isGenerated ? "table" : "edit"; // If true, show TablePage; else EditingPage
+    return isGenerated ? "table" : "edit";
   });
 
   const [tableSlots, setTableSlots] = useState(() => {
     const savedSlots = loadFromLocalStorage("tableSlots");
-    console.log("Loaded Slots", savedSlots);
     return savedSlots;
   });
 
   const [tableDoctors, setTableDoctors] = useState(() => {
     const savedDoctors = loadFromLocalStorage("tableDoctors");
-    return savedDoctors; // Use saved data or initial data
+    return savedDoctors;
   });
 
   const [config, setConfig] = useState(() => {
@@ -62,7 +65,6 @@ function App() {
   const [displaySlots, setDisplaySlots] = useState();
 
   useEffect(() => {
-    console.log("THIS TRIGGERS");
     setWorkHistory((prev) => {
       if (activePage !== workHistory.length - 1) {
         return prev;
@@ -151,7 +153,6 @@ function App() {
     saveToLocalStorage("currentPage", 0);
     saveToLocalStorage("tableSlots", updatedSlots);
     saveToLocalStorage("tableDoctors", updatedDoctors);
-
     setDisplay("table");
   };
 
@@ -225,16 +226,12 @@ function App() {
 
   const handleSelectPage = (page) => {
     if (page === workHistory.length - 1) {
-      console.log("In the Present");
       setTableSlots(workHistory[page].slots);
       setTableDoctors(workHistory[page].doctors);
       setActivePage(page);
       return;
     }
     setActivePage(page);
-    console.log("In the Past");
-    console.log(workHistory[page]);
-
     setDisplaySlots(workHistory[page].slots);
     setDisplayDoctors(workHistory[page].doctors);
   };
@@ -300,74 +297,3 @@ function App() {
 }
 
 export default App;
-
-const ClearStorageButton = () => {
-  return (
-    <button
-      onClick={() => {
-        clearLocalStorage([
-          "tableSlots",
-          "tableDoctors",
-          "isGenerated",
-          "config",
-          "workHistory",
-        ]);
-        console.log("Local storage cleared.");
-        window.location.reload();
-      }}
-    >
-      Clear Local
-    </button>
-  );
-};
-const SwitchDispButton = ({ setDisplay }) => {
-  return (
-    <button
-      onClick={() => {
-        setDisplay((prev) => (prev === "table" ? "edit" : "table"));
-      }}
-    >
-      Switch display
-    </button>
-  );
-};
-const GenerateTableButton = ({ handleGenerateSchedule }) => {
-  return (
-    <>
-      {!loadFromLocalStorage("isGenerated") && (
-        <button onClick={handleGenerateSchedule}>
-          Generate Schedule and View Table
-        </button>
-      )}
-    </>
-  );
-};
-const HistoryPagination = ({
-  workHistory,
-  handleAddNewMonth,
-  tableSlots,
-  handleSelectPage,
-}) => {
-  return (
-    <div>
-      {workHistory.map((month, ind) => {
-        return (
-          <button key={ind} onClick={() => handleSelectPage(ind)}>
-            {Number(month.date.month) + 1} - {month.date.year}
-          </button>
-        );
-      })}
-      <button
-        onClick={() => {
-          if (hasUnassignedSlots(tableSlots)) {
-            console.log("still has unassigned slots");
-            return;
-          }
-          handleAddNewMonth();
-        }}
-      >
-        +
-      </button>
-    </div>
-  );
-};
