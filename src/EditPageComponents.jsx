@@ -158,8 +158,7 @@ export function DoctorData({
       </button>
 
       <div>
-        <b>{name}</b>
-        <label htmlFor="ERNight"></label>
+        <label htmlFor="ERNight">Don't Want ER Night</label>
         <input
           type="checkbox"
           ref={checkboxref}
