@@ -3,32 +3,37 @@ import { hasUnassignedSlots } from "./utils/slotValidation";
 
 export const ClearStorageButton = () => {
   return (
-    <button
-      onClick={() => {
-        clearLocalStorage([
-          "tableSlots",
-          "tableDoctors",
-          "isGenerated",
-          "config",
-          "workHistory",
-        ]);
-        console.log("Local storage cleared.");
-        window.location.reload();
-      }}
-    >
-      Clear Local
-    </button>
+    <div>
+      <button
+        onClick={() => {
+          clearLocalStorage([
+            "tableSlots",
+            "tableDoctors",
+            "isGenerated",
+            "config",
+            "workHistory",
+          ]);
+          console.log("Local storage cleared.");
+          window.location.reload();
+        }}
+      >
+        RESET
+      </button>
+    </div>
   );
 };
-export const SwitchDispButton = ({ setDisplay }) => {
+export const SwitchDispButton = ({ display, setDisplay }) => {
+  const text = display === "table" ? "Edit Doctors " : "Back To Table ";
   return (
-    <button
-      onClick={() => {
-        setDisplay((prev) => (prev === "table" ? "edit" : "table"));
-      }}
-    >
-      Switch display
-    </button>
+    <div>
+      <button
+        onClick={() => {
+          setDisplay((prev) => (prev === "table" ? "edit" : "table"));
+        }}
+      >
+        {text}
+      </button>
+    </div>
   );
 };
 export const GenerateTableButton = ({ handleGenerateSchedule }) => {
@@ -66,7 +71,7 @@ export const HistoryPagination = ({
           handleAddNewMonth();
         }}
       >
-        +
+        + Generate Next Month
       </button>
     </div>
   );

@@ -39,9 +39,9 @@ export default function EditingPage({
   const [generated, setGenerated] = useState(isGenerated);
   return (
     <>
-      <EditLogger config={config} />
+      {/* <EditLogger config={config} />
 
-      <hr />
+      <hr /> */}
 
       {!isGenerated && (
         <DateInput
@@ -121,19 +121,26 @@ function DoctorInput({ handleAddDoctor, setConfig }) {
 
   return (
     <>
-      <p>doctors</p>
-      <input
-        ref={inputRef}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleAddDoctor(inputRef.current.value, hex);
-            inputRef.current.value = "";
-          }
-        }}
-      />
+      <div>
+        <span>Input Doctor's Name : </span>
+        <input
+          ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleAddDoctor(inputRef.current.value, hex);
+              inputRef.current.value = "";
+            }
+          }}
+        />
+      </div>
       <div
         onClick={() => setIsPicker((prev) => !prev)}
-        style={{ width: "32px", height: "32px", backgroundColor: hex }}
+        style={{
+          width: "32px",
+          height: "32px",
+          backgroundColor: hex,
+          margin: "16px",
+        }}
       ></div>
       {isPickerVisible ? (
         <>
@@ -316,8 +323,18 @@ function DoctorData({
       {isRenaming ? (
         <input onKeyDown={handleKeyDown} defaultValue={name} ref={nameRef} />
       ) : (
-        <p>{name}</p>
+        <span>{name}</span>
       )}
+      <button
+        onClick={() => {
+          if (isRenaming) {
+            handleUpdateDoctorName();
+          }
+          setIsRenaming((prev) => !prev);
+        }}
+      >
+        {isRenaming ? "Confirm" : "Rename"}
+      </button>
 
       <div
         onClick={() => setIsPicker((prev) => !prev)}
@@ -325,6 +342,7 @@ function DoctorData({
           width: "32px",
           height: "32px",
           backgroundColor: hex,
+          marginBottom: "8px",
         }}
       ></div>
 
@@ -335,17 +353,6 @@ function DoctorData({
           onChange={(color) => handleUpdateDoctorColor(color.hex)}
         />
       )}
-
-      <button
-        onClick={() => {
-          if (isRenaming) {
-            handleUpdateDoctorName();
-          }
-          setIsRenaming((prev) => !prev);
-        }}
-      >
-        {isRenaming ? "Confirm" : "Rename Doctor"}
-      </button>
 
       <button onClick={handleDeleteDoctor}>Delete</button>
     </div>

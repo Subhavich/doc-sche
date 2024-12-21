@@ -21,6 +21,7 @@ import {
 
 const currentYear = new Date(2025, 3).getFullYear();
 const currentMonth = new Date(2025, 3).getMonth();
+const startingDoctors = MOCKDOCSFULL;
 logAllFromLocalStorage();
 
 function App() {
@@ -54,7 +55,7 @@ function App() {
     return (
       savedConfig || {
         scheduleStart: { year: currentYear, month: currentMonth },
-        doctors: MOCKDOCSFULL,
+        doctors: startingDoctors,
       }
     );
   });
@@ -240,7 +241,7 @@ function App() {
 
   return (
     <div>
-      <SwitchDispButton setDisplay={setDisplay} />
+      <SwitchDispButton display={display} setDisplay={setDisplay} />
       <ClearStorageButton />
       {loadFromLocalStorage("isGenerated") && (
         <HistoryPagination
