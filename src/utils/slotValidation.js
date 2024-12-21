@@ -85,3 +85,29 @@ export const hasUnassignedSlots = (slots) => {
   }
   return hasUnassignedSlots;
 };
+
+// utils/validation.js
+export const validateSlotProblems = (prevSlot, currentSlot, nextSlot) => {
+  const erProblem =
+    isERConsecutive(prevSlot, currentSlot) ||
+    isERConsecutive(currentSlot, nextSlot);
+  const adequateProblem =
+    isAdequateSpacing(prevSlot, currentSlot) ||
+    isAdequateSpacing(currentSlot, nextSlot);
+  const bothProblem = erProblem && adequateProblem;
+
+  const problemColor = (() => {
+    switch (true) {
+      case bothProblem:
+        return "red";
+      case erProblem:
+        return "orange";
+      case adequateProblem:
+        return "yellow";
+      default:
+        return null; // No problem
+    }
+  })();
+
+  return problemColor;
+};

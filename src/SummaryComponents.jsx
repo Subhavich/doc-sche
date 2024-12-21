@@ -1,5 +1,4 @@
-import { isAdequateSpacing, isERConsecutive } from "./utils/slotValidation";
-import { calculateAccumulatedCost } from "./utils/derivingValues";
+import { validateSlotProblems } from "./utils/slotValidation";
 import { useState, useEffect } from "react";
 
 export const Summary = ({ selectedDoctor, slots }) => {
@@ -7,10 +6,9 @@ export const Summary = ({ selectedDoctor, slots }) => {
 
   useEffect(() => {
     // Update the slots of the selected doctor whenever `slots` changes
-    const filteredSlots = slots.filter(
-      (slot) => slot.doctor === selectedDoctor
+    setTheSlotsOfThisDoctor(
+      slots.filter((slot) => slot.doctor === selectedDoctor)
     );
-    setTheSlotsOfThisDoctor(filteredSlots);
   }, [slots, selectedDoctor]);
 
   return (
@@ -26,38 +24,11 @@ export const Summary = ({ selectedDoctor, slots }) => {
         }}
       >
         {theSlotsOfThisDoctor.map((slot, ind) => {
-          const erProblem =
-            isERConsecutive(
-              theSlotsOfThisDoctor[ind - 1],
-              theSlotsOfThisDoctor[ind]
-            ) ||
-            isERConsecutive(
-              theSlotsOfThisDoctor[ind],
-              theSlotsOfThisDoctor[ind + 1]
-            );
-          const adequateProblem =
-            isAdequateSpacing(
-              theSlotsOfThisDoctor[ind - 1],
-              theSlotsOfThisDoctor[ind]
-            ) ||
-            isAdequateSpacing(
-              theSlotsOfThisDoctor[ind],
-              theSlotsOfThisDoctor[ind + 1]
-            );
-          const bothProblem = adequateProblem && erProblem;
-
-          const problemColor = (() => {
-            switch (true) {
-              case bothProblem:
-                return "red";
-              case erProblem:
-                return "orange";
-              case adequateProblem:
-                return "yellow";
-              default:
-                return null; // No problem
-            }
-          })();
+          const problemColor = validateSlotProblems(
+            theSlotsOfThisDoctor[ind - 1],
+            slot,
+            theSlotsOfThisDoctor[ind + 1]
+          );
 
           return (
             <b
@@ -91,41 +62,18 @@ export const SuperSummary = ({ doctors, slots }) => {
             <div key={i}>
               <b>{doctor.name}</b>
               <div
-                style={{ display: "flex", maxWidth: "120px", flexWrap: "wrap" }}
+                style={{
+                  display: "flex",
+                  maxWidth: "120px",
+                  flexWrap: "wrap",
+                }}
               >
                 {theSlotsOfThisDoctor.map((slot, ind) => {
-                  const erProblem =
-                    isERConsecutive(
-                      theSlotsOfThisDoctor[ind - 1],
-                      theSlotsOfThisDoctor[ind]
-                    ) ||
-                    isERConsecutive(
-                      theSlotsOfThisDoctor[ind],
-                      theSlotsOfThisDoctor[ind + 1]
-                    );
-                  const adequateProblem =
-                    isAdequateSpacing(
-                      theSlotsOfThisDoctor[ind - 1],
-                      theSlotsOfThisDoctor[ind]
-                    ) ||
-                    isAdequateSpacing(
-                      theSlotsOfThisDoctor[ind],
-                      theSlotsOfThisDoctor[ind + 1]
-                    );
-                  const bothProblem = adequateProblem && erProblem;
-
-                  const problemColor = (() => {
-                    switch (true) {
-                      case bothProblem:
-                        return "red";
-                      case erProblem:
-                        return "orange";
-                      case adequateProblem:
-                        return "yellow";
-                      default:
-                        return null; // No problem
-                    }
-                  })();
+                  const problemColor = validateSlotProblems(
+                    theSlotsOfThisDoctor[ind - 1],
+                    slot,
+                    theSlotsOfThisDoctor[ind + 1]
+                  );
 
                   return (
                     <div
@@ -148,5 +96,3 @@ export const SuperSummary = ({ doctors, slots }) => {
     </>
   );
 };
-
-//calculateAccumulatedCost(doctor.name, slots)
