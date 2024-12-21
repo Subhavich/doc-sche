@@ -17,11 +17,13 @@ import {
   SwitchDispButton,
   GenerateTableButton,
   HistoryPagination,
+  UseMockDoctorsButton,
 } from "./AppComponents";
 
 const currentYear = new Date(2025, 3).getFullYear();
 const currentMonth = new Date(2025, 3).getMonth();
-const startingDoctors = MOCKDOCSFULL;
+const startingDoctors = [];
+//[],MOCKDOCSFULL,MOCKDOCS
 logAllFromLocalStorage();
 
 function App() {
@@ -106,11 +108,11 @@ function App() {
 
   //Generate First Time
   const handleGenerateSchedule = () => {
-    // Generate slots and doctors when button is pressed
+    // COPY doctor from config/ Add slots
     const processedDoctors = config.doctors.map((doctor) => {
       return {
         ...doctor,
-        slots: doctor.slots.map((slot) => ({ ...slot })),
+        slots: [],
       };
     });
     // NEED TO INCLUDE DR ACCUMULATED IN GENERATION PROCESS
@@ -241,6 +243,10 @@ function App() {
 
   return (
     <div>
+      {!loadFromLocalStorage("isGenerated") && (
+        <UseMockDoctorsButton config={config} setConfig={setConfig} />
+      )}
+
       <SwitchDispButton display={display} setDisplay={setDisplay} />
       <ClearStorageButton />
       {loadFromLocalStorage("isGenerated") && (
@@ -262,6 +268,7 @@ function App() {
             setTableSlots={setTableSlots}
             tableDoctors={tableDoctors}
             tableSlots={tableSlots}
+            handleGenerateSchedule={handleGenerateSchedule}
           />
           <GenerateTableButton
             handleGenerateSchedule={handleGenerateSchedule}

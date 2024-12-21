@@ -1,5 +1,6 @@
 import { clearLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
+import { MOCKDOCSFULL } from "./utils/static";
 
 export const ClearStorageButton = () => {
   return (
@@ -74,5 +75,19 @@ export const HistoryPagination = ({
         + Generate Next Month
       </button>
     </div>
+  );
+};
+
+export const UseMockDoctorsButton = ({ config, setConfig }) => {
+  return (
+    <button
+      onClick={() => {
+        setConfig((prev) => {
+          return { ...prev, doctors: MOCKDOCSFULL };
+        });
+      }}
+    >
+      USE MOCKDOCS
+    </button>
   );
 };
