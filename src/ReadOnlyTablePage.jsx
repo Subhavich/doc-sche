@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Pagination, ReadOnlyTBody, TBody, THead } from "./TableComponents";
+import { Pagination, ReadOnlyTBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { Summary, SuperSummary } from "./SummaryComponents";
 

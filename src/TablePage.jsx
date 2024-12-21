@@ -4,7 +4,7 @@ import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
 import { Summary, SuperSummary } from "./SummaryComponents";
 import { calculateAccumulatedCost } from "./utils/derivingValues";
-import { use } from "react";
+
 export default function TablePage({
   tableSlots,
   setTableSlots,
