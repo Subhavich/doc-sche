@@ -139,12 +139,7 @@ export const scheduleSlots = (doctors, slots) => {
     for (const doctor of doctors) {
       try {
         if (doctor.omitERNight && slot.type === "ERNight") {
-          console.log(
-            doctor.name,
-            " No Want ",
-            slot.id,
-            " should throw error "
-          );
+          throw new Error(`${doctor.name} rejects ${slot.id}`);
         }
 
         addSlot(doctor, slot);
@@ -159,6 +154,7 @@ export const scheduleSlots = (doctors, slots) => {
         console.log("Added : ", slot.id, " to ", doctor);
         break;
       } catch (e) {
+        console.log(e);
         // console.log("Cannot Add Slot : ", slot.id, " due to ", e.message);
         // Slot cannot be assigned to this doctor, continue
       }
