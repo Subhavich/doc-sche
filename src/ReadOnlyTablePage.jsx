@@ -18,9 +18,17 @@ export default function ReadOnlyTablePage({
 
   const [selectedDoctor, setSelectedDoctor] = useState("Ingrid");
 
+  const handleSelectDoctor = (load) => {
+    setSelectedDoctor(load);
+  };
+
   return (
     <>
-      <Table doctors={tableDoctors} slots={tableSlots} />
+      <Table
+        doctors={tableDoctors}
+        slots={tableSlots}
+        handleSelectDoctor={handleSelectDoctor}
+      />
       <Summary
         selectedDoctor={selectedDoctor}
         slots={tableSlots}
@@ -31,7 +39,7 @@ export default function ReadOnlyTablePage({
   );
 }
 
-const Table = ({ slots, doctors }) => {
+const Table = ({ slots, doctors, handleSelectDoctor }) => {
   const [page, setPage] = useState(0);
 
   useEffect(() => {
@@ -50,6 +58,7 @@ const Table = ({ slots, doctors }) => {
           page={page}
           setPage={setPage}
           currentWeek={currentWeek}
+          handleSelectDoctor={handleSelectDoctor}
         />
       </table>
     </>

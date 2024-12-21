@@ -64,6 +64,7 @@ export const ReadOnlyTBody = ({
   page,
   setPage,
   currentWeek,
+  handleSelectDoctor,
 }) => {
   return (
     <>
@@ -84,6 +85,7 @@ export const ReadOnlyTBody = ({
                         id={slot.id}
                         slots={slots}
                         doctors={doctors}
+                        handleSelectDoctor={handleSelectDoctor}
                       />
                     </div>
                   ))}
@@ -157,11 +159,12 @@ const DoctorButton = ({
   );
 };
 
-const ReadOnlyDoctorButton = ({ doctors, doctorName }) => {
+const ReadOnlyDoctorButton = ({ doctors, doctorName, handleSelectDoctor }) => {
   const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
   return (
     <>
       <button
+        onClick={() => handleSelectDoctor(doctorName)}
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}
