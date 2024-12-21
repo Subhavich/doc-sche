@@ -21,10 +21,9 @@ import {
 
 const currentYear = new Date(2025, 3).getFullYear();
 const currentMonth = new Date(2025, 3).getMonth();
+logAllFromLocalStorage();
 
 function App() {
-  logAllFromLocalStorage();
-
   const [workHistory, setWorkHistory] = useState(() => {
     const savedWorkHistory = loadFromLocalStorage("workHistory");
     return savedWorkHistory || [];
@@ -64,6 +63,7 @@ function App() {
   const [displayDoctors, setDisplayDoctors] = useState();
   const [displaySlots, setDisplaySlots] = useState();
 
+  //Save most recent changes to localStorage's History
   useEffect(() => {
     setWorkHistory((prev) => {
       if (activePage !== workHistory.length - 1) {
@@ -93,11 +93,12 @@ function App() {
     }
   }, [tableSlots, tableDoctors]);
 
-  //SAVE CONFIG TO LOCALSTORAGE ON CONFIG CHANGES
+  //Save config changes to localStorage's Config
   useEffect(() => {
     saveToLocalStorage("config", config);
   }, [config]);
 
+  //Save workHistory to localStoage on change
   useEffect(() => {
     saveToLocalStorage("workHistory", workHistory);
   }, [workHistory]);
@@ -224,6 +225,7 @@ function App() {
     window.location.reload();
   };
 
+  //Select Page of workHistory
   const handleSelectPage = (page) => {
     if (page === workHistory.length - 1) {
       setTableSlots(workHistory[page].slots);
@@ -280,7 +282,7 @@ function App() {
           )}
           {activePage < workHistory.length - 1 && (
             <>
-              <p>read only</p>
+              <p>READ ONLY TABLE</p>
               <ReadOnlyTablePage
                 tableDoctors={displayDoctors}
                 setTableDoctors={setDisplayDoctors}
