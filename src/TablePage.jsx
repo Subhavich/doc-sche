@@ -6,6 +6,7 @@ import { Summary, SuperSummary } from "./SummaryComponents";
 import { calculateAccumulatedCost } from "./utils/derivingValues";
 import { baseButton } from "./utils/tailwindGeneralClasses";
 import { hasUnassignedSlots } from "./utils/slotValidation";
+import html2canvas from "html2canvas";
 
 export default function TablePage({
   tableSlots,
@@ -121,6 +122,24 @@ const Table = ({
   const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
   const [mode, setMode] = useState("default");
   // default/all
+  const divRef = useRef();
+
+  const handleCapture = () => {
+    if (!divRef.current) return;
+
+    html2canvas(divRef.current, {
+      scale: 1,
+      useCORS: true,
+      backgroundColor: "white",
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = "screenshot.png";
+      link.click();
+    });
+  };
 
   useEffect(() => {
     setPage(0);
@@ -141,15 +160,23 @@ const Table = ({
 
   return (
     <>
-      <div className="mb-8 flex justify-center">
+      <div className="mb-8 flex justify-center space-x-2">
         <button
-          className="text-xl font-semi text-rose-500 border-2 border-rose-500 px-4 py-2 rounded"
+          className="text-xl font-semi text-blue-700 border-2 border-blue-700 px-4 py-2 rounded"
           onClick={() =>
             setMode((prev) => (prev === "all" ? "default" : "all"))
           }
         >
           {mode === "default" ? "Show All Weeks" : "Show One Week"}
         </button>
+        {mode === "all" && (
+          <button
+            className="text-xl font-semi text-lime-600 border-2 border-lime-600 px-4 py-2 rounded"
+            onClick={handleCapture}
+          >
+            Download This Schedule
+          </button>
+        )}
       </div>
       {mode === "default" && (
         <div>
@@ -175,7 +202,7 @@ const Table = ({
         </div>
       )}
       {mode === "all" && (
-        <div className="flex flex-col space-y-12 ">
+        <div ref={divRef} className="flex flex-col space-y-12 ">
           {deriveWeeks(slots).map((week, ind) => (
             <table>
               <THead currentWeek={deriveWeeks(slots)[ind]} />
