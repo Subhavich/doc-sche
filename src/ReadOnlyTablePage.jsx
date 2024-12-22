@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Pagination, ReadOnlyTBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { Summary, SuperSummary } from "./SummaryComponents";
-
+import html2canvas from "html2canvas";
 export default function ReadOnlyTablePage({
   tableSlots,
   tableDoctors,
@@ -42,8 +42,30 @@ export default function ReadOnlyTablePage({
 const Table = ({ slots, doctors, handleSelectDoctor }) => {
   const [page, setPage] = useState(0);
   const [mode, setMode] = useState("default");
-
   const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
+
+  const divRef = useRef();
+
+  const handleCapture = () => {
+    if (!divRef.current) return;
+
+    html2canvas(divRef.current, {
+      scale: 1,
+      useCORS: true,
+      backgroundColor: "white",
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = "screenshot.png";
+      link.click();
+    });
+  };
+
+  useEffect(() => {
+    setPage(0);
+  }, []);
 
   useEffect(() => {
     const weeks = deriveWeeks(slots); // Derive weeks from the latest slots
@@ -58,26 +80,34 @@ const Table = ({ slots, doctors, handleSelectDoctor }) => {
     }
   }, [slots, page]);
 
-  useEffect(() => {
-    setPage(0);
-  }, []);
-
   return (
     <>
-      <button
-        onClick={() => {
-          setMode((prev) => {
-            console.log(currentWeek);
-            return prev === "all" ? "default" : "all";
-          });
-        }}
-      >
-        Change Mode
-      </button>
+      <div className="mb-8 flex justify-center space-x-2">
+        <button
+          className="text-xl font-semi text-blue-700 border-2 border-blue-700 px-4 py-2 rounded"
+          onClick={() =>
+            setMode((prev) => (prev === "all" ? "default" : "all"))
+          }
+        >
+          {mode === "default" ? "Show All Weeks" : "Show One Week"}
+        </button>
+        {mode === "all" && (
+          <button
+            className="text-xl font-semi text-lime-600 border-2 border-lime-600 px-4 py-2 rounded"
+            onClick={handleCapture}
+          >
+            Download This Schedule
+          </button>
+        )}
+      </div>
       {mode === "default" && (
         <>
           {" "}
-          <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
+          <Pagination
+            pages={deriveWeeks(slots).length}
+            setPage={setPage}
+            page={page}
+          />
           <table className="bg-white border-collapse">
             <THead currentWeek={currentWeek} />
             <ReadOnlyTBody
@@ -92,9 +122,9 @@ const Table = ({ slots, doctors, handleSelectDoctor }) => {
         </>
       )}
       {mode === "all" && (
-        <div className="flex flex-col space-y-12 ">
+        <div ref={divRef} className="flex flex-col space-y-12 ">
           {deriveWeeks(slots).map((week, ind) => (
-            <table>
+            <table key={ind} className="bg-white border-collapse">
               <THead currentWeek={deriveWeeks(slots)[ind]} />
               <ReadOnlyTBody
                 slots={slots}

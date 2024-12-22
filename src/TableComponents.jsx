@@ -201,7 +201,7 @@ const ReadOnlyDoctorButton = ({ doctors, doctorName, handleSelectDoctor }) => {
   return (
     <>
       <button
-        className="p-1 flex justify-around text-xs rounded relative"
+        className="py-3 font-bold flex justify-around text-sm rounded relative"
         onClick={() => handleSelectDoctor(doctorName)}
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
