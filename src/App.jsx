@@ -252,7 +252,7 @@ function App() {
         <SwitchDispButton display={display} setDisplay={setDisplay} />
         <ClearStorageButton />
       </Bar>
-      {loadFromLocalStorage("isGenerated") && (
+      {loadFromLocalStorage("isGenerated") && display === "table" && (
         <HistoryPagination
           handleAddNewMonth={handleAddNewMonth}
           workHistory={workHistory}

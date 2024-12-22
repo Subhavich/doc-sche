@@ -4,7 +4,7 @@ import { MOCKDOCSFULL } from "./utils/static";
 import { baseButton } from "./utils/tailwindGeneralClasses";
 
 export const Bar = ({ children }) => {
-  return <div className="flex space-x-4 py-4">{children}</div>;
+  return <div className=" flex space-x-4 py-4">{children}</div>;
 };
 
 export const ClearStorageButton = () => {
@@ -63,15 +63,20 @@ export const HistoryPagination = ({
   handleSelectPage,
 }) => {
   return (
-    <div>
+    <div className="bg-blue-100 p-4 rounded space-x-4">
       {workHistory.map((month, ind) => {
         return (
-          <button key={ind} onClick={() => handleSelectPage(ind)}>
+          <button
+            className={`${baseButton} bg-white`}
+            key={ind}
+            onClick={() => handleSelectPage(ind)}
+          >
             {Number(month.date.month) + 1} - {month.date.year}
           </button>
         );
       })}
       <button
+        className={`${baseButton} bg-blue-800 text-white`}
         onClick={() => {
           if (hasUnassignedSlots(tableSlots)) {
             console.log("still has unassigned slots");
