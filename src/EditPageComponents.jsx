@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
-
+import { clearLocalStorage } from "./utils/localStorage";
 const divStyle = {
   border: "2px solid black",
   padding: "16px",
@@ -87,7 +87,12 @@ export function DoctorData({
     }));
 
     // Step 2: Clear tableSlots and tableDoctors (reset mechanism)
-    clearLocalStorage(["tableSlots", "tableDoctors", "isGenerated"]);
+    clearLocalStorage([
+      "tableSlots",
+      "tableDoctors",
+      "isGenerated",
+      "workHistory",
+    ]);
     setTableSlots(null);
     setTableDoctors(null);
   };
