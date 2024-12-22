@@ -21,8 +21,8 @@ import {
   Bar,
 } from "./AppComponents";
 
-const currentYear = new Date(2025, 3).getFullYear();
-const currentMonth = new Date(2025, 3).getMonth();
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
 const startingDoctors = [];
 //[],MOCKDOCSFULL,MOCKDOCS
 logAllFromLocalStorage();
@@ -243,7 +243,7 @@ function App() {
   };
 
   return (
-    <div className=" max-w-screen-lg mx-auto">
+    <div className="text-blue-900  max-w-screen-lg mx-auto">
       <Bar>
         {!loadFromLocalStorage("isGenerated") && (
           <UseMockDoctorsButton config={config} setConfig={setConfig} />

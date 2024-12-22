@@ -46,8 +46,11 @@ export const GenerateTableButton = ({ handleGenerateSchedule }) => {
   return (
     <>
       {!loadFromLocalStorage("isGenerated") && (
-        <button className={baseButton} onClick={handleGenerateSchedule}>
-          Generate Schedule and View Table
+        <button
+          className="my-6 py-4 px-2 bg-blue-700 text-white rounded"
+          onClick={handleGenerateSchedule}
+        >
+          Generate Schedule
         </button>
       )}
     </>

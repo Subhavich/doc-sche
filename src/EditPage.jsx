@@ -4,6 +4,8 @@ import { createNewDoctor } from "./utils/doctorCreation";
 import { MONTHS } from "./utils/static";
 import { DoctorData } from "./EditPageComponents";
 import { ClearStorageButton } from "./AppComponents";
+import { tailwindHexColors } from "./utils/static";
+import { baseButton } from "./utils/tailwindGeneralClasses";
 export default function EditingPage({
   tableDoctors,
   setTableDoctors,
@@ -71,82 +73,33 @@ export default function EditingPage({
 function DateInput({ config, handleStartChange }) {
   return (
     <>
-      <b style={{ marginRight: "16px" }}>Select Starting Month</b>
+      <div className="p-4 bg-blue-50/75 mb-2 rounded">
+        <h2 className=" font-semibold text-2xl mb-2">Settings</h2>
+        <div className="flex space-x-2 mb-4">
+          <p className=" py-1">Select Starting Month</p>
 
-      <input
-        type="number"
-        min="1900"
-        max="2100"
-        value={config.scheduleStart.year}
-        onChange={(e) => handleStartChange("year", e)}
-      />
-      {/* Month Dropdown */}
-      <select
-        value={config.scheduleStart.month}
-        onChange={(e) => handleStartChange("month", e)}
-      >
-        {MONTHS.map((month, index) => (
-          <option key={index} value={index}>
-            {month}
-          </option>
-        ))}
-      </select>
-    </>
-  );
-}
-
-function DoctorInput({ handleAddDoctor, setConfig }) {
-  const [hex, setHex] = useState("#eee");
-  const [isPickerVisible, setIsPicker] = useState(false);
-
-  const inputRef = useRef();
-  const pickerRef = useRef();
-
-  return (
-    <>
-      <div>
-        <span>Input Doctor's Name : </span>
-        <input
-          ref={inputRef}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleAddDoctor(inputRef.current.value, hex);
-              inputRef.current.value = "";
-            }
-          }}
-        />
-      </div>
-      <div
-        onClick={() => setIsPicker((prev) => !prev)}
-        style={{
-          width: "32px",
-          height: "32px",
-          backgroundColor: hex,
-          margin: "16px",
-        }}
-      ></div>
-      {isPickerVisible ? (
-        <>
-          <Compact
-            ref={pickerRef}
-            style={{ backgroundColor: "#fff" }}
-            color={hex}
-            onChange={(color) => {
-              setHex(color.hex);
-            }}
+          <input
+            className="border rounded px-2 py-1"
+            type="number"
+            min="1900"
+            max="2100"
+            value={config.scheduleStart.year}
+            onChange={(e) => handleStartChange("year", e)}
           />
-
-          <button onClick={() => setIsPicker((prev) => !prev)}>Back</button>
-        </>
-      ) : null}
-      <button
-        onClick={() => {
-          handleAddDoctor(inputRef.current.value, hex);
-          inputRef.current.value = "";
-        }}
-      >
-        Add Doctor
-      </button>
+          {/* Month Dropdown */}
+          <select
+            className="border rounded px-2"
+            value={config.scheduleStart.month}
+            onChange={(e) => handleStartChange("month", e)}
+          >
+            {MONTHS.map((month, index) => (
+              <option key={index} value={index}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     </>
   );
 }
@@ -161,40 +114,109 @@ function DoctorSection({
 }) {
   return (
     <>
-      <h3>Add or Delete doctors</h3>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {config.doctors.map((doctor, ind) => (
-          <DoctorData
-            key={ind}
-            setConfig={setConfig}
-            name={doctor.name}
-            color={doctor.color}
-            setTableDoctors={setTableDoctors}
-            setTableSlots={setTableSlots}
-            tableDoctors={tableDoctors}
-            tableSlots={tableSlots}
-          />
-        ))}
+      <div className=" px-4 mb-4 space-y-2">
+        {config.doctors.length > 0 && (
+          <h3 className="font-semibold  text-xl">Add or Delete doctors</h3>
+        )}
+
+        <div className="grid grid-cols-12 gap-2">
+          {config.doctors.map((doctor, ind) => (
+            <DoctorData
+              key={ind}
+              setConfig={setConfig}
+              name={doctor.name}
+              color={doctor.color}
+              setTableDoctors={setTableDoctors}
+              setTableSlots={setTableSlots}
+              tableDoctors={tableDoctors}
+              tableSlots={tableSlots}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
 }
 
-function EditLogger({ config }) {
+function DoctorInput({ handleAddDoctor, setConfig }) {
+  const [hex, setHex] = useState("#eee");
+  const [isPickerVisible, setIsPicker] = useState(false);
+
+  const inputRef = useRef();
+  const pickerRef = useRef();
+
   return (
     <>
-      <h3>Logger</h3>
+      <div className="  bg-blue-50/75 p-4 space-y-4 w-1/2 rounded">
+        <div className="flex justify-between ">
+          <span className="font-semibold">Input Doctor's Name </span>
+          <input
+            className="border rounded px-2 py-1 "
+            ref={inputRef}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddDoctor(inputRef.current.value, hex);
+                inputRef.current.value = "";
+              }
+            }}
+          />
+        </div>
+        <div className=" flex flex-col space-y-2 justify-between ">
+          <span className="font-semibold">Select Doctor's color </span>
+          <div
+            onClick={() => setIsPicker((prev) => !prev)}
+            className="size-8 rounded"
+            style={{
+              backgroundColor: hex,
+            }}
+          ></div>
 
-      <hr />
-      <h3>Config Schedule Start</h3>
-      <p>Config Month Index : {config.scheduleStart.month}</p>
-      <p>Config Year : {config.scheduleStart.year}</p>
-      <h3>Config Doctors</h3>
-      {config.doctors.map((doctor, ind) => (
-        <b key={ind}>
-          {doctor.name} - {doctor.color}{" "}
-        </b>
-      ))}
+          {isPickerVisible ? (
+            <>
+              <Compact
+                style={{ backgroundColor: "white", maxWidth: "200px" }}
+                ref={pickerRef}
+                color={hex}
+                colors={tailwindHexColors}
+                onChange={(color) => {
+                  setHex(color.hex);
+                  setIsPicker(false);
+                }}
+              />
+            </>
+          ) : null}
+        </div>
+        <div className="flex justify-end">
+          <button
+            className={`${baseButton}`}
+            onClick={() => {
+              handleAddDoctor(inputRef.current.value, hex);
+              inputRef.current.value = "";
+            }}
+          >
+            Add Doctor
+          </button>
+        </div>
+      </div>
     </>
   );
 }
+
+// function EditLogger({ config }) {
+//   return (
+//     <>
+//       <h3>Logger</h3>
+
+//       <hr />
+//       <h3>Config Schedule Start</h3>
+//       <p>Config Month Index : {config.scheduleStart.month}</p>
+//       <p>Config Year : {config.scheduleStart.year}</p>
+//       <h3>Config Doctors</h3>
+//       {config.doctors.map((doctor, ind) => (
+//         <b key={ind}>
+//           {doctor.name} - {doctor.color}{" "}
+//         </b>
+//       ))}
+//     </>
+//   );
+// }

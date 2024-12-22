@@ -1,12 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
 import { clearLocalStorage } from "./utils/localStorage";
-const divStyle = {
-  border: "2px solid black",
-  padding: "16px",
-  marginBottom: "16px",
-  maxWidth: "500px",
-};
+import { tailwindHexColors } from "./utils/static";
 
 export function DoctorData({
   name,
@@ -145,26 +140,37 @@ export function DoctorData({
   }, [isPickerVisible, isRenaming]);
 
   return (
-    <div ref={componentRef} style={divStyle}>
-      {isRenaming ? (
-        <input onKeyDown={handleKeyDown} defaultValue={name} ref={nameRef} />
-      ) : (
-        <span>{name}</span>
-      )}
+    <div
+      className=" col-span-3 p-4
+       border-2 border-blue-800 rounded space-y-2"
+      ref={componentRef}
+    >
+      <div className="flex justify-between">
+        {isRenaming ? (
+          <input
+            className=" text-lg max-w-28 ring-2 rounded"
+            onKeyDown={handleKeyDown}
+            defaultValue={name}
+            ref={nameRef}
+          />
+        ) : (
+          <span className="text-lg font-semibold">{name}</span>
+        )}
 
-      <button
-        onClick={() => {
-          if (isRenaming) {
-            handleUpdateDoctorName();
-          }
-          setIsRenaming((prev) => !prev);
-        }}
-      >
-        {isRenaming ? "Confirm" : "Rename"}
-      </button>
+        <button
+          onClick={() => {
+            if (isRenaming) {
+              handleUpdateDoctorName();
+            }
+            setIsRenaming((prev) => !prev);
+          }}
+        >
+          {isRenaming ? "Confirm" : "Rename"}
+        </button>
+      </div>
 
-      <div>
-        <label htmlFor="ERNight">Don't Want ER Night</label>
+      <div className="flex space-x-2 ">
+        <label htmlFor="ERNight">Omit Night</label>
         <input
           type="checkbox"
           ref={checkboxref}
@@ -176,24 +182,29 @@ export function DoctorData({
           }}
         />
       </div>
+      <hr className=" border-blue-900/20" />
 
       <div
         onClick={() => setIsPicker((prev) => !prev)}
+        className="size-8 rounded"
         style={{
-          width: "32px",
-          height: "32px",
           backgroundColor: hex,
-          marginBottom: "8px",
         }}
       ></div>
-
-      {isPickerVisible && (
-        <Compact
-          ref={pickerRef}
-          color={hex}
-          onChange={(color) => handleUpdateDoctorColor(color.hex)}
-        />
-      )}
+      <div className="">
+        {isPickerVisible && (
+          <Compact
+            style={{ backgroundColor: "white", maxWidth: "200px" }}
+            ref={pickerRef}
+            color={hex}
+            colors={tailwindHexColors}
+            onChange={(color) => {
+              handleUpdateDoctorColor(color.hex);
+              setIsPicker(false);
+            }}
+          />
+        )}
+      </div>
 
       <button onClick={handleDeleteDoctor}>Delete</button>
     </div>

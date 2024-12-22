@@ -1,2 +1,2 @@
 export const baseButton =
-  "border-1 border border-blue-800 text-blue-800 font-semibold p-2";
+  "border-2 rounded border border-blue-800 text-blue-800 font-semibold p-2";
