@@ -253,12 +253,16 @@ function App() {
         <ClearStorageButton />
       </Bar>
       {loadFromLocalStorage("isGenerated") && display === "table" && (
-        <HistoryPagination
-          handleAddNewMonth={handleAddNewMonth}
-          workHistory={workHistory}
-          tableSlots={tableSlots}
-          handleSelectPage={handleSelectPage}
-        />
+        <>
+          <h3 className="text-xl mb-2 font-semibold">View Schedule</h3>
+          <HistoryPagination
+            handleAddNewMonth={handleAddNewMonth}
+            workHistory={workHistory}
+            tableSlots={tableSlots}
+            handleSelectPage={handleSelectPage}
+            activePage={activePage}
+          />
+        </>
       )}
 
       {display === "edit" && (

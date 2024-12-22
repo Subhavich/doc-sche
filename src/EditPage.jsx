@@ -123,9 +123,7 @@ function DoctorSection({
   return (
     <>
       <div className=" px-4 mb-4 space-y-2">
-        {config.doctors.length > 0 && (
-          <h3 className="font-semibold  text-xl">Add or Delete doctors</h3>
-        )}
+        <h3 className="font-semibold mt-6 text-xl">Add or Delete doctors</h3>
 
         <div className="grid grid-cols-12 gap-2">
           {config.doctors.map((doctor, ind) => (

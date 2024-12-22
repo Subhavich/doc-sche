@@ -61,13 +61,16 @@ export const HistoryPagination = ({
   handleAddNewMonth,
   tableSlots,
   handleSelectPage,
+  activePage,
 }) => {
   return (
     <div className="bg-blue-100 mb-4 p-4 rounded space-x-4">
       {workHistory.map((month, ind) => {
         return (
           <button
-            className={`${baseButton} bg-white`}
+            className={`${baseButton} bg-white ${
+              activePage === ind ? " scale-125" : "null"
+            }`}
             key={ind}
             onClick={() => handleSelectPage(ind)}
           >
