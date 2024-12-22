@@ -248,6 +248,7 @@ const DoctorList = ({
               handleAddDoctor(id, doctor.name);
               handleToggleShow();
             }}
+            style={{ backgroundColor: doctor.color }}
           >
             {doctor.name}
           </button>
