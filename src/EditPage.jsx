@@ -162,18 +162,20 @@ function DoctorSection({
   return (
     <>
       <h3>Add or Delete doctors</h3>
-      {config.doctors.map((doctor, ind) => (
-        <DoctorData
-          key={ind}
-          setConfig={setConfig}
-          name={doctor.name}
-          color={doctor.color}
-          setTableDoctors={setTableDoctors}
-          setTableSlots={setTableSlots}
-          tableDoctors={tableDoctors}
-          tableSlots={tableSlots}
-        />
-      ))}
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        {config.doctors.map((doctor, ind) => (
+          <DoctorData
+            key={ind}
+            setConfig={setConfig}
+            name={doctor.name}
+            color={doctor.color}
+            setTableDoctors={setTableDoctors}
+            setTableSlots={setTableSlots}
+            tableDoctors={tableDoctors}
+            tableSlots={tableSlots}
+          />
+        ))}
+      </div>
     </>
   );
 }

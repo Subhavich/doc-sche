@@ -5,6 +5,7 @@ const divStyle = {
   border: "2px solid black",
   padding: "16px",
   marginBottom: "16px",
+  maxWidth: "500px",
 };
 
 export function DoctorData({
