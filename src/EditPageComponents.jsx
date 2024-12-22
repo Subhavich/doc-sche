@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Compact } from "@uiw/react-color";
-import { clearLocalStorage } from "./utils/localStorage";
+import { clearLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
 import { tailwindHexColors } from "./utils/static";
 
 export function DoctorData({
@@ -169,20 +169,24 @@ export function DoctorData({
         </button>
       </div>
 
-      <div className="flex space-x-2 ">
-        <label htmlFor="ERNight">Omit Night</label>
-        <input
-          type="checkbox"
-          ref={checkboxref}
-          id="ERNight"
-          name="ERNight"
-          onClick={() => {
-            console.log(name, checkboxref.current.checked);
-            handleUpdateDoctorOmit();
-          }}
-        />
-      </div>
-      <hr className=" border-blue-900/20" />
+      {!loadFromLocalStorage("isGenerated") && (
+        <>
+          <div className="flex space-x-2 ">
+            <label htmlFor="ERNight">Omit Night</label>
+            <input
+              type="checkbox"
+              ref={checkboxref}
+              id="ERNight"
+              name="ERNight"
+              onClick={() => {
+                console.log(name, checkboxref.current.checked);
+                handleUpdateDoctorOmit();
+              }}
+            />
+          </div>
+          <hr className=" border-blue-900/20" />
+        </>
+      )}
 
       <div
         onClick={() => setIsPicker((prev) => !prev)}
