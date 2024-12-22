@@ -150,9 +150,15 @@ const DoctorButton = ({
   return (
     <>
       <div
-        className="py-3 font-bold flex justify-around text-sm rounded relative"
+        className={
+          doctorName === "Unassigned"
+            ? " ring-2 ring-rose-500 text-xs text-rose-500 font-semibold py-3 flex justify-around rounded relative"
+            : `py-3 font-bold flex justify-around text-sm rounded relative`
+        }
         style={{
-          backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
+          backgroundColor: renderedDoctor
+            ? renderedDoctor.color
+            : "transparent",
         }}
       >
         {showList && (
@@ -237,12 +243,12 @@ const DoctorList = ({
   }, [doctors, thisSlot]);
 
   return (
-    <ul className="absolute z-20 flex flex-col top-full w-full divide-y-2">
+    <ul className="text-black absolute z-20 flex flex-col top-full w-full divide-y-2">
       {filteredDoctors
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((doctor) => (
           <button
-            className=" last-of-type:rounded-b-lg p-1 bg-white"
+            className="py-2 last-of-type:rounded-b-lg p-1 bg-white"
             key={doctor.name}
             onClick={() => {
               handleAddDoctor(id, doctor.name);
