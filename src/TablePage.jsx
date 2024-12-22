@@ -187,8 +187,9 @@ const DoctorSettings = ({ doctors, setTableDoctors }) => {
   return (
     <>
       <div>
-        {doctors.map((doctor) => (
+        {doctors.map((doctor, ind) => (
           <DoctorField
+            key={ind}
             doctors={doctors}
             doctorName={doctor.name}
             omitStatus={doctor.omitERNight}
