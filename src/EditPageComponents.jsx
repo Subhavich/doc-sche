@@ -209,8 +209,9 @@ export function DoctorData({
           />
         )}
       </div>
-
-      <button onClick={handleDeleteDoctor}>Delete</button>
+      {!loadFromLocalStorage("isGenerated") && (
+        <button onClick={handleDeleteDoctor}>Delete</button>
+      )}
     </div>
   );
 }
