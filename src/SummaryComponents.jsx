@@ -42,7 +42,7 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
               }}
               key={ind}
             >
-              {`Day ${slot.id[0]} - ${slot.type}`}
+              {`Day ${new Date(slot.date).getDate()} - ${slot.type}`}
             </b>
           );
         })}
