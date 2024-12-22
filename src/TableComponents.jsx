@@ -3,11 +3,15 @@ import { canAddSlot } from "./utils/slotValidation";
 import { useMemo, useState } from "react";
 import { FiChevronDown, FiChevronUp, FiTrash } from "react-icons/fi";
 
-export const Pagination = ({ pages, setPage }) => {
+export const Pagination = ({ pages, setPage, page }) => {
   return (
-    <ul>
+    <ul className="text-xl flex justify-center space-x-4 mb-4 w-full">
       {Array.from({ length: pages }).map((item, ind) => (
-        <button key={ind} onClick={() => setPage(ind)}>
+        <button
+          className={`${page === ind ? "bg-blue-700" : ""} px-2 py-1 rounded`}
+          key={ind}
+          onClick={() => setPage(ind)}
+        >
           {ind}
         </button>
       ))}

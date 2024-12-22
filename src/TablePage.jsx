@@ -142,7 +142,11 @@ const Table = ({
       </button>
       {mode === "default" && (
         <div>
-          <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
+          <Pagination
+            pages={deriveWeeks(slots).length}
+            setPage={setPage}
+            page={page}
+          />
 
           <table className="bg-white border-collapse">
             <THead currentWeek={currentWeek} />
