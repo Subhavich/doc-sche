@@ -140,11 +140,16 @@ const Table = ({
 
   return (
     <>
-      <button
-        onClick={() => setMode((prev) => (prev === "all" ? "default" : "all"))}
-      >
-        Change Mode
-      </button>
+      <div className="mb-8 flex justify-center">
+        <button
+          className="text-xl font-semi text-rose-500 border-2 border-rose-500 px-4 py-2 rounded"
+          onClick={() =>
+            setMode((prev) => (prev === "all" ? "default" : "all"))
+          }
+        >
+          {mode === "default" ? "Show All Weeks" : "Show One Week"}
+        </button>
+      </div>
       {mode === "default" && (
         <div>
           <Pagination
@@ -201,7 +206,7 @@ const DoctorSettings = ({
   return (
     <>
       <p className="text-xl mb-2 font-semibold">Set Doctor's Preference</p>
-      <div className=" rounded p-4 bg-blue-100">
+      <div className="mb-8 rounded p-4 bg-blue-100">
         <div className=" mb-2 flex flex-wrap gap-2 ">
           {doctors.map((doctor, ind) => (
             <DoctorField
@@ -217,7 +222,7 @@ const DoctorSettings = ({
           className={`${baseButton} bg-blue-800 text-white`}
           onClick={() => {
             if (hasUnassignedSlots(slots)) {
-              console.log("still has unassigned slots");
+              alert("There are still Unassigned Slots");
               return;
             }
             handleAddNewMonth();

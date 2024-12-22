@@ -11,7 +11,9 @@ export const Pagination = ({ pages, setPage, page }) => {
       <ul className="text-xl flex justify-center space-x-4 mb-4 w-full">
         {Array.from({ length: pages }).map((item, ind) => (
           <button
-            className={`${page === ind ? "bg-blue-700" : ""} px-2 py-1 rounded`}
+            className={`${
+              page === ind ? "bg-blue-700 scale-125 text-white" : ""
+            } px-2 py-1 rounded`}
             key={ind}
             onClick={() => setPage(ind)}
           >
