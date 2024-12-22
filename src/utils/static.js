@@ -53,31 +53,31 @@ export const MOCKDOCSFULL = [
 ];
 
 export const tailwindHexColors = [
-  "#FACC15", // Bright Yellow
-  "#F59E0B", // Yellow Orange
-  "#FB923C", // Light Orange
-  "#F97316", // Orange
-  "#EA580C", // Reddish Orange
-  "#D97706", // Brownish Orange
-  "#EF4444", // Red
-  "#DC2626", // Dark Red
-  "#F87171", // Light Red
-  "#F43F5E", // Pinkish Red
-  "#EC4899", // Pink
-  "#F472B6", // Light Pink
-  "#9333EA", // Purple
-  "#8B5CF6", // Violet
-  "#A78BFA", // Light Violet
-  "#6366F1", // Blue Violet
-  "#3B82F6", // Blue
-  "#60A5FA", // Light Blue
-  "#2563EB", // Dark Blue
-  "#2DD4BF", // Teal
-  "#14B8A6", // Dark Teal
-  "#10B981", // Green
-  "#34D399", // Light Green
-  "#4ADE80", // Light Lime
-  "#059669", // Dark Green
-  "#0D9488", // Cyan Green
-  "#0FA499",
+  "#F4D03F",
+  "#F5B041",
+  "#FA983A",
+  "#E67E22",
+  "#D35400",
+  "#CA6F1E",
+  "#E74C3C",
+  "#C0392B",
+  "#FF5C5C",
+  "#F06292",
+  "#E91E63",
+  "#FF80AB",
+  "#8E44AD",
+  "#7E57C2",
+  "#AB47BC",
+  "#5C6BC0",
+  "#2196F3",
+  "#42A5F5",
+  "#1565C0",
+  "#26A69A",
+  "#00796B",
+  "#43A047",
+  "#66BB6A",
+  "#9CCC65",
+  "#2E7D32",
+  "#00897B",
+  "#00ACC1",
 ];
