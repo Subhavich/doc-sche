@@ -150,7 +150,7 @@ const DoctorButton = ({
   return (
     <>
       <div
-        className="p-1 flex justify-around text-xs rounded relative"
+        className="py-3 font-bold flex justify-around text-sm rounded relative"
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}
