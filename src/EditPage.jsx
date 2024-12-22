@@ -32,6 +32,14 @@ export default function EditingPage({
   };
 
   const handleAddDoctor = (load, color) => {
+    if (config.doctors.find((doctor) => doctor.name === load)) {
+      alert("Name Already Taken :C");
+      return;
+    }
+    if (load.length < 1) {
+      alert("Please input doctor's name first");
+      return;
+    }
     setConfig((prev) => {
       const newDoctor = createNewDoctor(load, color);
       // console.log({ ...prev, doctors: [...prev.doctors, newDoctor] });
