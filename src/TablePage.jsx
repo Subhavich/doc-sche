@@ -20,7 +20,7 @@ export default function TablePage({
     return <p>Please Gen Schedule First</p>;
   }
 
-  const [selectedDoctor, setSelectedDoctor] = useState("Ingrid");
+  const [selectedDoctor, setSelectedDoctor] = useState();
 
   const handleSelectDoctor = (load) => {
     setSelectedDoctor(load);
@@ -104,7 +104,7 @@ export default function TablePage({
         slots={tableSlots}
         doctors={tableDoctors}
       />
-      <SuperSummary doctors={tableDoctors} slots={tableSlots} />
+      {/* <SuperSummary doctors={tableDoctors} slots={tableSlots} /> */}
     </>
   );
 }

@@ -12,17 +12,10 @@ export const Summary = ({ selectedDoctor, slots }) => {
   }, [slots, selectedDoctor]);
 
   return (
-    <div>
-      <p>SUMMARY</p>
-      <b>{selectedDoctor}</b>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          maxWidth: "500px",
-          flexWrap: "wrap",
-        }}
-      >
+    <div className="flex flex-col space-y-4 mt-8 p-4 bg-blue-100 rounded-lg">
+      <p className="text-xl font-semibold">Doctor's Summary</p>
+      <p className="text-lg">{selectedDoctor}</p>
+      <div className="flex flex-wrap gap-2">
         {theSlotsOfThisDoctor.map((slot, ind) => {
           const problemColor = validateSlotProblems(
             theSlotsOfThisDoctor[ind - 1],
@@ -32,13 +25,13 @@ export const Summary = ({ selectedDoctor, slots }) => {
 
           return (
             <b
+              className="border border-blue-700 rounded p-1"
               style={{
-                border: "1px solid slategray",
                 backgroundColor: problemColor,
               }}
               key={ind}
             >
-              {slot.id}
+              {`Day ${slot.id[0]} - ${slot.type}`}
             </b>
           );
         })}
