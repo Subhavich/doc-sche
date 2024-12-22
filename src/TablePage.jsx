@@ -186,7 +186,8 @@ const Table = ({
 const DoctorSettings = ({ doctors, setTableDoctors }) => {
   return (
     <>
-      <div>
+      <p className="text-xl mb-2 font-semibold">Set Doctor's Preference</p>
+      <div className=" flex flex-wrap gap-2 rounded p-4 bg-blue-100 ">
         {doctors.map((doctor, ind) => (
           <DoctorField
             key={ind}
@@ -205,27 +206,31 @@ const DoctorField = ({ doctorName, omitStatus, setTableDoctors }) => {
   const checkboxref = useRef();
   return (
     <>
-      <b>{doctorName}</b>
-      <label htmlFor="ERNight"></label>
-      <input
-        type="checkbox"
-        ref={checkboxref}
-        id="ERNight"
-        name="ERNight"
-        checked={omitStatus}
-        onChange={() => {
-          setTableDoctors((prev) => {
-            const newDoctors = [
-              ...prev.map((doctor) =>
-                doctor.name === doctorName
-                  ? { ...doctor, omitERNight: checkboxref.current.checked }
-                  : { ...doctor }
-              ),
-            ];
-            return newDoctors;
-          });
-        }}
-      />
+      <div className="bg-white p-3 rounded ">
+        <b>{doctorName}</b>
+        <div className="flex space-x-4 ">
+          <label htmlFor="ERNight">Omit ERNight</label>
+          <input
+            type="checkbox"
+            ref={checkboxref}
+            id="ERNight"
+            name="ERNight"
+            checked={omitStatus}
+            onChange={() => {
+              setTableDoctors((prev) => {
+                const newDoctors = [
+                  ...prev.map((doctor) =>
+                    doctor.name === doctorName
+                      ? { ...doctor, omitERNight: checkboxref.current.checked }
+                      : { ...doctor }
+                  ),
+                ];
+                return newDoctors;
+              });
+            }}
+          />
+        </div>
+      </div>
     </>
   );
 };
