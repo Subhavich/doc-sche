@@ -131,6 +131,7 @@ const Table = ({
     } else {
       setCurrentWeek([]); // Default to an empty array if no weeks
     }
+    console.log(currentWeek);
   }, [slots, page]);
 
   return (
@@ -145,7 +146,7 @@ const Table = ({
           <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
 
           <table>
-            <THead />
+            <THead currentWeek={currentWeek} />
             <TBody
               slots={slots}
               doctors={doctors}
@@ -163,7 +164,8 @@ const Table = ({
         <div>
           {deriveWeeks(slots).map((week, ind) => (
             <table>
-              <THead />
+              <THead currentWeek={deriveWeeks(slots)[ind]} />
+
               <TBody
                 slots={slots}
                 doctors={doctors}

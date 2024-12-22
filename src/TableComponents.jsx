@@ -218,13 +218,19 @@ const DoctorList = ({
   );
 };
 
-export const THead = () => {
+export const THead = ({ currentWeek }) => {
   return (
     <thead>
       <tr>
         <th>"PLACEHOLDERS"</th>
-        {DAYS.map((day, ind) => (
+        {/* {DAYS.map((day, ind) => (
           <th key={ind}>{day.toUpperCase()}</th>
+        ))} */}
+        {currentWeek.map((day, ind) => (
+          <th key={ind}>
+            <p>{DAYS[ind]}</p>
+            <p>{day.date ? day.date : "-"}</p>
+          </th>
         ))}
       </tr>
     </thead>
