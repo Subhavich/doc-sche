@@ -41,26 +41,71 @@ export default function ReadOnlyTablePage({
 
 const Table = ({ slots, doctors, handleSelectDoctor }) => {
   const [page, setPage] = useState(0);
+  const [mode, setMode] = useState("default");
+
+  const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
 
   useEffect(() => {
-    console.log(deriveWeeks(slots));
-  }, [slots]);
+    const weeks = deriveWeeks(slots); // Derive weeks from the latest slots
+    if (weeks[page]) {
+      setCurrentWeek(weeks[page]); // Update the current week for the current page
+    } else if (weeks.length > 0) {
+      // If the page is out of bounds (e.g., after slots change), reset to the first week
+      setPage(0);
+      setCurrentWeek(weeks[0]);
+    } else {
+      setCurrentWeek([]); // Default to an empty array if no weeks
+    }
+  }, [slots, page]);
 
-  const currentWeek = deriveWeeks(slots)[page];
+  useEffect(() => {
+    setPage(0);
+  }, []);
+
   return (
     <>
-      <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
-      <table>
-        <THead />
-        <ReadOnlyTBody
-          slots={slots}
-          doctors={doctors}
-          page={page}
-          setPage={setPage}
-          currentWeek={currentWeek}
-          handleSelectDoctor={handleSelectDoctor}
-        />
-      </table>
+      <button
+        onClick={() => {
+          setMode((prev) => {
+            console.log(currentWeek);
+            return prev === "all" ? "default" : "all";
+          });
+        }}
+      >
+        Change Mode
+      </button>
+      {mode === "default" && (
+        <>
+          {" "}
+          <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
+          <table className="bg-white border-collapse">
+            <THead currentWeek={currentWeek} />
+            <ReadOnlyTBody
+              slots={slots}
+              doctors={doctors}
+              page={page}
+              setPage={setPage}
+              currentWeek={currentWeek}
+              handleSelectDoctor={handleSelectDoctor}
+            />
+          </table>
+        </>
+      )}
+      {mode === "all" && (
+        <div className="flex flex-col space-y-12 ">
+          {deriveWeeks(slots).map((week, ind) => (
+            <table>
+              <THead currentWeek={deriveWeeks(slots)[ind]} />
+              <ReadOnlyTBody
+                slots={slots}
+                doctors={doctors}
+                handleSelectDoctor={handleSelectDoctor}
+                currentWeek={deriveWeeks(slots)[ind]}
+              />
+            </table>
+          ))}
+        </div>
+      )}
     </>
   );
 };

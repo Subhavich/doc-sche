@@ -131,7 +131,6 @@ const Table = ({
     } else {
       setCurrentWeek([]); // Default to an empty array if no weeks
     }
-    console.log(currentWeek);
   }, [slots, page]);
 
   return (

@@ -93,15 +93,17 @@ export const ReadOnlyTBody = ({
       <tbody>
         {WORKTYPES.map((worktype, ind) => (
           <tr key={ind}>
-            <th>{worktype}</th>
+            <th className="text-right p-2 size-28 border-transparent font-normal text-sm">
+              {worktype}
+            </th>
             {DAYS.map((day, i) => {
               const targetedSlot = currentWeek[i].slots.filter((slot) => {
                 return slot.type === worktype;
               });
               return (
-                <td key={i}>
-                  {targetedSlot.map((slot, j) => (
-                    <div key={j}>
+                <td className="border-transparent size-28 p-0.5" key={i}>
+                  <div className=" w-full h-full bg-blue-100 rounded-lg flex flex-col space-y-2 p-2">
+                    {targetedSlot.map((slot, j) => (
                       <ReadOnlyDoctorButton
                         doctorName={slot.doctor ? slot.doctor : "Unassigned"}
                         id={slot.id}
@@ -109,8 +111,8 @@ export const ReadOnlyTBody = ({
                         doctors={doctors}
                         handleSelectDoctor={handleSelectDoctor}
                       />
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </td>
               );
             })}
@@ -189,6 +191,7 @@ const ReadOnlyDoctorButton = ({ doctors, doctorName, handleSelectDoctor }) => {
   return (
     <>
       <button
+        className="p-1 flex justify-around text-xs rounded relative"
         onClick={() => handleSelectDoctor(doctorName)}
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
