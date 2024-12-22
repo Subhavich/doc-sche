@@ -38,7 +38,7 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
             <b
               className="border border-blue-700 rounded p-1"
               style={{
-                backgroundColor: problemColor,
+                backgroundColor: !selectedDoctor ? "" : problemColor,
               }}
               key={ind}
             >
