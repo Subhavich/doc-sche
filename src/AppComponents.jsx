@@ -1,26 +1,30 @@
 import { clearLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
 import { MOCKDOCSFULL } from "./utils/static";
+import { baseButton } from "./utils/tailwindGeneralClasses";
+
+export const Bar = ({ children }) => {
+  return <div className="flex space-x-4 py-4">{children}</div>;
+};
 
 export const ClearStorageButton = () => {
   return (
-    <div>
-      <button
-        onClick={() => {
-          clearLocalStorage([
-            "tableSlots",
-            "tableDoctors",
-            "isGenerated",
-            "config",
-            "workHistory",
-          ]);
-          console.log("Local storage cleared.");
-          window.location.reload();
-        }}
-      >
-        RESET
-      </button>
-    </div>
+    <button
+      className={baseButton}
+      onClick={() => {
+        clearLocalStorage([
+          "tableSlots",
+          "tableDoctors",
+          "isGenerated",
+          "config",
+          "workHistory",
+        ]);
+        console.log("Local storage cleared.");
+        window.location.reload();
+      }}
+    >
+      Reset App
+    </button>
   );
 };
 export const SwitchDispButton = ({ display, setDisplay }) => {
@@ -28,6 +32,7 @@ export const SwitchDispButton = ({ display, setDisplay }) => {
   return (
     <div>
       <button
+        className={baseButton}
         onClick={() => {
           setDisplay((prev) => (prev === "table" ? "edit" : "table"));
         }}
@@ -41,7 +46,7 @@ export const GenerateTableButton = ({ handleGenerateSchedule }) => {
   return (
     <>
       {!loadFromLocalStorage("isGenerated") && (
-        <button onClick={handleGenerateSchedule}>
+        <button className={baseButton} onClick={handleGenerateSchedule}>
           Generate Schedule and View Table
         </button>
       )}
@@ -77,17 +82,17 @@ export const HistoryPagination = ({
     </div>
   );
 };
-
 export const UseMockDoctorsButton = ({ config, setConfig }) => {
   return (
     <button
+      className={baseButton}
       onClick={() => {
         setConfig((prev) => {
           return { ...prev, doctors: MOCKDOCSFULL };
         });
       }}
     >
-      USE MOCKDOCS
+      Use Mock Doctors
     </button>
   );
 };

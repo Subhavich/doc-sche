@@ -18,6 +18,7 @@ import {
   GenerateTableButton,
   HistoryPagination,
   UseMockDoctorsButton,
+  Bar,
 } from "./AppComponents";
 
 const currentYear = new Date(2025, 3).getFullYear();
@@ -242,13 +243,15 @@ function App() {
   };
 
   return (
-    <div>
-      {!loadFromLocalStorage("isGenerated") && (
-        <UseMockDoctorsButton config={config} setConfig={setConfig} />
-      )}
+    <div className=" max-w-screen-lg mx-auto">
+      <Bar>
+        {!loadFromLocalStorage("isGenerated") && (
+          <UseMockDoctorsButton config={config} setConfig={setConfig} />
+        )}
 
-      <SwitchDispButton display={display} setDisplay={setDisplay} />
-      <ClearStorageButton />
+        <SwitchDispButton display={display} setDisplay={setDisplay} />
+        <ClearStorageButton />
+      </Bar>
       {loadFromLocalStorage("isGenerated") && (
         <HistoryPagination
           handleAddNewMonth={handleAddNewMonth}
