@@ -186,6 +186,10 @@ const Table = ({
             page={page}
           />
 
+          <p className="text-center py-4 mb-4 text-xl">
+            Year : {new Date(slots[0].date).getFullYear()} - Month :{" "}
+            {new Date(slots[0].date).getMonth() + 1}
+          </p>
           <table className="bg-white border-collapse">
             <THead currentWeek={currentWeek} />
             <TBody
@@ -203,10 +207,13 @@ const Table = ({
       )}
       {mode === "all" && (
         <div ref={divRef} className="flex flex-col space-y-12 ">
+          <p className="text-center mb-8 text-xl">
+            Month : {new Date(slots[0].date).getMonth() + 1} Year :{" "}
+            {new Date(slots[0].date).getFullYear()}
+          </p>
           {deriveWeeks(slots).map((week, ind) => (
             <table>
               <THead currentWeek={deriveWeeks(slots)[ind]} />
-
               <TBody
                 slots={slots}
                 doctors={doctors}

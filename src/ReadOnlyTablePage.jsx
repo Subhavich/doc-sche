@@ -108,6 +108,10 @@ const Table = ({ slots, doctors, handleSelectDoctor }) => {
             setPage={setPage}
             page={page}
           />
+          <p className="text-center py-4 mb-4 text-xl">
+            Year : {new Date(slots[0].date).getFullYear()} - Month :{" "}
+            {new Date(slots[0].date).getMonth() + 1}
+          </p>
           <table className="bg-white border-collapse">
             <THead currentWeek={currentWeek} />
             <ReadOnlyTBody
@@ -123,6 +127,10 @@ const Table = ({ slots, doctors, handleSelectDoctor }) => {
       )}
       {mode === "all" && (
         <div ref={divRef} className="flex flex-col space-y-12 ">
+          <p className="text-center py-4 mb-4 text-xl">
+            Year : {new Date(slots[0].date).getFullYear()} - Month :{" "}
+            {new Date(slots[0].date).getMonth() + 1}
+          </p>
           {deriveWeeks(slots).map((week, ind) => (
             <table key={ind} className="bg-white border-collapse">
               <THead currentWeek={deriveWeeks(slots)[ind]} />
