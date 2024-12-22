@@ -113,6 +113,8 @@ const Table = ({
 }) => {
   const [page, setPage] = useState(0);
   const [currentWeek, setCurrentWeek] = useState(deriveWeeks(slots)[page]);
+  const [mode, setMode] = useState("default");
+  // default/all
 
   useEffect(() => {
     setPage(0);
@@ -133,20 +135,49 @@ const Table = ({
 
   return (
     <>
-      <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
-      <table>
-        <THead />
-        <TBody
-          slots={slots}
-          doctors={doctors}
-          handleRemoveDoctor={handleRemoveDoctor}
-          handleAddDoctor={handleAddDoctor}
-          handleSelectDoctor={handleSelectDoctor}
-          page={page}
-          setPage={setPage}
-          currentWeek={currentWeek}
-        />
-      </table>
+      <button
+        onClick={() => setMode((prev) => (prev === "all" ? "default" : "all"))}
+      >
+        Change Mode
+      </button>
+      {mode === "default" && (
+        <div>
+          <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
+
+          <table>
+            <THead />
+            <TBody
+              slots={slots}
+              doctors={doctors}
+              handleRemoveDoctor={handleRemoveDoctor}
+              handleAddDoctor={handleAddDoctor}
+              handleSelectDoctor={handleSelectDoctor}
+              page={page}
+              setPage={setPage}
+              currentWeek={currentWeek}
+            />
+          </table>
+        </div>
+      )}
+      {mode === "all" && (
+        <div>
+          {deriveWeeks(slots).map((week, ind) => (
+            <table>
+              <THead />
+              <TBody
+                slots={slots}
+                doctors={doctors}
+                handleRemoveDoctor={handleRemoveDoctor}
+                handleAddDoctor={handleAddDoctor}
+                handleSelectDoctor={handleSelectDoctor}
+                page={ind}
+                setPage={setPage}
+                currentWeek={deriveWeeks(slots)[ind]}
+              />
+            </table>
+          ))}
+        </div>
+      )}
     </>
   );
 };
