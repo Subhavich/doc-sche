@@ -75,18 +75,6 @@ export const HistoryPagination = ({
           </button>
         );
       })}
-      <button
-        className={`${baseButton} bg-blue-800 text-white`}
-        onClick={() => {
-          if (hasUnassignedSlots(tableSlots)) {
-            console.log("still has unassigned slots");
-            return;
-          }
-          handleAddNewMonth();
-        }}
-      >
-        + Generate Next Month
-      </button>
     </div>
   );
 };

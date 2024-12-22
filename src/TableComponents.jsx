@@ -2,20 +2,24 @@ import { DAYS, WORKTYPES } from "./utils/static";
 import { canAddSlot } from "./utils/slotValidation";
 import { useMemo, useState } from "react";
 import { FiChevronDown, FiChevronUp, FiTrash } from "react-icons/fi";
+import { baseButton } from "./utils/tailwindGeneralClasses";
+import { hasUnassignedSlots } from "./utils/slotValidation";
 
 export const Pagination = ({ pages, setPage, page }) => {
   return (
-    <ul className="text-xl flex justify-center space-x-4 mb-4 w-full">
-      {Array.from({ length: pages }).map((item, ind) => (
-        <button
-          className={`${page === ind ? "bg-blue-700" : ""} px-2 py-1 rounded`}
-          key={ind}
-          onClick={() => setPage(ind)}
-        >
-          {ind}
-        </button>
-      ))}
-    </ul>
+    <>
+      <ul className="text-xl flex justify-center space-x-4 mb-4 w-full">
+        {Array.from({ length: pages }).map((item, ind) => (
+          <button
+            className={`${page === ind ? "bg-blue-700" : ""} px-2 py-1 rounded`}
+            key={ind}
+            onClick={() => setPage(ind)}
+          >
+            {ind}
+          </button>
+        ))}
+      </ul>
+    </>
   );
 };
 

@@ -4,6 +4,8 @@ import { deriveWeeks } from "./utils/rendering";
 import { saveToLocalStorage } from "./utils/localStorage";
 import { Summary, SuperSummary } from "./SummaryComponents";
 import { calculateAccumulatedCost } from "./utils/derivingValues";
+import { baseButton } from "./utils/tailwindGeneralClasses";
+import { hasUnassignedSlots } from "./utils/slotValidation";
 
 export default function TablePage({
   tableSlots,
@@ -12,6 +14,7 @@ export default function TablePage({
   setTableDoctors,
   isGenerated,
   workHistory,
+  handleAddNewMonth,
 }) {
   if (!isGenerated) {
     return <p>Please Gen Schedule First</p>;
@@ -85,6 +88,8 @@ export default function TablePage({
       <DoctorSettings
         doctors={tableDoctors}
         setTableDoctors={setTableDoctors}
+        slots={tableSlots}
+        handleAddNewMonth={handleAddNewMonth}
       />
       <Table
         doctors={tableDoctors}
@@ -187,20 +192,39 @@ const Table = ({
   );
 };
 
-const DoctorSettings = ({ doctors, setTableDoctors }) => {
+const DoctorSettings = ({
+  doctors,
+  setTableDoctors,
+  slots,
+  handleAddNewMonth,
+}) => {
   return (
     <>
       <p className="text-xl mb-2 font-semibold">Set Doctor's Preference</p>
-      <div className=" flex flex-wrap gap-2 rounded p-4 bg-blue-100 ">
-        {doctors.map((doctor, ind) => (
-          <DoctorField
-            key={ind}
-            doctors={doctors}
-            doctorName={doctor.name}
-            omitStatus={doctor.omitERNight}
-            setTableDoctors={setTableDoctors}
-          />
-        ))}
+      <div className=" rounded p-4 bg-blue-100">
+        <div className=" mb-2 flex flex-wrap gap-2 ">
+          {doctors.map((doctor, ind) => (
+            <DoctorField
+              key={ind}
+              doctors={doctors}
+              doctorName={doctor.name}
+              omitStatus={doctor.omitERNight}
+              setTableDoctors={setTableDoctors}
+            />
+          ))}
+        </div>
+        <button
+          className={`${baseButton} bg-blue-800 text-white`}
+          onClick={() => {
+            if (hasUnassignedSlots(slots)) {
+              console.log("still has unassigned slots");
+              return;
+            }
+            handleAddNewMonth();
+          }}
+        >
+          + Generate Next Month
+        </button>
       </div>
     </>
   );

@@ -289,6 +289,7 @@ function App() {
               setTableSlots={setTableSlots}
               isGenerated={loadFromLocalStorage("isGenerated")}
               workHistory={workHistory}
+              handleAddNewMonth={handleAddNewMonth}
             />
           )}
           {activePage < workHistory.length - 1 && (
