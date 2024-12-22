@@ -103,6 +103,7 @@ export default function TablePage({
         selectedDoctor={selectedDoctor}
         slots={tableSlots}
         doctors={tableDoctors}
+        setSelectedDoctor={setSelectedDoctor}
       />
       {/* <SuperSummary doctors={tableDoctors} slots={tableSlots} /> */}
     </>

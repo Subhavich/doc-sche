@@ -1,7 +1,8 @@
 import { validateSlotProblems } from "./utils/slotValidation";
 import { useState, useEffect } from "react";
+import { baseButton } from "./utils/tailwindGeneralClasses";
 
-export const Summary = ({ selectedDoctor, slots }) => {
+export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
   const [theSlotsOfThisDoctor, setTheSlotsOfThisDoctor] = useState([]);
 
   useEffect(() => {
@@ -14,7 +15,17 @@ export const Summary = ({ selectedDoctor, slots }) => {
   return (
     <div className="flex flex-col space-y-4 mt-8 p-4 bg-blue-100 rounded-lg">
       <p className="text-xl font-semibold">Doctor's Summary</p>
-      <p className="text-lg">{selectedDoctor}</p>
+      <p className="text-2xl font-thin">
+        {selectedDoctor ? selectedDoctor : "Unassigned Slots"}
+      </p>
+      {selectedDoctor && (
+        <button
+          className={` ${baseButton} self-start`}
+          onClick={() => setSelectedDoctor(undefined)}
+        >
+          Show Unassigned Slots
+        </button>
+      )}
       <div className="flex flex-wrap gap-2">
         {theSlotsOfThisDoctor.map((slot, ind) => {
           const problemColor = validateSlotProblems(
