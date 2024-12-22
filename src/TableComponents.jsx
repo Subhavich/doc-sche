@@ -15,6 +15,24 @@ export const Pagination = ({ pages, setPage }) => {
   );
 };
 
+export const THead = ({ currentWeek }) => {
+  return (
+    <thead>
+      <tr>
+        <th className=" border-transparent"></th>
+        {currentWeek.map((day, ind) => (
+          <th className=" border-transparent" key={ind}>
+            <div className="w-full h-full bg-blue-100 rounded-lg py-2">
+              <p className="">{DAYS[ind].toUpperCase()}</p>
+              <p>{day.date ? day.date : "-"}</p>
+            </div>
+          </th>
+        ))}
+      </tr>
+    </thead>
+  );
+};
+
 export const TBody = ({
   slots,
   doctors,
@@ -28,26 +46,30 @@ export const TBody = ({
       <tbody>
         {WORKTYPES.map((worktype, ind) => (
           <tr key={ind}>
-            <th>{worktype}</th>
+            <th className="text-right p-2 size-28 border-transparent font-normal text-sm">
+              {worktype}
+            </th>
             {DAYS.map((day, i) => {
               const targetedSlot = currentWeek[i].slots.filter((slot) => {
                 return slot.type === worktype;
               });
               return (
-                <td key={i}>
-                  {targetedSlot.map((slot, j) => (
-                    <div key={j}>
-                      <DoctorButton
-                        doctorName={slot.doctor ? slot.doctor : "Unassigned"}
-                        id={slot.id}
-                        handleRemoveDoctor={handleRemoveDoctor}
-                        handleAddDoctor={handleAddDoctor}
-                        handleSelectDoctor={handleSelectDoctor}
-                        slots={slots}
-                        doctors={doctors}
-                      />
-                    </div>
-                  ))}
+                <td className="border-transparent size-28 p-0.5" key={i}>
+                  <div className=" w-full h-full bg-blue-100 rounded-lg flex flex-col space-y-2 p-2">
+                    {targetedSlot.map((slot, j) => (
+                      <div key={j}>
+                        <DoctorButton
+                          doctorName={slot.doctor ? slot.doctor : "Unassigned"}
+                          id={slot.id}
+                          handleRemoveDoctor={handleRemoveDoctor}
+                          handleAddDoctor={handleAddDoctor}
+                          handleSelectDoctor={handleSelectDoctor}
+                          slots={slots}
+                          doctors={doctors}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </td>
               );
             })}
@@ -115,46 +137,49 @@ const DoctorButton = ({
   const renderedDoctor = doctors.find((doctor) => doctor.name === doctorName);
   return (
     <>
-      <button
-        onClick={() => {
-          if (doctorName === "Unassigned") {
-            return;
-          }
-          handleSelectDoctor(doctorName);
-        }}
+      <div
+        className="p-1 flex justify-around text-xs rounded relative"
         style={{
           backgroundColor: renderedDoctor ? renderedDoctor.color : "slateblue",
         }}
       >
-        {doctorName}
-      </button>
-      {doctorName === "Unassigned" && (
-        <>
-          <button onClick={handleToggleShow}>
-            {showList ? <FiChevronUp /> : <FiChevronDown />}
-          </button>
-
-          {showList && (
-            <DoctorList
-              slots={slots}
-              doctors={doctors}
-              id={id}
-              handleAddDoctor={handleAddDoctor}
-              handleToggleShow={handleToggleShow}
-            />
-          )}
-        </>
-      )}
-
-      {doctorName !== "Unassigned" && (
+        {showList && (
+          <DoctorList
+            slots={slots}
+            doctors={doctors}
+            id={id}
+            handleAddDoctor={handleAddDoctor}
+            handleToggleShow={handleToggleShow}
+          />
+        )}
         <button
           onClick={() => {
-            handleRemoveDoctor(id);
+            if (doctorName === "Unassigned") {
+              return;
+            }
+            handleSelectDoctor(doctorName);
           }}
         >
-          <FiTrash />
+          {doctorName}
         </button>
-      )}
+        {doctorName === "Unassigned" && (
+          <>
+            <button onClick={handleToggleShow}>
+              {showList ? <FiChevronUp /> : <FiChevronDown />}
+            </button>
+          </>
+        )}
+
+        {doctorName !== "Unassigned" && (
+          <button
+            onClick={() => {
+              handleRemoveDoctor(id);
+            }}
+          >
+            <FiTrash />
+          </button>
+        )}
+      </div>
     </>
   );
 };
@@ -199,40 +224,21 @@ const DoctorList = ({
   }, [doctors, thisSlot]);
 
   return (
-    <ul>
+    <ul className="absolute z-20 flex flex-col top-full w-full divide-y-2">
       {filteredDoctors
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((doctor) => (
           <button
+            className=" last-of-type:rounded-b-lg p-1 bg-white"
             key={doctor.name}
             onClick={() => {
               handleAddDoctor(id, doctor.name);
               handleToggleShow();
             }}
-            className="list-btn"
           >
             {doctor.name}
           </button>
         ))}
     </ul>
-  );
-};
-
-export const THead = ({ currentWeek }) => {
-  return (
-    <thead>
-      <tr>
-        <th>"PLACEHOLDERS"</th>
-        {/* {DAYS.map((day, ind) => (
-          <th key={ind}>{day.toUpperCase()}</th>
-        ))} */}
-        {currentWeek.map((day, ind) => (
-          <th key={ind}>
-            <p>{DAYS[ind]}</p>
-            <p>{day.date ? day.date : "-"}</p>
-          </th>
-        ))}
-      </tr>
-    </thead>
   );
 };

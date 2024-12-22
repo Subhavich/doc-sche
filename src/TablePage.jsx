@@ -145,7 +145,7 @@ const Table = ({
         <div>
           <Pagination pages={deriveWeeks(slots).length} setPage={setPage} />
 
-          <table>
+          <table className="bg-white border-collapse">
             <THead currentWeek={currentWeek} />
             <TBody
               slots={slots}
@@ -161,7 +161,7 @@ const Table = ({
         </div>
       )}
       {mode === "all" && (
-        <div>
+        <div className="flex flex-col space-y-12 ">
           {deriveWeeks(slots).map((week, ind) => (
             <table>
               <THead currentWeek={deriveWeeks(slots)[ind]} />

@@ -243,7 +243,7 @@ function App() {
   };
 
   return (
-    <div className="text-blue-900  max-w-screen-lg mx-auto">
+    <div className=" max-w-screen-lg mx-auto">
       <Bar>
         {!loadFromLocalStorage("isGenerated") && (
           <UseMockDoctorsButton config={config} setConfig={setConfig} />
