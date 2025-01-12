@@ -246,10 +246,14 @@ function App() {
     <div className=" max-w-screen-lg mx-auto">
       <Bar>
         {!loadFromLocalStorage("isGenerated") && (
-          <UseMockDoctorsButton config={config} setConfig={setConfig} />
+          <>
+            <UseMockDoctorsButton config={config} setConfig={setConfig} />
+          </>
         )}
 
-        <SwitchDispButton display={display} setDisplay={setDisplay} />
+        {loadFromLocalStorage("isGenerated") && (
+          <SwitchDispButton display={display} setDisplay={setDisplay} />
+        )}
         <ClearStorageButton />
       </Bar>
       {loadFromLocalStorage("isGenerated") && display === "table" && (

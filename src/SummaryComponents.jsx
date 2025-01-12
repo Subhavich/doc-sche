@@ -7,9 +7,16 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
 
   useEffect(() => {
     // Update the slots of the selected doctor whenever `slots` changes
-    setTheSlotsOfThisDoctor(
-      slots.filter((slot) => slot.doctor === selectedDoctor)
-    );
+    setTheSlotsOfThisDoctor((prev) => {
+      if (!selectedDoctor) {
+        return slots.filter((slot) => {
+          return slot.doctor == null;
+        });
+      }
+      return slots.filter((slot) => {
+        return slot.doctor === selectedDoctor;
+      });
+    });
   }, [slots, selectedDoctor]);
 
   return (

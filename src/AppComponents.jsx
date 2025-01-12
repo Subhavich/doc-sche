@@ -1,6 +1,6 @@
 import { clearLocalStorage, loadFromLocalStorage } from "./utils/localStorage";
 import { hasUnassignedSlots } from "./utils/slotValidation";
-import { MOCKDOCSFULL } from "./utils/static";
+import { MOCKDOCS } from "./utils/static";
 import { baseButton } from "./utils/tailwindGeneralClasses";
 
 export const Bar = ({ children }) => {
@@ -87,11 +87,11 @@ export const UseMockDoctorsButton = ({ config, setConfig }) => {
       className={baseButton}
       onClick={() => {
         setConfig((prev) => {
-          return { ...prev, doctors: MOCKDOCSFULL };
+          return { ...prev, doctors: MOCKDOCS };
         });
       }}
     >
-      Use Mock Doctors
+      Generate Starting Doctors
     </button>
   );
 };
