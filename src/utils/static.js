@@ -24,15 +24,15 @@ export const WORKTYPES = [
   "NonMed",
 ];
 export const MOCKDOCS = [
-  createNewDoctor("Dr. 1", "#ADD8E6"), // Light Blue
-  createNewDoctor("Dr. 2", "#FFB6C1"), // Light Pink
-  createNewDoctor("Dr. 3", "#FAFAD2"), // Light Yellow
-  createNewDoctor("Dr. 4", "#DDA0DD"), // Plum
-  createNewDoctor("Dr. 5", "#87CEEB"), // Sky Blue
-  createNewDoctor("Dr. 6", "#DCDCDC"), // Gainsboro
-  createNewDoctor("Dr. 7", "#90EE90"), // Light Green
-  createNewDoctor("Dr. 8", "#FFDAB9"), // Peach Puff
-  createNewDoctor("Dr. 9", "#B0C4DE"), // Light Steel Blue
+  createNewDoctor("Dr. 1", "#F4D03F"), // Yellow
+  createNewDoctor("Dr. 2", "#E74C3C"), // Red
+  createNewDoctor("Dr. 3", "#8E44AD"), // Purple
+  createNewDoctor("Dr. 4", "#2196F3"), // Blue
+  createNewDoctor("Dr. 5", "#43A047"), // Green
+  createNewDoctor("Dr. 6", "#FA983A"), // Orange
+  createNewDoctor("Dr. 7", "#F06292"), // Pink
+  createNewDoctor("Dr. 8", "#42A5F5"), // Light Blue
+  createNewDoctor("Dr. 9", "#9CCC65"), // Lime Green
 ];
 
 export const MOCKDOCSFULL = [

@@ -31,7 +31,7 @@ export const isERConsecutive = (baseSlot, compareSlot) => {
   return false;
 };
 
-export const isAdequateSpacing = (baseSlot, compareSlot) => {
+export const isInadequateSpacing = (baseSlot, compareSlot) => {
   //Less than or equal 16
   if (!baseSlot || !compareSlot) {
     return false;
@@ -92,8 +92,8 @@ export const validateSlotProblems = (prevSlot, currentSlot, nextSlot) => {
     isERConsecutive(prevSlot, currentSlot) ||
     isERConsecutive(currentSlot, nextSlot);
   const adequateProblem =
-    isAdequateSpacing(prevSlot, currentSlot) ||
-    isAdequateSpacing(currentSlot, nextSlot);
+    isInadequateSpacing(prevSlot, currentSlot) ||
+    isInadequateSpacing(currentSlot, nextSlot);
   const bothProblem = erProblem && adequateProblem;
 
   const problemColor = (() => {
@@ -111,3 +111,5 @@ export const validateSlotProblems = (prevSlot, currentSlot, nextSlot) => {
 
   return problemColor;
 };
+
+//adequate spacing - yellow / erproblem - orange / both problem - red

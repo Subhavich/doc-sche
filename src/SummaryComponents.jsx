@@ -26,12 +26,31 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
         {selectedDoctor ? selectedDoctor : "Unassigned Slots"}
       </p>
       {selectedDoctor && (
-        <button
-          className={` ${baseButton} self-start`}
-          onClick={() => setSelectedDoctor(undefined)}
-        >
-          Show Unassigned Slots
-        </button>
+        <>
+          <div className="flex space-x-2">
+            <p
+              style={{ backgroundColor: "yellow" }}
+              className="text-sm border rounded-md font-semibold px-4 py-1  "
+            >
+              {"Slots too close (>16 hours)"}
+            </p>
+            <p
+              style={{ backgroundColor: "orange" }}
+              className="text-sm border rounded-md font-semibold px-4 py-1 "
+            >
+              {"ER too close (<24 hours apart)"}
+            </p>
+            <p className="text-sm border rounded-md font-semibold px-4 py-1 bg-red-600">
+              {"Both Rules"}
+            </p>
+          </div>
+          <button
+            className={` ${baseButton} self-start`}
+            onClick={() => setSelectedDoctor(undefined)}
+          >
+            Show Unassigned Slots
+          </button>
+        </>
       )}
       <div className="flex flex-wrap gap-2">
         {theSlotsOfThisDoctor.map((slot, ind) => {

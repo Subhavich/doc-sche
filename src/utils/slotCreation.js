@@ -1,7 +1,7 @@
 import { MONTHS } from "./static";
 import { ThaiHolidayCalendar } from "./holiday";
 import {
-  isAdequateSpacing,
+  isInadequateSpacing,
   isERConsecutive,
   isOverlapping,
 } from "./slotValidation";
@@ -115,9 +115,9 @@ export const addSlot = (doctor, slot, force = false) => {
 
     if (
       (leftSlotIndex >= 0 &&
-        isAdequateSpacing(doctor.slots[leftSlotIndex], slot)) ||
+        isInadequateSpacing(doctor.slots[leftSlotIndex], slot)) ||
       (rightSlotIndex < doctor.slots.length &&
-        isAdequateSpacing(doctor.slots[rightSlotIndex], slot))
+        isInadequateSpacing(doctor.slots[rightSlotIndex], slot))
     ) {
       throw new Error("Inadequate slot spacing");
     }
