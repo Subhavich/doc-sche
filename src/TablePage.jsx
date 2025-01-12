@@ -7,6 +7,7 @@ import { calculateAccumulatedCost } from "./utils/derivingValues";
 import { baseButton } from "./utils/tailwindGeneralClasses";
 import { hasUnassignedSlots } from "./utils/slotValidation";
 import html2canvas from "html2canvas";
+import { useAuth } from "./store/AuthContext";
 
 export default function TablePage({
   tableSlots,
@@ -17,6 +18,8 @@ export default function TablePage({
   workHistory,
   handleAddNewMonth,
 }) {
+  const { isAuthenticated, authenticate } = useAuth();
+
   if (!isGenerated) {
     return <p>Please Gen Schedule First</p>;
   }
@@ -106,7 +109,17 @@ export default function TablePage({
         doctors={tableDoctors}
         setSelectedDoctor={setSelectedDoctor}
       />
-      {/* <SuperSummary doctors={tableDoctors} slots={tableSlots} /> */}
+      <div className="my-6 flex flex-col items-center space-y-2">
+        <button
+          className=" w-fit  border border-zinc-600 rounded p-2"
+          onClick={() => authenticate(111000)}
+        >
+          Toggle View All
+        </button>
+        {isAuthenticated && (
+          <SuperSummary doctors={tableDoctors} slots={tableSlots} />
+        )}
+      </div>
     </>
   );
 }

@@ -22,7 +22,7 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
   return (
     <div className="flex flex-col space-y-4 mt-8 p-4 bg-blue-100 rounded-lg">
       <p className="text-xl font-semibold">Doctor's Summary</p>
-      <p className="text-2xl font-thin">
+      <p className="text-2xl ">
         {selectedDoctor ? selectedDoctor : "Unassigned Slots"}
       </p>
       {selectedDoctor && (
@@ -80,49 +80,50 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
 export const SuperSummary = ({ doctors, slots }) => {
   return (
     <>
-      <p>SUPERSUM</p>
-      {doctors
-        .slice()
-        .sort((a, b) => b.slots.length - a.slots.length)
-        .map((doctor, i) => {
-          const theSlotsOfThisDoctor = slots.filter(
-            (slot) => slot.doctor === doctor.name
-          );
-          return (
-            <div key={i}>
-              <b>{doctor.name}</b>
+      <p className="font-semibold py-6 text-xl">All Doctors Slots</p>
+      <div className=" grid grid-cols-12">
+        {doctors
+          .slice()
+          .sort((a, b) => b.slots.length - a.slots.length)
+          .map((doctor, i) => {
+            const theSlotsOfThisDoctor = slots.filter(
+              (slot) => slot.doctor === doctor.name
+            );
+            return (
               <div
-                style={{
-                  display: "flex",
-                  maxWidth: "120px",
-                  flexWrap: "wrap",
-                }}
+                key={i}
+                className="rounded min-h-48 border m-2 p-6 flex flex-col justify-between col-span-4 px-4 space-y-2"
               >
-                {theSlotsOfThisDoctor.map((slot, ind) => {
-                  const problemColor = validateSlotProblems(
-                    theSlotsOfThisDoctor[ind - 1],
-                    slot,
-                    theSlotsOfThisDoctor[ind + 1]
-                  );
+                <b>{doctor.name}</b>
+                <div className="flex flex-wrap max-w-52 pr-4">
+                  {theSlotsOfThisDoctor.map((slot, ind) => {
+                    const problemColor = validateSlotProblems(
+                      theSlotsOfThisDoctor[ind - 1],
+                      slot,
+                      theSlotsOfThisDoctor[ind + 1]
+                    );
 
-                  return (
-                    <div
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        border: "1px solid black",
-                        backgroundColor: problemColor,
-                      }}
-                      key={ind}
-                    ></div>
-                  );
-                })}
+                    return (
+                      <div
+                        className=" size-4 rounded bg-zinc-200 m-[2px]"
+                        style={{
+                          backgroundColor: problemColor,
+                        }}
+                        key={ind}
+                      ></div>
+                    );
+                  })}
+                </div>
+                <div>
+                  <p className="text-xs">This Month ADV : {doctor.quota}</p>
+                  <p className="text-xs">
+                    Last Month ADV : {doctor.lastMonthAdv}
+                  </p>
+                </div>
               </div>
-              <p>THIS MONTH ADV: {doctor.quota}</p>
-              <p>LAST MONTH ADV: {doctor.lastMonthAdv}</p>
-            </div>
-          );
-        })}
+            );
+          })}
+      </div>
     </>
   );
 };

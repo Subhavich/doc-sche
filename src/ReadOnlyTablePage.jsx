@@ -3,11 +3,15 @@ import { Pagination, ReadOnlyTBody, THead } from "./TableComponents";
 import { deriveWeeks } from "./utils/rendering";
 import { Summary, SuperSummary } from "./SummaryComponents";
 import html2canvas from "html2canvas";
+import { useAuth } from "./store/AuthContext";
+
 export default function ReadOnlyTablePage({
   tableSlots,
   tableDoctors,
   isGenerated,
 }) {
+  const { isAuthenticated, authenticate } = useAuth();
+
   if (!isGenerated) {
     return <p>Please Gen Schedule First</p>;
   }
@@ -16,7 +20,7 @@ export default function ReadOnlyTablePage({
     return <p>No Data Yet</p>;
   }
 
-  const [selectedDoctor, setSelectedDoctor] = useState("Ingrid");
+  const [selectedDoctor, setSelectedDoctor] = useState();
 
   const handleSelectDoctor = (load) => {
     setSelectedDoctor(load);
@@ -34,7 +38,17 @@ export default function ReadOnlyTablePage({
         slots={tableSlots}
         doctors={tableDoctors}
       />
-      <SuperSummary doctors={tableDoctors} slots={tableSlots} />
+      <div className="my-6 flex flex-col items-center space-y-2">
+        <button
+          className=" w-fit  border border-zinc-600 rounded p-2"
+          onClick={() => authenticate(111000)}
+        >
+          Toggle View All
+        </button>
+        {isAuthenticated && (
+          <SuperSummary doctors={tableDoctors} slots={tableSlots} />
+        )}
+      </div>
     </>
   );
 }
