@@ -32,7 +32,7 @@ export const Summary = ({ selectedDoctor, slots, setSelectedDoctor }) => {
               style={{ backgroundColor: "yellow" }}
               className="text-sm border rounded-md font-semibold px-4 py-1  "
             >
-              {"Slots too close (>16 hours)"}
+              {"Slots too close (<16 hours)"}
             </p>
             <p
               style={{ backgroundColor: "orange" }}
