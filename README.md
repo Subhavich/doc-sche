@@ -1,4 +1,4 @@
-# Dector workslots scheduling app.
+# Doctor workslots scheduling app.
 
 React App that saves assign doctor workload algorithmicly to ensure fair distribution
 
